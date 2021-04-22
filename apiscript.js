@@ -66,7 +66,18 @@ function UpdateTableCategory()
     for ( let i in products) {
         console.log(value);
         console.log(products[i].category);
-        if ( value.localeCompare(products[i].category) == 0) 
+        if ( value.localeCompare(products[i].category) == 0 ) 
+        {
+            html += '<tr>';
+            html += '<td>' + products[i].id + '</td>';
+            html += '<td>' + products[i].name + '</td>';
+            html += '<td>' + products[i].thc + '</td>';
+            html += '<td>' + products[i].cbd + '</td>';
+            html += '<td>' + products[i].price + '</td>';
+            html += '<td>' + products[i].category + '</td>';
+            html += '</tr>';
+        }
+        if ( value.localeCompare('selected enabled') == 0 ) 
         {
             html += '<tr>';
             html += '<td>' + products[i].id + '</td>';
