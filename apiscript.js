@@ -1,25 +1,72 @@
-console.log('XXXXX');
 
-const options = {
-    method: 'GET',
-    // mode: 'no-cors',
-    headers: {
-        'Content-type': 'application/json'
-    }
-  };
-
-
-// fetch('https://reqres.in/api/users')
-// fetch('https://api.edamam.com/search?q=chicken&app_id=24dddfe0&app_key=0b3613d622b2fea76fa8009aabab6dd1', options)
 async function fetchApiData() 
 {
-  let response = await fetch('https://api.kushmapper.com/v1/vendors/1?include=products');
-  let data = await response.json()
-  console.log(data);
-  return data;
+    let response = await fetch('https://api.kushmapper.com/v1/vendors/1?include=products');
+    let data = await response.json()
+    return data;
 }
 
-let finalData = fetchApiData();
+fetchApiData().then(data => {
+    console.log(data.data["name"]);
+    console.log(data.data["products"]);
+    console.log(data.data["products"][0].id);
+    let html = '';
+
+    html += '<tr>';
+    html += '<td>Id</td>';
+    html += '<td>Name</td>';
+    html += '<td>THC%</td>';
+    html += '<td>CBD%</td>';
+    html += '<td>Price</td>';
+    html += '<td>Category';
+            // <form method="POST">
+            //     <select name="Category">
+            //         <option value="selected enabled">All</option>
+            //         <option value="Ford">Ford</option>
+            //         <option value="Benz">Benz</option>
+            //         <option value="BMW">BMW</option>
+            //     </select>
+            //     <input type="hidden" name="submit" value="Get Selected Car" />
+            // </form>      
+    html += '</td>';
+    html += '</tr>';
+
+    let vendorData = document.getElementById("vendorData");
+    let products = data.data["products"];
+    for ( let i in products) {
+        console.log(products[i].id);
+        console.log(products[i].name);
+        html +=  '<tr>';
+        html += '<td>' + products[i].id + '</td>';
+        html += '<td>' + products[i].name + '</td>';
+        html += '<td>' + products[i].thc + '</td>';
+        html += '<td>' + products[i].cbd + '</td>';
+        html += '<td>' + products[i].price + '</td>';
+        html += '<td>' + products[i].category + '</td>';
+        html += '</tr>';
+    }
+    vendorData.innerHTML = html;
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // fetch('https://api.kushmapper.com/v1/vendors/1?include=products')
