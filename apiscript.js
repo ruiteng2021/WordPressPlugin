@@ -6,10 +6,12 @@ async function fetchApiData()
     return data;
 }
 
+var products; 
+
 fetchApiData().then(data => {
     console.log(data.data["name"]);
     let vendorData = document.getElementById("vendorData");
-    let products = data.data["products"];
+    products = data.data["products"];
     let categories = [];
     let html = '';
     html += '<tr>';
@@ -20,8 +22,8 @@ fetchApiData().then(data => {
     html += '<td>Price</td>';
     html += '<td>Category';
     html += '<form method="POST">';
-    html += '<select name="Category">';
-    html +=  '<option value="selected enabled">All</option>';
+    html += '<select name="Category" id= "cat" onChange= "UpdateTableCategory()">';
+    html +=  '<option value="selected enabled" name="all">All</option>';
 
     for ( let i in products) {
         categories[i] =  products[i].category;
@@ -30,7 +32,7 @@ fetchApiData().then(data => {
     console.log(category);
 
     for ( let i in category) {
-        html += '<option value="' + category[i] + '">' + category[i] + '</option>';
+        html += '<option value="' + category[i] + '" name="' + category[i] + '">' + category[i] + '</option>';
     }
 
     html += '</select>'
@@ -53,7 +55,31 @@ fetchApiData().then(data => {
     vendorData.innerHTML = html;
 });
 
-
+function UpdateTableCategory()
+{
+    let value = $('#cat option:selected').attr('value');
+    // delete all rows except table head
+    $("#vendorData").find("tr:gt(0)").remove();
+    console.log(products);
+    // add selected data with categories
+    let html = '';
+    for ( let i in products) {
+        console.log(value);
+        console.log(products[i].category);
+        if ( value.localeCompare(products[i].category) == 0) 
+        {
+            html += '<tr>';
+            html += '<td>' + products[i].id + '</td>';
+            html += '<td>' + products[i].name + '</td>';
+            html += '<td>' + products[i].thc + '</td>';
+            html += '<td>' + products[i].cbd + '</td>';
+            html += '<td>' + products[i].price + '</td>';
+            html += '<td>' + products[i].category + '</td>';
+            html += '</tr>';
+        }
+    }
+    $('#vendorData tr:last').after(html);
+}
 
 
 
