@@ -8,10 +8,10 @@ async function fetchApiData()
 
 fetchApiData().then(data => {
     console.log(data.data["name"]);
-    console.log(data.data["products"]);
-    console.log(data.data["products"][0].id);
+    let vendorData = document.getElementById("vendorData");
+    let products = data.data["products"];
+    let categories = [];
     let html = '';
-
     html += '<tr>';
     html += '<td>Id</td>';
     html += '<td>Name</td>';
@@ -19,23 +19,28 @@ fetchApiData().then(data => {
     html += '<td>CBD%</td>';
     html += '<td>Price</td>';
     html += '<td>Category';
-            // <form method="POST">
-            //     <select name="Category">
-            //         <option value="selected enabled">All</option>
-            //         <option value="Ford">Ford</option>
-            //         <option value="Benz">Benz</option>
-            //         <option value="BMW">BMW</option>
-            //     </select>
-            //     <input type="hidden" name="submit" value="Get Selected Car" />
-            // </form>      
+    html += '<form method="POST">';
+    html += '<select name="Category">';
+    html +=  '<option value="selected enabled">All</option>';
+
+    for ( let i in products) {
+        categories[i] =  products[i].category;
+    }
+    let category = [...new Set(categories)];;
+    console.log(category);
+
+    for ( let i in category) {
+        html += '<option value="' + category[i] + '">' + category[i] + '</option>';
+    }
+
+    html += '</select>'
+    html += '</form>'      
     html += '</td>';
     html += '</tr>';
 
-    let vendorData = document.getElementById("vendorData");
-    let products = data.data["products"];
     for ( let i in products) {
-        console.log(products[i].id);
-        console.log(products[i].name);
+        // console.log(products[i].id);
+        // console.log(products[i].name);
         html +=  '<tr>';
         html += '<td>' + products[i].id + '</td>';
         html += '<td>' + products[i].name + '</td>';
