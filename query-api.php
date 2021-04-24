@@ -14,14 +14,11 @@ use AC\Asset\Script;
 defined( 'ABSPATH' ) or die( 'Unauthorized Access' );
 
 function add_scripts(){
-    ?>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <?php
-    wp_enqueue_script( 'api_script', plugin_dir_url( __FILE__ ) . 'apiscript.js', array('jquery'), '1.0.0', false);
+    wp_enqueue_script( 'api_script', plugin_dir_url( __FILE__ ) . 'apiscript.js', array('jquery'), '1.0.0', true);
 }
 
 add_action( 'wp_enqueue_scripts', 'add_scripts' );
-
+// add_action( 'wp_footer', 'add_scripts' );
 
 // create posts data .
 add_shortcode('external_data', 'add_kusgmapper_data');

@@ -1,4 +1,5 @@
 
+
 async function fetchApiData() 
 {
     let response = await fetch('https://api.kushmapper.com/v1/vendors/1?include=products');
@@ -63,9 +64,9 @@ fetchApiData().then(data => {
 
 function UpdateTableCategory()
 {
-    let value = $('#cat option:selected').attr('value');
+    let value = jQuery('#cat option:selected').attr('value');
     // delete all rows except table head
-    $("#vendorData").find("tr:gt(0)").remove();
+    jQuery("#vendorData").find("tr:gt(0)").remove();
     console.log(products);
     // add selected data with categories
     let html = '';
@@ -103,57 +104,9 @@ function UpdateTableCategory()
             html += '</tr>';
         }
     }
-    $('#vendorData tr:last').after(html);
+    jQuery('#vendorData tr:last').after(html);
 }
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// fetch('https://api.kushmapper.com/v1/vendors/1?include=products')
-//     .then(res => res.json())
-//     .then(data => {
-//         console.log(data);
-//         //return data;
-//     })
-
-
-// apidata = fetch_data();
-// console.log(apidata);
-
-// jQuery(document).ready(function($){
-//     var apidata;
-//     // fetch('http://localhost:3000/all')
-//     fetch('http://api.kushmapper.com/v1/vendors/1?include=products', option)
-//     .then(res => res.json())
-//     .then(function(data){
-//         apidata = data;
-//         console.log(data);
-//         var test = 55;
-//         $.ajax({
-//             url: '/wordpress/wp-admin/admin-ajax.php',
-//             data: {
-//                 'action': 'php_tutorial',
-//                 'php_test': test
-//             },
-//             success: function(data){
-//                 console.log("Happy")
-//             }
-//         });
-//     })
-// });
