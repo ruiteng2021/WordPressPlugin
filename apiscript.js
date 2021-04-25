@@ -1,15 +1,13 @@
 
 
-async function fetchApiData() 
+async function FetchApiData() 
 {
     let response = await fetch('https://api.kushmapper.com/v1/vendors/1?include=products');
     let data = await response.json()
     return data;
 }
 
-var products; 
-
-fetchApiData().then(data => {
+FetchApiData().then(data => {
     console.log(data.data["name"]);
     let vendorData = document.getElementById("vendorData");
     products = data.data["products"];
@@ -23,7 +21,7 @@ fetchApiData().then(data => {
     html += '<td>Price</td>';
     html += '<td>Category';
     html += '<form method="POST">';
-    html += '<select name="Category" id= "cat" onChange= "UpdateTableCategory()">';
+    html += '<select name="Category" id= "cat" onChange= "UpdateTableCategory(products)">';
     html += '<option value="selected enabled" name="all">All</option>';
 
     // remove duplicate
@@ -43,26 +41,12 @@ fetchApiData().then(data => {
     html += '</tr>';
 
     for ( let i in products) {
-        // console.log(products[i].id);
-        // console.log(products[i].name);
-        console.log(products[i].image_url);
-        html +=  '<tr>';
-        html += '<td><img src="' + products[i].image_url + '" alt="" height="200" width="200">' + '</td>';
-        html += '<td>' + products[i].name + '<br>' + 
-                '<p>' + products[i].price_oz_eighth + ' per 1/8 oz</p>' + 
-                '<p>' + products[i].price_oz_fourth + ' per 1/4 oz</p>' + 
-                '<p>' + products[i].price_oz_half + ' per 1/2 oz</p>' + 
-                '<p>' + products[i].price_oz + ' per 1 oz</p>' + '</td>';
-        html += '<td>' + products[i].thc + '</td>';
-        html += '<td>' + products[i].cbd + '</td>';
-        html += '<td>' + products[i].price + '</td>';
-        html += '<td>' + products[i].category + '</td>';
-        html += '</tr>';
+        html = CreateTableRows(html, products[i]);
     }
     vendorData.innerHTML = html;
 });
 
-function UpdateTableCategory()
+function UpdateTableCategory(products)
 {
     let value = jQuery('#cat option:selected').attr('value');
     // delete all rows except table head
@@ -75,38 +59,31 @@ function UpdateTableCategory()
         console.log(products[i].category);
         if ( value.localeCompare(products[i].category) == 0 ) 
         {
-            html += '<tr>';
-            html += '<td><img src="' + products[i].image_url + '" alt="" height="200" width="200">' + '</td>';
-            html += '<td>' + products[i].name + '<br>' + 
-                '<p>' + products[i].price_oz_eighth + ' per 1/8 oz</p>' + 
-                '<p>' + products[i].price_oz_fourth + ' per 1/4 oz</p>' + 
-                '<p>' + products[i].price_oz_half + ' per 1/2 oz</p>' + 
-                '<p>' + products[i].price_oz + ' per 1 oz</p>' + '</td>';
-            html += '<td>' + products[i].thc + '</td>';
-            html += '<td>' + products[i].cbd + '</td>';
-            html += '<td>' + products[i].price + '</td>';
-            html += '<td>' + products[i].category + '</td>';
-            html += '</tr>';
+            html = CreateTableRows(html, products[i]);
         }
         if ( value.localeCompare('selected enabled') == 0 ) 
         {
-            html += '<tr>';
-            html += '<td><img src="' + products[i].image_url + '" alt="" height="200" width="200">' + '</td>';
-            html += '<td>' + products[i].name + '<br>' + 
-                '<p>' + products[i].price_oz_eighth + ' per 1/8 oz</p>' + 
-                '<p>' + products[i].price_oz_fourth + ' per 1/4 oz</p>' + 
-                '<p>' + products[i].price_oz_half + ' per 1/2 oz</p>' + 
-                '<p>' + products[i].price_oz + ' per 1 oz</p>' + '</td>';
-            html += '<td>' + products[i].thc + '</td>';
-            html += '<td>' + products[i].cbd + '</td>';
-            html += '<td>' + products[i].price + '</td>';
-            html += '<td>' + products[i].category + '</td>';
-            html += '</tr>';
+            html = CreateTableRows(html, products[i]);
         }
     }
     jQuery('#vendorData tr:last').after(html);
 }
 
-
+function CreateTableRows(trHtml, contents)
+{
+    trHtml += '<tr>';
+    trHtml += '<td><img src="' + contents.image_url + '" alt="" height="200" width="200">' + '</td>';
+    trHtml += '<td>' + contents.name + '<br>' + 
+        '<p>' + contents.price_oz_eighth + ' per 1/8 oz</p>' + 
+        '<p>' + contents.price_oz_fourth + ' per 1/4 oz</p>' + 
+        '<p>' + contents.price_oz_half + ' per 1/2 oz</p>' + 
+        '<p>' + contents.price_oz + ' per 1 oz</p>' + '</td>';
+    trHtml += '<td>' + contents.thc + '</td>';
+    trHtml += '<td>' + contents.cbd + '</td>';
+    trHtml += '<td>' + contents.price + '</td>';
+    trHtml += '<td>' + contents.category + '</td>';
+    trHtml += '</tr>';
+    return trHtml;
+}
 
 

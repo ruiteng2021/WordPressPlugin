@@ -1,0 +1,13 @@
+let categories = [];
+let html = '';
+let html = '';
+html += '<tr>';
+html += '<td>' + data.data["name"] + '</td>';
+html += '<td>Product</td>';
+html += '<td>THC%</td>';
+html += '<td>CBD%</td>';
+html += '<td>Price</td>';
+html += '<td>Category';
+html += '<form method="POST">';
+html += '<select name="Category" id= "cat" onChange= "UpdateTableCategory()">';
+html += '<option value="selected enabled" name="all">All</option>';
