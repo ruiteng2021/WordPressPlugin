@@ -1,0 +1,41 @@
+
+.km-logo{
+    margin-right: 50px;
+}
+
+.km-logo button {
+    margin-top: 15px;
+    float: right;
+}
+
+.km-products{
+    border-left: 3px solid rgb(80, 78, 78);
+}
+
+.km-products th, tr {
+    border: 25px solid white;
+}
+
+.viewButton {
+    vertical-align: middle !important;
+}
+
+.vendorlogo {
+    margin-bottom: 20px !important;
+}
+
+.vendorlogo img {
+    width: 100%;
+    height: auto;
+}
+
+.vendorWebsite{
+    color: inherit;
+}
+
+.vendorMail {
+    max-width: 250px;
+    white-space:normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
