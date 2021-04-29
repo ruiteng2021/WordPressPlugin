@@ -16,6 +16,10 @@
     border: 25px solid white;
 }
 
+.km-products td {
+    vertical-align: middle !important;
+}
+
 .viewButton {
     vertical-align: middle !important;
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Kushmapper vendor Product 
+ * Plugin Name: Kushmapper Vendor Product 
  * Description: Shows the vendor's product information
  * Author: SlyFox
  * Version: 0.1.1
@@ -10,7 +10,7 @@ add_shortcode('vendor-products', 'vendor_products');
 
 function vendor_products()
 {
-    $startUrl = 'http://api.kushmapper.com/v1/vendors/1?include=products';
+    $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
 
     ob_start(); 
     
@@ -64,11 +64,32 @@ function vendor_products()
                             <template x-for="product in products">
                             <tr>                          
                                 <td>
-                                    <figure>
+                                    <figure class="image is-96x96">
                                         <img :src="product.image_url" alt="product img" />
                                     </figure>                                    
                                 </td>
-                                <td><p class="is-size-5" x-text="product.name" ></p></td>
+                                <td>
+                                    <strong><p class="is-size-5" x-text="product.name" ></p></strong>
+                                        <div class="columns is-mobile is-multiline">
+                                            <div class="column">
+                                                <strong>
+                                                    <p><span x-text="product.price_gram"></span> per 1 g</p>
+                                                    <p><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
+                                                    <p><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
+                                                    <p><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
+                                                    <p><span x-text="product.price_oz"></span> per 1 oz</p>
+                                                </strong>
+                                            </div>
+                                            <div class="column">
+                                                <strong>
+                                                    <p>THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
+                                                    <p>CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
+                                                </strong>
+                                            </div>
+                                        </div>
+
+
+                                </td>
                                 <td><p class="is-size-7" x-text="product.category"></p></td>
                                 <td class="viewButton"><button class="button is-rounded is-black">View</button></h4></td>
                             </tr>
