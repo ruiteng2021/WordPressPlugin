@@ -22,6 +22,7 @@ function vendor_products()
                     name: false,
                     products: false,
                     data: false,
+                    categories: [],
                     async getData(url = this.startUrl) {
                         var self = this;
                         await axios.get(url)
@@ -30,11 +31,23 @@ function vendor_products()
                                 self.data = response.data.data;
                                 self.name = response.data.data["name"];
                                 self.products = response.data.data["products"];
+                                // remove duplicate categories
+                                for ( let i in self.products) {
+                                    self.categories[i] =  self.products[i].category;
+                                }
+                                self.categories = [...new Set(self.categories)];
+                                console.log(self.categories.toString());
                             })
                             .catch(function(error) {
                                 console.log(error);
                             })                            
                     },
+
+                    UpdateTableCategory()
+                    {
+                        console.log("XXXXXXXXXXXXX");
+                    },
+
                 };
             }
         </script>
@@ -50,13 +63,66 @@ function vendor_products()
                     <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
                     <button class="button is-black">Claim Listing</button>
                 </div>
-                <div class="columns is-multiline km-products">
+                <div class="column is-multiline km-products">
+                    <div class="tabs is-toggle is-fullwidth is-medium">
+                        <ul class="menu">
+                            <li class="is-active">
+                            <a>
+                                <span class="icon"><i class="fas fa-shopping-basket fa-fw" aria-hidden="true"></i></span>
+                                <span>PRODUCT MENU</span>
+                            </a>
+                            </li>
+                            <li>
+                            <a>
+                                <span class="icon"><i class="fas fa-globe-americas fa-fw" aria-hidden="true"></i></span>
+                                <span>MAP</span>
+                            </a>
+                            </li>
+                            <li>
+                            <a>
+                                <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
+                                <span>PHOTOS</span>
+                            </a>
+                            </li>
+                            <li>
+                            <a>
+                                <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
+                                <span>REVIEWS</span>
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="columns is-mobile is-multiline is-fullwidth ">
+                        <label class="column is-mobile is-half centerLabel"> Show 
+                            <div class="select entrySelect">
+                                <select>
+                                    <option value="10" name="10">10</option>     
+                                    <option value="25" name="25">25</option>             
+                                    <option value="50" name="50">50</option>             
+                                    <option value="100" name="100">100</option>      
+                                </select>
+                            </div>
+                            entries
+                        </label>
+                        <label class="column centerLabel"> Search:  
+                            <input class="input searchBox" type="text">
+                        </label>
+                    </div>
+                
                     <table class="table">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Product</th>
-                                <th>Category</th>
+                                <th style="min-width: 350px;">Product</th>
+                                <th>Category
+                                    <select name="Category" id= "cat" x-on:change="UpdateTableCategory()">
+                                        <option value="selected enabled" name="all">All</option>
+                                        <template x-for="category in categories" :key="category">
+                                            <option :value="category" x-text="category"></option>
+                                        </template>                            
+                                    </select>            
+                                </th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -80,7 +146,7 @@ function vendor_products()
                                                     <p><span x-text="product.price_oz"></span> per 1 oz</p>
                                                 </strong>
                                             </div>
-                                            <div class="column">
+                                            <div class="column" style="min-width: 200px;">
                                                 <strong>
                                                     <p>THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
                                                     <p>CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
@@ -90,8 +156,12 @@ function vendor_products()
 
 
                                 </td>
-                                <td><p class="is-size-7" x-text="product.category"></p></td>
-                                <td class="viewButton"><button class="button is-rounded is-black">View</button></h4></td>
+                                <td>
+                                    <strong>    
+                                        <p class="is-size-10" x-text="product.category"></p>
+                                    </strong>
+                                </td>
+                                <td class="viewButton"><button class="button is-rounded is-black">View</button></td>
                             </tr>
                             </template>
                         </tbody>
@@ -109,6 +179,7 @@ function vendor_products()
 
 function local_styles(){
     wp_enqueue_style( 'product', plugin_dir_url( __FILE__ ) . 'product.css' );
+    wp_enqueue_style( 'font', 'https://use.fontawesome.com/releases/v5.15.3/css/all.css?wpfas=true' );
 }
 
 add_action( 'wp_enqueue_scripts', 'local_styles' );

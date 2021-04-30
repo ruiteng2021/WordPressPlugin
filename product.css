@@ -1,6 +1,7 @@
 
 .km-logo{
     margin-right: 50px;
+    min-height: 800px;
 }
 
 .km-logo button {
@@ -12,12 +13,17 @@
     border-left: 3px solid rgb(80, 78, 78);
 }
 
-.km-products th, tr {
-    border: 25px solid white;
+.table, td, th {
+    border: 0;
+}
+
+.km-products th {
+    border: 0;
 }
 
 .km-products td {
     vertical-align: middle !important;
+    border: 0;
 }
 
 .viewButton {
@@ -43,3 +49,51 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.tabs {
+    font-weight: bold;
+    display: inline-block;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    width: 100%;
+}
+
+.tabs.is-toggle li.is-active a {
+    background-color: black;
+}
+
+.tabs.is-toggle a {
+    border: 0;
+}
+
+.menu {
+    display: flex;
+    flex-wrap: wrap;
+}
+.menu li {
+    flex-grow: 0 !important;
+}
+
+.entrySelect {
+    border-radius: 5%;
+    height: 35px !important;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.searchBox{
+    height: 35px !important;
+    width: 200px;
+    margin-left: 5px;
+}
+
+.centerLabel {
+    display: flex;
+    align-items: center;
+}
+
+#cat {
+    height: 35px;
+    padding: 0;
+}
+
