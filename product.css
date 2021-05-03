@@ -92,8 +92,44 @@
     align-items: center;
 }
 
-#cat {
+/* #cat {
     height: 35px;
     padding: 0;
+} */
+
+.km-filters{
+    font-weight: 500;
 }
 
+.km-search{
+    font-weight: 500;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #eee;
+}
+
+.km-filters-column {
+    height:100px; 
+    display: flex; 
+    align-items: center; 
+    flex-wrap: wrap;
+    min-width: 200px;
+}
+
+.km-filters-label{
+    padding-right:10px;
+}
+
+.km-filters-price{
+    font-weight: initial;
+    width:150px; 
+    height: 40px; 
+    margin-top: 5px;
+    font-size: smaller;
+}
+
+/* @media only screen and (max-width: 690px)
+{
+    table, table * {
+        display: block !important;
+    }
+} */
