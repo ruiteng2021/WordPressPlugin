@@ -112,11 +112,20 @@
     display: flex; 
     align-items: center; 
     flex-wrap: wrap;
-    min-width: 200px;
+    min-width: 250px;
+}
+
+
+.km-filters-column-category{
+    min-width: 300px;
 }
 
 .km-filters-label{
     padding-right:10px;
+}
+
+.km-filters-label-price{
+    margin-top: 5px;
 }
 
 .km-filters-price{
@@ -127,9 +136,13 @@
     font-size: smaller;
 }
 
-/* @media only screen and (max-width: 690px)
+@media only screen and (min-width: 690px)
 {
-    table, table * {
-        display: block !important;
+    .km-filters-label-thc{
+        margin-left: 40px;
     }
-} */
+
+    .km-filters-label-cdb{
+        margin-left: 20px;
+    }
+}

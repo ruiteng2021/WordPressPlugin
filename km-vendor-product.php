@@ -21,9 +21,14 @@ function vendor_products()
                 return {
                     startUrl: '<?php echo $startUrl; ?>',
                     name: false,
-                    products: false,
+                    products: [],
+                    productsBackup: [],
                     data: false,
                     categories: [],
+                    selectedPrice: 'enter price in gram',
+                    selectedTHC: 'All', 
+                    selectedCBD: 'All', 
+                    selectedCat: 'All',
                     async getData(url = this.startUrl) {
                         var self = this;
                         await axios.get(url)
@@ -32,6 +37,7 @@ function vendor_products()
                                 self.data = response.data.data;
                                 self.name = response.data.data["name"];
                                 self.products = response.data.data["products"];
+                                self.productsBackup = response.data.data["products"];
                                 // remove duplicate categories
                                 for ( let i in self.products) {
                                     self.categories[i] =  self.products[i].category;
@@ -44,9 +50,48 @@ function vendor_products()
                             })                            
                     },
 
-                    UpdateTableCategory()
+                    SearchFilter()
                     {
+                        
+                        var self = this;
+                        self.products = self.productsBackup;
                         console.log("XXXXXXXXXXXXX");
+                        console.log(self.selectedPrice);
+                        console.log(self.selectedCBD);
+                        console.log(self.selectedTHC);
+                        console.log(self.selectedCat);
+                        console.log("XXXXXXXXXXXXX");
+                        // debugger;
+
+                        priceFilter = self.products;
+                        if (self.selectedPrice != "enter price in gram"){
+                            priceFilter = priceFilter.filter(priceFilter => parseFloat(priceFilter.price_gram) <= parseFloat(self.selectedPrice));
+                            console.log(priceFilter);
+                            // priceFilter = priceFilter.filter(function(priceFilter) {
+                            //     if (priceFilter.price_gram != null)
+                            //         return parseFloat(priceFilter.price_gram) <= parseFloat(self.selectedPrice);
+                            // });
+                        }
+
+                        thcFilter = priceFilter;
+                        if(self.selectedTHC != "All"){
+                            thcFilter = thcFilter.filter(thcFilter => parseFloat(thcFilter.thc_max) <= parseFloat(self.selectedTHC));
+                            console.log(thcFilter);
+                        }
+                            
+                        cbdFilter = thcFilter;
+                        if(self.selectedCBD != "All"){
+                            cbdFilter = cbdFilter.filter(cbdFilter => parseFloat(cbdFilter.cbd_max) <= parseFloat(self.selectedCBD));
+                            console.log(cbdFilter);
+                        }
+                       
+                        categoryFilter = cbdFilter;
+                        if(self.selectedCat != "All"){
+                            categoryFilter = categoryFilter.filter(categoryFilter => categoryFilter.category == self.selectedCat);
+                            console.log(categoryFilter);
+                        }
+
+                        self.products = categoryFilter;
                     },
 
                 };
@@ -97,39 +142,45 @@ function vendor_products()
                     <div class="columns is-multiline is-mobile is-fullwidth is-vcentered km-filters">
                                 
                         <div class="column km-filters-column"> 
-                            <label class="km-filters-label" for="price"> Price </label>  
-                            <input class="km-filters-price" class="input is-link is-normal is-half" type="text" placeholder="enter price in gram"/>
+                            <label class="km-filters-label km-filters-label-price" for="price"> Price/g </label>  
+                            <input class="km-filters-price input is-link is-normal is-half" 
+                                    type="number" 
+                                    placeholder="enter price in gram"
+                                    x-model="selectedPrice"
+                            />
                         </div>
             
                         <div class="column km-filters-column">  
-                            <label class="km-filters-label"  for="thc"> THC </label>
+                            <label class="km-filters-label km-filters-label-thc"  for="thc"> THC </label>
                             <div class="select entrySelect">                        
-                                <select id="thc">
-                                    <option value="selected enabled" name="5"><= 5%</option>    
-                                    <option value="10" name="10"><= 10%</option>   
-                                    <option value="15" name="15"><= 15%</option>  
+                                <select id="thc" x-model="selectedTHC">
+                                    <option value="All" name="all">All</option>
                                     <option value="20" name="20"><= 20%</option>     
+                                    <option value="15" name="15"><= 15%</option>  
+                                    <option value="10" name="10"><= 10%</option>   
+                                    <option value="5" name="5"><= 5%</option>                                      
                                 </select>
                             </div>
                         </div>
             
                         <div class="column km-filters-column">  
-                            <label class="km-filters-label" for="cbd"> CBD </label>
+                            <label class="km-filters-label km-filters-label-cdb" for="cbd"> CBD </label>
                             <div class="select entrySelect">                        
-                                <select id="cbd">
-                                    <option value="selected enabled" name="5"><= 5%</option>     
+                                <select id="cbd" x-model="selectedCBD">
+                                    <option value="All" name="all">All</option>
+                                    <option value="20" name="20"><= 20%</option>  
+                                    <option value="15" name="15"><= 15%</option>   
                                     <option value="10" name="10"><= 10%</option>   
-                                    <option value="15" name="15"><= 15%</option>  
-                                    <option value="20" name="20"><= 20%</option>             
+                                    <option value="5" name="5"><= 5%</option>                                            
                                 </select>
                             </div>                          
                         </div>
             
-                        <div class="column is-4 km-filters-column">  
+                        <div class="column km-filters-column km-filters-column-category">  
                             <label class="km-filters-label" for="cat"> Category </label>
                             <div class="select entrySelect">                      
-                                <select name="Category" id= "cat" x-on:change="UpdateTableCategory()">
-                                        <option value="selected enabled" name="all">All</option>
+                                <select name="Category" id= "cat" x-model="selectedCat">
+                                        <option value="All" name="all">All</option>
                                         <template x-for="category in categories" :key="category">
                                             <option :value="category" x-text="category"></option>
                                         </template>                            
@@ -152,12 +203,12 @@ function vendor_products()
                             entries
                         </label>
                         <label class="column centerLabel">
-                            <button class="button is-black">Search ...</button>
+                            <button class="button is-black" x-on:click="SearchFilter()">Search ...</button>
                         </label>
                     </div>
 
                     <div class="table-container">
-                        <table class="table is-narrow is-hoverable">
+                        <table class="table is-narrow is-hoverable is-striped">
                             <thead>
                                 <tr>
                                     <th></th>
@@ -179,6 +230,11 @@ function vendor_products()
                                             <div class="columns is-mobile is-multiline">
                                                 <div class="column">
                                                     <strong>
+                                                        <!-- <p x-show="product.price_gram != null"><span x-text="product.price_gram"></span> per 1 g</p>
+                                                        <p x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
+                                                        <p x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
+                                                        <p x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
+                                                        <p x-show="product.price_oz != null"><span x-text="product.price_oz"></span> per 1 oz</p> -->
                                                         <p><span x-text="product.price_gram"></span> per 1 g</p>
                                                         <p><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
                                                         <p><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
@@ -193,8 +249,6 @@ function vendor_products()
                                                     </strong>
                                                 </div>
                                             </div>
-
-
                                     </td>
                                     <td>
                                         <strong>    
