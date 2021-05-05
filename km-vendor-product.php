@@ -22,7 +22,6 @@ function vendor_products()
                     startUrl: '<?php echo $startUrl; ?>',
                     name: false,
                     products: [],
-                    productsBackup: [],
                     data: false,
                     categories: [],
                     selectedPrice: 'enter price in gram',
@@ -36,8 +35,7 @@ function vendor_products()
                                 // console.log(response);
                                 self.data = response.data.data;
                                 self.name = response.data.data["name"];
-                                self.products = response.data.data["products"];
-                                self.productsBackup = response.data.data["products"];
+                                self.products = response.data.data["products"];                                
                                 // remove duplicate categories
                                 for ( let i in self.products) {
                                     self.categories[i] =  self.products[i].category;
@@ -50,48 +48,198 @@ function vendor_products()
                             })                            
                     },
 
-                    SearchFilter()
-                    {
-                        
+                    async SearchFilter(url = this.startUrl)
+                    {                        
                         var self = this;
-                        self.products = self.productsBackup;
-                        console.log("XXXXXXXXXXXXX");
-                        console.log(self.selectedPrice);
-                        console.log(self.selectedCBD);
-                        console.log(self.selectedTHC);
-                        console.log(self.selectedCat);
-                        console.log("XXXXXXXXXXXXX");
-                        // debugger;
+                        debugger;
+                        urlSearch = url.replace("?include=", "/");
+                        // urlSearch = "https://api.kushmapper.com/v1/vendors/1/products";
 
-                        priceFilter = self.products;
-                        if (self.selectedPrice != "enter price in gram"){
-                            priceFilter = priceFilter.filter(priceFilter => parseFloat(priceFilter.price_gram) <= parseFloat(self.selectedPrice));
-                            console.log(priceFilter);
-                            // priceFilter = priceFilter.filter(function(priceFilter) {
-                            //     if (priceFilter.price_gram != null)
-                            //         return parseFloat(priceFilter.price_gram) <= parseFloat(self.selectedPrice);
-                            // });
+                        // 0 0 0 0
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            // Do nothing
                         }
 
-                        thcFilter = priceFilter;
-                        if(self.selectedTHC != "All"){
-                            thcFilter = thcFilter.filter(thcFilter => parseFloat(thcFilter.thc_max) <= parseFloat(self.selectedTHC));
-                            console.log(thcFilter);
-                        }
-                            
-                        cbdFilter = thcFilter;
-                        if(self.selectedCBD != "All"){
-                            cbdFilter = cbdFilter.filter(cbdFilter => parseFloat(cbdFilter.cbd_max) <= parseFloat(self.selectedCBD));
-                            console.log(cbdFilter);
-                        }
-                       
-                        categoryFilter = cbdFilter;
-                        if(self.selectedCat != "All"){
-                            categoryFilter = categoryFilter.filter(categoryFilter => categoryFilter.category == self.selectedCat);
-                            console.log(categoryFilter);
+                        // 0 0 0 1
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[category]=" + self.selectedCat;
                         }
 
-                        self.products = categoryFilter;
+                        // 0 0 1 0
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_cbd]=" + self.selectedCBD;
+                        }
+
+                        // 0 0 1 1
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_cbd]=" + self.selectedCBD + 
+                                "&filter[category]=" + self.selectedCat;
+                        }
+
+                        // 0 1 0 0
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_thc]=" + self.selectedTHC;
+                        }
+
+                        // 0 1 0 1
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_thc]=" + self.selectedTHC + 
+                                "&filter[category]=" + self.selectedCat;
+                        }
+
+                        // 0 1 1 0
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_thc]=" + self.selectedTHC + 
+                                "&filter[maximum_cbd]=" + self.selectedCBD;
+                        }
+
+                        // 0 1 1 1
+                        if( (self.selectedPrice == "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_thc]=" + self.selectedTHC + 
+                                "&filter[maximum_cbd]=" + self.selectedCBD + 
+                                "&filter[category]=" + self.selectedCat;
+                        }
+
+                        // 1 0 0 0
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice;
+                        }
+
+                        // 1 0 0 1
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "&filter[category]=" + self.selectedCat;
+                        }
+
+                        // 1 0 1 0
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "&filter[maximum_cbd]=" + self.selectedCBD;
+                        }
+
+                        // 1 0 1 1
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC == "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "&filter[maximum_cbd]=" + self.selectedCBD +
+                                "&filter[category]=" + self.selectedCat;
+                        }
+
+                        // 1 1 0 0
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "&filter[maximum_thc]=" + self.selectedTHC;
+                        }
+
+                        // 1 1 0 1
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD == "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "&filter[maximum_thc]=" + self.selectedTHC +
+                                "&filter[category]=" + self.selectedCat;
+                        }
+
+                        // 1 1 1 0
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat == "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "&filter[maximum_thc]=" + self.selectedTHC +
+                                "&filter[maximum_cbd]=" + self.selectedCBD;
+                        }
+
+                        // 1 1 1 1
+                        if( (self.selectedPrice != "enter price in gram") &&
+                            (self.selectedTHC != "All") &&
+                            (self.selectedCBD != "All") &&
+                            (self.selectedCat != "All") )                   
+                        {
+                            urlSearch = urlSearch + 
+                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "&filter[maximum_thc]=" + self.selectedTHC +
+                                "&filter[maximum_cbd]=" + self.selectedCBD +
+                                "&filter[category]=" + self.selectedCat;
+                        }
+
+                        console.log(urlSearch);
+                        await axios.get(urlSearch)
+                            .then(function(response) {      
+                                self.products = response.data.data;  
+                                console.log(self.products); 
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            })         
                     },
 
                 };
@@ -144,7 +292,7 @@ function vendor_products()
                         <div class="column km-filters-column"> 
                             <label class="km-filters-label km-filters-label-price" for="price"> Price/g </label>  
                             <input class="km-filters-price input is-link is-normal is-half" 
-                                    type="number" 
+                                    type="number" min="0"
                                     placeholder="enter price in gram"
                                     x-model="selectedPrice"
                             />
@@ -230,16 +378,16 @@ function vendor_products()
                                             <div class="columns is-mobile is-multiline">
                                                 <div class="column">
                                                     <strong>
-                                                        <!-- <p x-show="product.price_gram != null"><span x-text="product.price_gram"></span> per 1 g</p>
+                                                        <p x-show="product.price_gram != null"><span x-text="product.price_gram"></span> per 1 g</p>
                                                         <p x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
                                                         <p x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
                                                         <p x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
-                                                        <p x-show="product.price_oz != null"><span x-text="product.price_oz"></span> per 1 oz</p> -->
-                                                        <p><span x-text="product.price_gram"></span> per 1 g</p>
+                                                        <p x-show="product.price_oz != null"><span x-text="product.price_oz"></span> per 1 oz</p>
+                                                        <!-- <p><span x-text="product.price_gram"></span> per 1 g</p>
                                                         <p><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
                                                         <p><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
                                                         <p><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
-                                                        <p><span x-text="product.price_oz"></span> per 1 oz</p>
+                                                        <p><span x-text="product.price_oz"></span> per 1 oz</p> -->
                                                     </strong>
                                                 </div>
                                                 <div class="column" style="min-width: 200px;">
