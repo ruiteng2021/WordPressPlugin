@@ -320,179 +320,191 @@ function vendor_products()
         </script>
 
         <div class="columns is-full" x-data="kmData()" x-init="getData()">
-            <template x-if="data">
-                <div class="km-logo column is-one-quarter">    
-                    <figure class="vendorlogo">
-                        <img :src="data.logo_url" alt="product img" />
-                    </figure>   
-                    <p x-text="data.name"> </p>
-                    <p x-text="data.phone"> </p>
-                    <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
-                    <button class="button is-black">Claim Listing</button>
+        <template x-if="data">
+            <!-- Left column for logo -->
+            <div class="km-logo column is-one-quarter">    
+                <figure class="vendorlogo">
+                    <img :src="data.logo_url" alt="product img" />
+                </figure>   
+                <p x-text="data.name"> </p>
+                <p x-text="data.phone"> </p>
+                <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
+                <button class="button is-black">Claim Listing</button>
+            </div>
+        </template>
+            <!-- Right column for product -->
+            <div class="column km-products">
+                <!-- Menu tabs -->
+                <div class="tabs is-toggle is-fullwidth is-medium">
+                    <ul class="menu">
+                        <li class="is-active">
+                        <a>
+                            <span class="icon"><i class="fas fa-shopping-basket fa-fw" aria-hidden="true"></i></span>
+                            <span>PRODUCT MENU</span>
+                        </a>
+                        </li>
+                        <li>
+                        <a>
+                            <span class="icon"><i class="fas fa-globe-americas fa-fw" aria-hidden="true"></i></span>
+                            <span>MAP</span>
+                        </a>
+                        </li>
+                        <li>
+                        <a>
+                            <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
+                            <span>PHOTOS</span>
+                        </a>
+                        </li> 
+                        <li>
+                        <a>
+                            <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
+                            <span>REVIEWS</span>
+                        </a>
+                        </li>
+                    </ul>
                 </div>
-            </template>
-                <div class="column is-multiline km-products">
-                    <div class="tabs is-toggle is-fullwidth is-medium">
-                        <ul class="menu">
-                            <li class="is-active">
-                            <a>
-                                <span class="icon"><i class="fas fa-shopping-basket fa-fw" aria-hidden="true"></i></span>
-                                <span>PRODUCT MENU</span>
-                            </a>
-                            </li>
-                            <li>
-                            <a>
-                                <span class="icon"><i class="fas fa-globe-americas fa-fw" aria-hidden="true"></i></span>
-                                <span>MAP</span>
-                            </a>
-                            </li>
-                            <li>
-                            <a>
-                                <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
-                                <span>PHOTOS</span>
-                            </a>
-                            </li> 
-                            <li>
-                            <a>
-                                <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
-                                <span>REVIEWS</span>
-                            </a>
-                            </li>
-                        </ul>
-                    </div>
 
-                    <div class="columns is-multiline is-mobile is-fullwidth is-vcentered km-filters">
-                                
-                        <div class="column km-filters-column"> 
-                            <label class="km-filters-label km-filters-label-price" for="price"> Price/g </label>  
-                            <input class="km-filters-price input is-link is-normal is-half" 
-                                    type="number" min="0"
-                                    placeholder="enter price in gram"
-                                    x-model="selectedPrice"
-                            />
+                <!-- Filter dropsown lists -->
+                <div class="columns is-multiline is-mobile is-fullwidth is-vcentered km-filters">
+                            
+                    <div class="column km-filters-column"> 
+                        <label class="km-filters-label km-filters-label-price" for="price"> Price/g </label>  
+                        <input class="km-filters-price input is-link is-normal is-half" 
+                                type="number" min="0"
+                                placeholder="enter price in gram"
+                                x-model="selectedPrice"
+                        />
+                    </div>
+        
+                    <div class="column km-filters-column">  
+                        <label class="km-filters-label km-filters-label-thc"  for="thc"> THC </label>
+                        <div class="select entrySelect">                        
+                            <select id="thc" x-model="selectedTHC">
+                                <option value="All" name="all">All</option>
+                                <option value="20" name="20"><= 20%</option>     
+                                <option value="15" name="15"><= 15%</option>  
+                                <option value="10" name="10"><= 10%</option>   
+                                <option value="5" name="5"><= 5%</option>                                      
+                            </select>
                         </div>
-            
-                        <div class="column km-filters-column">  
-                            <label class="km-filters-label km-filters-label-thc"  for="thc"> THC </label>
-                            <div class="select entrySelect">                        
-                                <select id="thc" x-model="selectedTHC">
+                    </div>
+        
+                    <div class="column km-filters-column">  
+                        <label class="km-filters-label km-filters-label-cdb" for="cbd"> CBD </label>
+                        <div class="select entrySelect">                        
+                            <select id="cbd" x-model="selectedCBD">
+                                <option value="All" name="all">All</option>
+                                <option value="20" name="20"><= 20%</option>  
+                                <option value="15" name="15"><= 15%</option>   
+                                <option value="10" name="10"><= 10%</option>   
+                                <option value="5" name="5"><= 5%</option>                                            
+                            </select>
+                        </div>                          
+                    </div>
+        
+                    <div class="column km-filters-column km-filters-column-category">  
+                        <label class="km-filters-label" for="cat"> Category </label>
+                        <div class="select entrySelect">                      
+                            <select name="Category" id= "cat" x-model="selectedCat">
                                     <option value="All" name="all">All</option>
-                                    <option value="20" name="20"><= 20%</option>     
-                                    <option value="15" name="15"><= 15%</option>  
-                                    <option value="10" name="10"><= 10%</option>   
-                                    <option value="5" name="5"><= 5%</option>                                      
-                                </select>
+                                    <template x-for="category in categories" :key="category">
+                                        <option :value="category" x-text="category"></option>
+                                    </template>                            
+                            </select>     
+
+                        </div>                          
+                    </div>                      
+                </div>  
+
+                <!-- Search button and entyry dropdown list -->
+                <div class="columns is-mobile is-multiline is-fullwidth km-search">
+                    <label class="column is-mobile is-half km-centerLabel"> Show 
+                        <div class="select entrySelect">
+                            <select name="Entries" id= "entries" x-model="pageSize" x-on:change="UpdatePages()">
+                                <option value="5" name="5">5</option>     
+                                <option value="10" name="10">10</option>     
+                                <option value="25" name="25">25</option>             
+                                <option value="50" name="50">50</option>             
+                                <option value="100" name="100">100</option>      
+                            </select>
+                        </div>
+                        entries
+                    </label>
+                    <label class="column km-centerLabel">
+                        <button class="button is-black" x-on:click="SearchFilter()">Search ...</button>
+                    </label>
+                </div>
+
+                <!-- Table colums -->
+                <div class="columns km-products-info">
+                    <div class="column is-two-thirds">
+                        <div class="km-product-pic-title">     
+                        </div>
+                        <div class="km-product-price-title">   
+                            <strong>Product</strong>
+                        </div>
+                        <div class="km-product-concentrate-title"> 
+                        </div>
+                    </div>
+                    <div class="column is-one-thirds">
+                        <div class="km-product-category-title">                  
+                            <strong>Category</strong>
+                        </div>
+                        <div class="km-product-view-title">                   
+                        </div>
+                    </div>
+                </div>
+
+                <div class="km-table">
+                    <template x-for="product in products">
+                    <div class="columns km-products-info">
+                        <div class="column is-two-thirds">
+                            <div class="km-product-pic">                  
+                                <figure class="image is-128x128">
+                                    <img :src="product.image_url" alt="product img" />
+                                </figure>        
+                            </div>
+                            <div class="km-product-price">                
+                                <strong>
+                                    <a :href="product.url"><p class="is-size-5" x-text="product.name" ></p></a>
+                                    <p x-show="product.price_gram != null"><span x-text="product.price_gram"></span> per 1 g</p>
+                                    <p x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
+                                    <p x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
+                                    <p x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
+                                    <p x-show="product.price_oz != null"><span x-text="product.price_oz"></span> per 1 oz</p>
+                                    <p class="km-no-dispaly">THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
+                                    <p class="km-no-dispaly">CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
+                                </strong>
+                            </div>
+                            <div class="km-product-concentrate">                  
+                                <strong>
+                                    <p>THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
+                                    <p>CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
+                                </strong>
                             </div>
                         </div>
-            
-                        <div class="column km-filters-column">  
-                            <label class="km-filters-label km-filters-label-cdb" for="cbd"> CBD </label>
-                            <div class="select entrySelect">                        
-                                <select id="cbd" x-model="selectedCBD">
-                                    <option value="All" name="all">All</option>
-                                    <option value="20" name="20"><= 20%</option>  
-                                    <option value="15" name="15"><= 15%</option>   
-                                    <option value="10" name="10"><= 10%</option>   
-                                    <option value="5" name="5"><= 5%</option>                                            
-                                </select>
-                            </div>                          
-                        </div>
-            
-                        <div class="column km-filters-column km-filters-column-category">  
-                            <label class="km-filters-label" for="cat"> Category </label>
-                            <div class="select entrySelect">                      
-                                <select name="Category" id= "cat" x-model="selectedCat">
-                                        <option value="All" name="all">All</option>
-                                        <template x-for="category in categories" :key="category">
-                                            <option :value="category" x-text="category"></option>
-                                        </template>                            
-                                </select>     
-
-                            </div>                          
-                        </div>                      
-                    </div>  
-
-                    <div class="columns is-mobile is-multiline is-fullwidth km-search">
-                        <label class="column is-mobile is-half km-centerLabel"> Show 
-                            <div class="select entrySelect">
-                                <select name="Entries" id= "entries" x-model="pageSize" x-on:change="UpdatePages()">
-                                    <option value="5" name="5">5</option>     
-                                    <option value="10" name="10">10</option>     
-                                    <option value="25" name="25">25</option>             
-                                    <option value="50" name="50">50</option>             
-                                    <option value="100" name="100">100</option>      
-                                </select>
+                        <div class="column is-one-thirds">
+                            <div class="km-product-category">                  
+                                <strong>    
+                                    <p class="is-size-10" x-text="product.category"></p>
+                                </strong>
                             </div>
-                            entries
-                        </label>
-                        <label class="column km-centerLabel">
-                            <button class="button is-black" x-on:click="SearchFilter()">Search ...</button>
-                        </label>
-                    </div>
-
-                    <div class="table-container">
-                        <table class="table is-narrow is-hoverable is-striped">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th style="min-width: 350px;">Product</th>
-                                    <th>Category</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="product in products">
-                                <tr>                          
-                                    <td>
-                                        <figure class="image is-96x96">
-                                            <img :src="product.image_url" alt="product img" />
-                                        </figure>                                    
-                                    </td>
-                                    <td>
-                                        <strong><p class="is-size-5" x-text="product.name" ></p></strong>
-                                            <div class="columns is-mobile is-multiline">
-                                                <div class="column">
-                                                    <strong>
-                                                        <p x-show="product.price_gram != null"><span x-text="product.price_gram"></span> per 1 g</p>
-                                                        <p x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
-                                                        <p x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
-                                                        <p x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
-                                                        <p x-show="product.price_oz != null"><span x-text="product.price_oz"></span> per 1 oz</p>
-                                                        <!-- <p><span x-text="product.price_gram"></span> per 1 g</p>
-                                                        <p><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
-                                                        <p><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
-                                                        <p><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
-                                                        <p><span x-text="product.price_oz"></span> per 1 oz</p> -->
-                                                    </strong>
-                                                </div>
-                                                <div class="column" style="min-width: 200px;">
-                                                    <strong>
-                                                        <p>THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
-                                                        <p>CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
-                                                    </strong>
-                                                </div>
-                                            </div>
-                                    </td>
-                                    <td>
-                                        <strong>    
-                                            <p class="is-size-10" x-text="product.category"></p>
-                                        </strong>
-                                    </td>
-                                    <td class="viewButton"><button class="button is-rounded is-black">View</button></td>
-                                </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <template x-if="meta">
-                        <div>
-                            <template x-for="link in meta.links">
-                                <a :class="{'button':true, 'is-active':link.active}" :href="link.url" @click.prevent="Pagenation(link.url)" x-html="link.label"></a>
-                            </template>
+                            <div class="km-product-view">                   
+                                <button class="button is-rounded is-dark">View</button>
+                            </div>
                         </div>
+                    </div>
                     </template>
                 </div>
+                
+                <template x-if="meta">
+                    <div>
+                        <template x-for="link in meta.links">
+                            <a :class="{'button':true, 'is-active':link.active}" :href="link.url" @click.prevent="Pagenation(link.url)" x-html="link.label"></a>
+                        </template>
+                    </div>
+                </template>
+            </div>
         </div>
 
 
