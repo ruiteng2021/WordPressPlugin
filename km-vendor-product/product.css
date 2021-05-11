@@ -13,23 +13,6 @@
     border-left: 3px solid rgb(80, 78, 78);
 }
 
-/* .table, td, th {
-    border: 0;
-}
-
-.km-products th {
-    border: 0;
-}
-
-.km-products td {
-    vertical-align: middle !important;
-    border: 0;
-} 
-
-.viewButton {
-    vertical-align: middle !important;
-} */
-
 .vendorlogo {
     margin-bottom: 20px !important;
 }
@@ -91,11 +74,6 @@
     display: flex;
     align-items: center;
 }
-
-/* #cat {
-    height: 35px;
-    padding: 0;
-} */
 
 .km-filters{
     font-weight: 500;
@@ -211,15 +189,11 @@
     background-color:aliceblue;
 }
 
-/* .km-table .columns:nth-of-type(even) div {
-background: #FFFFFF;
-} */
-
 .km-table{
     margin-bottom: 40px;
 }
 
-.km-product-pic .image, .km-product-price{
+/* .km-product-pic .image, .km-product-price{
     transition: transform 1s;
 
 }
@@ -231,7 +205,7 @@ background: #FFFFFF;
 .km-product-price:hover{
     transform: scale(1.1) translateX(40%);
     background-color: aliceblue;
-}
+} */
 
 @media only screen and (min-width: 690px)
 {
