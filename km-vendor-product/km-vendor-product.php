@@ -16,6 +16,7 @@ function vendor_products()
     ob_start();
 
     ?>
+        <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAEc6aw19DrUE7sN0CoE-VhM20ighnm7Y&callback=LocationMap"type="text/javascript"></script> -->
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A&callback=LocationMap"type="text/javascript"></script>
         <script>          
             function kmData() {
@@ -25,10 +26,19 @@ function vendor_products()
                     products: [],
                     data: false,
                     categories: [],
-                    selectedPrice: 'enter price in gram',
+                    // filter parmeters begin//
+                    // selectedPrice: 'enter price in gram',
+                    selectedWeight: '1g',
+                    selectedPrice: 'All',
                     selectedTHC: 'All', 
                     selectedCBD: 'All', 
                     selectedCat: 'All',
+                    oneGram:    ["0-5","5-10","10-15","15-20"],
+                    oneEighth:  ["15-20", "20-25", "25-30", "30-45", "45-50"],
+                    oneQuarter: ["20-30", "30-40", "50-60", "60-70", "70-80"],
+                    oneHalf:    ["40-60", "60-80", "80-100", "100-120", "120-150"],
+                    oneOz:      ["60-100", "100-140", "140-180", "180-220", "220-260"],
+                    // filter parameters end //
                     pageSize: '5',
                     meta: false,
                     menuTab: 'product',
@@ -47,11 +57,11 @@ function vendor_products()
                                     self.categories[i] =  self.products[i].category;
                                 }
                                 self.categories = [...new Set(self.categories)];
-                                console.log(self.categories.toString());
+                                // console.log(self.categories.toString());
 
                                 urlPage = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";
-                                console.log("XXXX" + urlPage + "XXXX");   
-                                console.log(urlPage);                                  
+                                // console.log("XXXX" + urlPage + "XXXX");   
+                                // console.log(urlPage);                                  
                                 // urlPage = "https://api.kushmapper.com/v1/vendors/1/products?page_size=5&page=1";
                                 axios.get(urlPage)
                                     .then(function(response) {                         
@@ -70,9 +80,37 @@ function vendor_products()
                         // debugger;
                         urlSearch = url.replace("?include=", "/");
                         // urlSearch = "https://api.kushmapper.com/v1/vendors/1/products";
+                        // http://api.kushmapper.com/v1/vendors/1/products       
+
+                        weightFilterMax = "";
+                        weightFilterMin = "";
+                        if ( self.selectedWeight == "1g"){
+                            weightFilterMax = "filter[maximum_price_gram]";
+                            weightFilterMin = "filter[minimum_price_gram]";
+                        }
+
+                        if ( self.selectedWeight == "1/8oz"){
+                            weightFilterMax = "filter[maximum_price_oz_eighth]";
+                            weightFilterMin = "filter[minimum_price_oz_eighth]";
+                        }
+
+                        if ( self.selectedWeight == "1/4oz"){
+                            weightFilterMax = "filter[maximum_price_oz_fourth]";
+                            weightFilterMin = "filter[minimum_price_oz_fourth]";
+                        }
+
+                        if ( self.selectedWeight == "1/2oz"){
+                            weightFilterMax = "filter[maximum_price_oz_half]";
+                            weightFilterMin = "filter[minimum_price_oz_half]";
+                        }
+
+                        if ( self.selectedWeight == "1oz"){
+                            weightFilterMax = "filter[maximum_price_oz]";
+                            weightFilterMin = "filter[minimum_price_oz]";
+                        }
 
                         // 0 0 0 0
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat == "All") )                   
@@ -81,7 +119,7 @@ function vendor_products()
                         }
 
                         // 0 0 0 1
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat != "All") )                   
@@ -92,172 +130,196 @@ function vendor_products()
                         }
 
                         // 0 0 1 0
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat == "All") )                   
                         {
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_cbd]=" + self.selectedCBD + 
+                                "?filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&page_size=" + self.pageSize;;
                         }
 
                         // 0 0 1 1
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat != "All") )                   
                         {
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_cbd]=" + self.selectedCBD + 
+                                "?filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&filter[category]=" + self.selectedCat + 
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 0 0
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat == "All") )                   
                         {
+                            thc = self.selectedTHC.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_thc]=" + self.selectedTHC +
+                                "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 0 1
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat != "All") )                   
                         {
+                            thc = self.selectedTHC.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_thc]=" + self.selectedTHC + 
+                                "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[category]=" + self.selectedCat +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 1 0
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat == "All") )                   
                         {
+                            thc = self.selectedTHC.split("-");
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_thc]=" + self.selectedTHC + 
-                                "&filter[maximum_cbd]=" + self.selectedCBD +
+                                "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
+                                "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 1 1
-                        if( (self.selectedPrice == "enter price in gram") &&
+                        if( (self.selectedPrice == "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat != "All") )                   
                         {
+                            thc = self.selectedTHC.split("-");
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_thc]=" + self.selectedTHC + 
-                                "&filter[maximum_cbd]=" + self.selectedCBD + 
+                                "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
+                                "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&filter[category]=" + self.selectedCat +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 0 0
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat == "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 0 1
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat != "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
                                 "&filter[category]=" + self.selectedCat + 
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 1 0
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat == "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
-                                "&filter[maximum_cbd]=" + self.selectedCBD + 
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
+                                "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 1 1
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC == "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat != "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
-                                "&filter[maximum_cbd]=" + self.selectedCBD +
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
+                                "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&filter[category]=" + self.selectedCat +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 0 0
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat == "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
+                            thc = self.selectedTHC.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
-                                "&filter[maximum_thc]=" + self.selectedTHC +
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
+                                "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 0 1
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD == "All") &&
                             (self.selectedCat != "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
+                            thc = self.selectedTHC.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
-                                "&filter[maximum_thc]=" + self.selectedTHC +
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
+                                "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[category]=" + self.selectedCat +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 1 0
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat == "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
+                            thc = self.selectedTHC.split("-");
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
-                                "&filter[maximum_thc]=" + self.selectedTHC +
-                                "&filter[maximum_cbd]=" + self.selectedCBD +
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
+                                "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
+                                "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 1 1
-                        if( (self.selectedPrice != "enter price in gram") &&
+                        if( (self.selectedPrice != "All") &&
                             (self.selectedTHC != "All") &&
                             (self.selectedCBD != "All") &&
                             (self.selectedCat != "All") )                   
                         {
+                            price = self.selectedPrice.split("-");
+                            thc = self.selectedTHC.split("-");
+                            cbd = self.selectedCBD.split("-");
                             urlSearch = urlSearch + 
-                                "?filter[maximum_price_gram]=" + self.selectedPrice +
-                                "&filter[maximum_thc]=" + self.selectedTHC +
-                                "&filter[maximum_cbd]=" + self.selectedCBD +
+                                "?" + weightFilterMin + "=" + price[0] + "&" + weightFilterMax + "=" + price[1] +
+                                "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
+                                "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&filter[category]=" + self.selectedCat +
                                 "&page_size=" + self.pageSize;
                         }
@@ -268,7 +330,7 @@ function vendor_products()
                             .then(function(response) {      
                                 self.products = response.data.data;  
                                 self.meta = response.data.meta;
-                                console.log("XXXX Search Meta XXXX"); 
+                                console.log("XXXXXXXXX Search Meta New Filter XXXXXXXXX"); 
                                 console.log(self.meta); 
                             })
                             .catch(function(error) {
@@ -276,10 +338,88 @@ function vendor_products()
                             })         
                     },
 
+                    async SearchFilterLocal(url = this.startUrl)
+                    {
+                        var self = this;
+                        console.log("XXXXXXXXXXXXX");
+                        console.log(self.selectedWeight);
+                        console.log(self.selectedPrice);
+                        console.log(self.selectedCBD);
+                        console.log(self.selectedTHC);
+                        console.log(self.selectedCat);
+                        console.log("XXXXXXXXXXXXX");
+                        // debugger;
+
+                        urlPage = url.replace("?include=", "/")
+                        console.log(urlPage);
+                        await axios.get(urlPage)
+                            .then(function(response) {      
+                                self.products = response.data.data;  
+                                self.meta = response.data.meta;
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            })              
+
+                        priceFilter = self.products;
+                        if (self.selectedPrice != "All" && self.selectedWeight != "All"){
+                            console.log(self.selectedWeight);
+                            console.log(self.selectedPrice);
+                            priceRange = self.selectedPrice.split("-");
+                            if (self.selectedWeight == '1g')
+                            {                               
+                                priceFilter = priceFilter.filter(priceFilter => parseFloat(priceFilter.price_gram) >= parseFloat(priceRange[0]) && parseFloat(priceFilter.price_gram) <= parseFloat(priceRange[1]));
+                                console.log(priceFilter);
+                            }
+                            if (self.selectedWeight == '1/8oz')
+                            {
+                                priceFilter = priceFilter.filter(priceFilter => parseFloat(priceFilter.price_oz_eighth) >= parseFloat(priceRange[0]) && parseFloat(priceFilter.price_oz_eighth) <= parseFloat(priceRange[1]));
+                                console.log(priceFilter);
+                            }
+                            if (self.selectedWeight == '1/4oz')
+                            {
+                                priceFilter = priceFilter.filter(priceFilter => parseFloat(priceFilter.price_oz_fourth) >= parseFloat(priceRange[0]) && parseFloat(priceFilter.price_oz_fourth) <= parseFloat(priceRange[1]));
+                                console.log(priceFilter);
+                            }
+                            if (self.selectedWeight == '1/2oz')
+                            {
+                                priceFilter = priceFilter.filter(priceFilter => parseFloat(priceFilter.price_oz_half) >= parseFloat(priceRange[0]) && parseFloat(priceFilter.price_oz_half) <= parseFloat(priceRange[1]));
+                                console.log(priceFilter);
+                            }
+                            if (self.selectedWeight == '1oz')
+                            {
+                                priceFilter = priceFilter.filter(priceFilter => parseFloat(priceFilter.price_oz) >= parseFloat(priceRange[0]) && parseFloat(priceFilter.price_oz) <= parseFloat(priceRange[1]));
+                                console.log(priceFilter);
+                            }
+                        }
+
+                        thcFilter = priceFilter;
+                        thcRange = self.selectedTHC.split("-");
+                        if(self.selectedTHC != "All"){
+                            thcFilter = thcFilter.filter(thcFilter => parseFloat(thcFilter.thc) >= parseFloat(thcRange[0]) && parseFloat(thcFilter.thc) <= parseFloat(thcRange[1]));
+                            console.log(thcFilter);
+                        }
+
+                        cbdFilter = thcFilter;
+                        cbdRange = self.selectedCBD.split("-");
+                        if(self.selectedCBD != "All"){
+                            cbdFilter = cbdFilter.filter(cbdFilter => parseFloat(cbdFilter.cbd) >= parseFloat(cbdRange[0]) && parseFloat(cbdFilter.cbd) <= parseFloat(cbdRange[1]));
+                            console.log(cbdFilter);
+                        }
+
+                        categoryFilter = cbdFilter;
+                        if(self.selectedCat != "All"){
+                            categoryFilter = categoryFilter.filter(categoryFilter => categoryFilter.category == self.selectedCat);
+                            console.log(categoryFilter);
+                        }
+
+                        self.products = categoryFilter;
+                    },
+
                     async UpdatePages(url = this.startUrl)
                     {  
                         var self = this;
-                        debugger;
+                        // debugger;
                         urlEntries = url.replace("?include=", "/");
                         // urlEntries = "https://api.kushmapper.com/v1/vendors/1/products";
                         urlEntries = urlEntries + "?page_size=" + self.pageSize;
@@ -317,8 +457,63 @@ function vendor_products()
                         })
                     },        
                     
+                    UpdatePriceRange()
+                    {
+                        var self = this;
+                        let range = document.getElementById("km-price-range");
+                        range.innerHTML = "";
+                        let html  = '';
+                        html = html + "<option value='All' >All</option>";
+                        // debugger;
+                        if (self.selectedWeight == "1g")
+                        {
+                            for ( let price of self.oneGram) 
+                            {
+                                html += '<option value="' + price + '">' + price + '$</option>';
+                            }
+                        }
+                        if (self.selectedWeight == "1/8oz")
+                        {
+                            for ( let price of self.oneEighth) 
+                            {
+                                html += '<option value="' + price + '">' + price + '$</option>';
+                            }
+                        }
+                        if (self.selectedWeight == "1/4oz")
+                        {
+                            for ( let price of self.oneQuarter) 
+                            {
+                                html += '<option value="' + price + '">' + price + '$</option>';
+                            }
+                        }
+                        if (self.selectedWeight == "1/2oz")
+                        {
+                            for ( let price of self.oneHalf) 
+                            {
+                                html += '<option value="' + price + '">' + price + '$</option>';
+                            }
+                        }
+                        if (self.selectedWeight == "1oz")
+                        {
+                            for ( let price of self.oneOz) 
+                            {
+                                html += '<option value="' + price + '">' + price + '$</option>';
+                            }
+                        }
+                        range.innerHTML = html;                       
+                    },
+
                     InitMarkers()
                     {
+                        var mapOptions = {
+                            center: new google.maps.LatLng(42.976348, -81.2514795),
+                            zoom: 10,
+                            mapTypeId: google.maps.MapTypeId.HYBRID
+                        }
+                        var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
+                        var mapReadyEvent = new CustomEvent('map-ready');
+                        window.dispatchEvent(mapReadyEvent);
+
                         console.log("AAAAA in map initMarkers AAAAA");
                         // if(google != undefined)
                         // {
@@ -334,18 +529,16 @@ function vendor_products()
 
             function LocationMap()
             {
-                // console.log("AAAAA X=" + x + "in map AAAAA");
-                // console.log("AAAAA Y=" + y + "in map AAAAA");
-                console.log("AAAAAAAAAAAAAA");
+                // console.log("AAAAAAAAAAAAAA");
                 // debugger;
-                var mapOptions = {
-                    center: new google.maps.LatLng(42.976348, -81.2514795),
-                    zoom: 10,
-                    mapTypeId: google.maps.MapTypeId.HYBRID
-                }
-                var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
-                var mapReadyEvent = new CustomEvent('map-ready');
-                window.dispatchEvent(mapReadyEvent);
+                // var mapOptions = {
+                //     center: new google.maps.LatLng(42.976348, -81.2514795),
+                //     zoom: 10,
+                //     mapTypeId: google.maps.MapTypeId.HYBRID
+                // }
+                // var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
+                // var mapReadyEvent = new CustomEvent('map-ready');
+                // window.dispatchEvent(mapReadyEvent);
             }
         </script>
 
@@ -404,44 +597,61 @@ function vendor_products()
 
                 <div id="km-product-menu" x-show="menuTab === 'product'">
                     <!-- Filter dropsown lists -->
-                    <div class="columns is-multiline is-mobile is-fullwidth is-vcentered km-filters">
-                                            
-                        <div class="column km-filters-column"> 
-                            <label class="km-filters-label km-filters-label-price" for="price"> Price/g </label>  
-                            <input class="km-filters-price input is-link is-normal is-half" 
-                                    type="number" min="0"
-                                    placeholder="enter price in gram"
-                                    x-model="selectedPrice"
-                            />
+                    <div class="km-filters">                                            
+                        <div class="km-filters-column km-filters-price"> 
+                            <label class="km-filters-label" for="price"> Weight/Price </label>  
+                            <div class="select entrySelect">                        
+                                <select id="km-price-weight" x-model="selectedWeight" x-on:change="UpdatePriceRange()">
+                                    <option value="1g">1g</option>     
+                                    <option value="1/8oz">1/8oz</option>  
+                                    <option value="1/4oz">1/4oz</option>   
+                                    <option value="1/2oz">1/2oz</option>              
+                                    <option value="1oz">1oz</option>                                   
+                                </select>
+                            </div>
+                            <div class="select entrySelect">                        
+                                <select id="km-price-range" x-model="selectedPrice">
+                                    <option value="All" name="all">All</option>
+                                    <option value="15-20">15-20$</option>     
+                                    <option value="10-15">10-15$</option>    
+                                    <option value="5-10">5-10$</option>  
+                                    <option value="0-5">0-5$</option>                   
+                                </select>
+                            </div>                            
                         </div>
             
-                        <div class="column km-filters-column">  
+                        <div class="km-filters-column">  
                             <label class="km-filters-label km-filters-label-thc"  for="thc"> THC </label>
                             <div class="select entrySelect">                        
                                 <select id="thc" x-model="selectedTHC">
                                     <option value="All" name="all">All</option>
-                                    <option value="20" name="20"><= 20%</option>     
-                                    <option value="15" name="15"><= 15%</option>  
-                                    <option value="10" name="10"><= 10%</option>   
-                                    <option value="5" name="5"><= 5%</option>                                      
+                                    <option value="10-14" name="20">10-14%</option>     
+                                    <option value="14-18" name="15">14-18%</option>  
+                                    <option value="18-22" name="10">18-22%</option>   
+                                    <option value="22-26" name="5">22-26%</option>    
+                                    <option value="26-30" name="5">26-30%</option>   
+                                    <option value="30-34" name="5">30-34%</option>  
+                                    <option value="34-38" name="5">34-38%</option>                                      
                                 </select>
                             </div>
                         </div>
             
-                        <div class="column km-filters-column">  
+                        <div class="km-filters-column">  
                             <label class="km-filters-label km-filters-label-cdb" for="cbd"> CBD </label>
                             <div class="select entrySelect">                        
                                 <select id="cbd" x-model="selectedCBD">
                                     <option value="All" name="all">All</option>
-                                    <option value="20" name="20"><= 20%</option>  
-                                    <option value="15" name="15"><= 15%</option>   
-                                    <option value="10" name="10"><= 10%</option>   
-                                    <option value="5" name="5"><= 5%</option>                                            
+                                    <option value="0-4" name="20">0-4%</option>  
+                                    <option value="4-8" name="15">4-8%</option>   
+                                    <option value="8-12" name="10">8-12%</option>   
+                                    <option value="12-16" name="5">12-16%</option>      
+                                    <option value="16-20" name="5">16-20%</option>   
+                                    <option value="20-24" name="5">20-24%</option>                                        
                                 </select>
                             </div>                          
                         </div>
             
-                        <div class="column km-filters-column km-filters-column-category">  
+                        <div class="km-filters-column">  
                             <label class="km-filters-label" for="cat"> Category </label>
                             <div class="select entrySelect">                      
                                 <select name="Category" id= "cat" x-model="selectedCat">
@@ -456,8 +666,8 @@ function vendor_products()
                     </div>  
     
                     <!-- Search button and entyry dropdown list -->
-                    <div class="columns is-mobile is-multiline is-fullwidth km-search">
-                        <label class="column is-mobile is-half km-centerLabel"> Show 
+                    <div class="km-search">
+                        <label class="km-centerLabel"> Show 
                             <div class="select entrySelect">
                                 <select name="Entries" id= "entries" x-model="pageSize" x-on:change="UpdatePages()">
                                     <option value="5" name="5">5</option>     
@@ -469,8 +679,9 @@ function vendor_products()
                             </div>
                             entries
                         </label>
-                        <label class="column km-centerLabel">
-                            <button class="button is-black" x-on:click="SearchFilter()">Search ...</button>
+                        <label class="km-centerLabel">
+                            <button class="button is-black km-search-button" x-on:click="SearchFilter()">Search ...</button>
+                            <!-- <button class="button is-black" x-on:click="SearchFilterLocal()">Search ...</button> -->
                         </label>
                     </div>
     
@@ -479,14 +690,14 @@ function vendor_products()
                         <div class="column is-two-thirds">
                             <div class="km-product-pic-title">     
                             </div>
-                            <div class="km-product-price-title">   
+                            <div class="km-product-price-title is-size-4">   
                                 <strong>Product</strong>
                             </div>
                             <div class="km-product-concentrate-title"> 
                             </div>
                         </div>
                         <div class="column is-one-thirds">
-                            <div class="km-product-category-title">                  
+                            <div class="km-product-category-title is-size-4">                  
                                 <strong>Category</strong>
                             </div>
                             <div class="km-product-view-title">                   
@@ -499,18 +710,18 @@ function vendor_products()
                         <div class="columns km-products-info">
                             <div class="column is-two-thirds">
                                 <div class="km-product-pic">                  
-                                    <figure class="image is-128x128">
+                                    <figure class="image">
                                         <img :src="product.image_url" alt="product img" />
                                     </figure>        
                                 </div>
                                 <div class="km-product-price">                
                                     <strong>
-                                        <a :href="product.url"><p class="is-size-5" x-text="product.name" ></p></a>
-                                        <p x-show="product.price_gram != null"><span x-text="product.price_gram"></span> per 1 g</p>
-                                        <p x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> per 1/8 oz</p>
-                                        <p x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span> per 1/4 oz</p>
-                                        <p x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span> per 1/2 oz</p>
-                                        <p x-show="product.price_oz != null"><span x-text="product.price_oz"></span> per 1 oz</p>
+                                        <a :href="product.url"><p class="is-size-4" x-text="product.name" ></p></a>
+                                        <p style="text-decoration: underline;" x-show="product.price_gram != null"><span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
+                                        <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
+                                        <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
+                                        <p style="text-decoration: underline;" x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span><span class="km-small-text">&nbsp;per 1/2 oz</span></p>
+                                        <p style="text-decoration: underline;" x-show="product.price_oz != null"><span x-text="product.price_oz"></span><span class="km-small-text">&nbsp;per 1 oz</span></p>
                                         <p class="km-no-dispaly">THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
                                         <p class="km-no-dispaly">CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
                                     </strong>
@@ -537,7 +748,7 @@ function vendor_products()
                     </div>
                     
                     <template x-if="meta">
-                        <div>
+                        <div style="float: left">
                             <template x-for="link in meta.links">
                                 <a :class="{'button':true, 'is-active':link.active}" :href="link.url" @click.prevent="Pagenation(link.url)" x-html="link.label"></a>
                             </template>
@@ -545,8 +756,7 @@ function vendor_products()
                     </template>
                 </div>
                 <div id="km-location" x-show="menuTab === 'map'" >
-                    <strong><p> Still under construction! </p> </strong>
-                    <div id="km-map" style="width:400px;height:400px;background:grey"> </div>
+                    <div id="km-map" style="width:400px;height:400px;"> </div>
                 </div>
                 <div id="km-photos" x-show="menuTab === 'photos'">
                     <strong><p> this is photos </p> </strong>

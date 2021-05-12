@@ -1,6 +1,6 @@
 
 .km-logo{
-    margin-right: 50px;
+    margin-right: 20px !important;
     min-height: 800px;
 }
 
@@ -11,6 +11,7 @@
 
 .km-products{
     border-left: 3px solid rgb(80, 78, 78);
+    padding-left: 40px;
 }
 
 .vendorlogo {
@@ -73,23 +74,34 @@
 .km-centerLabel {
     display: flex;
     align-items: center;
+    float: left;
+    width: 50%;
 }
 
 .km-filters{
+    width: 100%;
+    float: left;
     font-weight: 500;
 }
 
 .km-search{
     font-weight: 500;
-    padding-bottom: 30px;
+    /* padding-bottom: 30px; */
     border-bottom: 2px solid #eee;
+    width: 100%;
+    float: left;
+    padding: 20px;
+    padding-left: 0px;
+    padding-top: 30px;
 }
 
 .km-filters-column {
     display: flex; 
     align-items: center; 
     flex-wrap: wrap;
-    min-width: 250px;
+    min-width: 200px;
+    height: 60px;
+    float: left;
 }
 
 
@@ -101,27 +113,19 @@
     padding-right:10px;
 }
 
-.km-filters-label-price{
-    margin-top: 5px;
-}
-
 .km-filters-price{
-    font-weight: initial;
-    width:150px; 
-    height: 40px; 
-    margin-top: 5px;
-    font-size: smaller;
+    min-width: 350px;
 }
 
 /* table to column settings */
 .km-product-pic, 
 .km-product-pic-title {
-    width: 20%;
+    width: 30%;
 }
 
 .km-product-price, 
 .km-product-price-title {
-    width: 50%;
+    width: 45%;
 }
 
 .km-product-price strong,
@@ -140,7 +144,7 @@
 
 .km-product-concentrate, 
 .km-product-concentrate-title {
-    width: 30%;
+    width: 25%;
 }
 
 .km-product-category, 
@@ -176,6 +180,16 @@
     margin-top: 20px;
 }
 
+.km-product-pic .image{
+    width: 170px;
+}
+
+.km-small-text{
+    font-size: small;
+    font-weight: 400;
+    /* text-decoration: underline; */
+}
+
 .km-products-info .column{
     padding-top: 0;
     padding-bottom: 0;
@@ -207,16 +221,16 @@
     background-color: aliceblue;
 } */
 
-@media only screen and (min-width: 690px)
+/* @media only screen and (min-width: 690px)
 {
     .km-filters-label-thc{
         margin-left: 40px;
-    }
+    } 
 
     .km-filters-label-cdb{
         margin-left: 20px;
-    }
-}
+    } 
+} */
 
 
 @media only screen and (max-width: 800px)
@@ -283,7 +297,10 @@
         display: block;
     }
 
-    .km-product-price:hover{
-        transform: scale(1.1) translateX(-20%);
+    .km-search-button {
+        margin: 0 auto;
     }
+    /* .km-product-price:hover{
+        transform: scale(1.1) translateX(-20%);
+    } */
 }
