@@ -17,13 +17,15 @@ function vendor_products()
 
     ?>
         <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAEc6aw19DrUE7sN0CoE-VhM20ighnm7Y&callback=LocationMap"type="text/javascript"></script> -->
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A&callback=LocationMap"type="text/javascript"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A"type="text/javascript"></script>
         <script>          
             function kmData() {
                 return {
                     startUrl: '<?php echo $startUrl; ?>',
                     name: false,
+                    stores: false,
                     products: [],
+                    serviceArea: false,
                     data: false,
                     categories: [],
                     // filter parmeters begin//
@@ -39,6 +41,7 @@ function vendor_products()
                     oneHalf:    ["40-60", "60-80", "80-100", "100-120", "120-150"],
                     oneOz:      ["60-100", "100-140", "140-180", "180-220", "220-260"],
                     // filter parameters end //
+                    selectedThcWeight: '1/4oz',
                     pageSize: '5',
                     meta: false,
                     menuTab: 'product',
@@ -51,6 +54,8 @@ function vendor_products()
                                 // console.log(response);
                                 self.data = response.data.data;
                                 self.name = response.data.data["name"];
+                                self.stores = response.data.data["stores"];
+                                self.serviceArea = response.data.data["service_areas"];      
                                 self.products = response.data.data["products"];                                
                                 // remove duplicate categories
                                 for ( let i in self.products) {
@@ -64,10 +69,11 @@ function vendor_products()
                                 // console.log(urlPage);                                  
                                 // urlPage = "https://api.kushmapper.com/v1/vendors/1/products?page_size=5&page=1";
                                 axios.get(urlPage)
-                                    .then(function(response) {                         
+                                    .then(function(response) {      
                                         self.products = response.data.data;
-                                        self.meta = response.data.meta;                                        
+                                        self.meta = response.data.meta;                                      
                                     })
+                                
                             })
                             .catch(function(error) {
                                 console.log(error);
@@ -503,16 +509,21 @@ function vendor_products()
                         range.innerHTML = html;                       
                     },
 
+                    UpdateThcPriceRange()
+                    {
+
+                    },
+
                     InitMarkers()
                     {
                         var mapOptions = {
                             center: new google.maps.LatLng(42.976348, -81.2514795),
                             zoom: 10,
-                            mapTypeId: google.maps.MapTypeId.HYBRID
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
                         }
                         var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
-                        var mapReadyEvent = new CustomEvent('map-ready');
-                        window.dispatchEvent(mapReadyEvent);
+                        // var mapReadyEvent = new CustomEvent('map-ready');
+                        // window.dispatchEvent(mapReadyEvent);
 
                         console.log("AAAAA in map initMarkers AAAAA");
                         // if(google != undefined)
@@ -556,7 +567,7 @@ function vendor_products()
             </div>
         </template>
             <!-- Right column for product -->
-            <div class="column km-products">
+            <div class="column km-all-products">
                 <!-- Menu tabs -->
                 <div class="tabs is-toggle is-fullwidth is-medium">
                     <ul class="menu">
@@ -594,7 +605,7 @@ function vendor_products()
                         </li>
                     </ul>
                 </div>
-
+                <!-- Product infomation  -->
                 <div id="km-product-menu" x-show="menuTab === 'product'">
                     <!-- Filter dropsown lists -->
                     <div class="km-filters">                                            
@@ -665,9 +676,9 @@ function vendor_products()
                         </div>                      
                     </div>  
     
-                    <!-- Search button and entyry dropdown list -->
+                    <!-- Search button, entyry dropdown list and thc max search -->
                     <div class="km-search">
-                        <label class="km-centerLabel"> Show 
+                        <label style="min-width: 200px" class="km-search-items"> Show 
                             <div class="select entrySelect">
                                 <select name="Entries" id= "entries" x-model="pageSize" x-on:change="UpdatePages()">
                                     <option value="5" name="5">5</option>     
@@ -679,10 +690,26 @@ function vendor_products()
                             </div>
                             entries
                         </label>
-                        <label class="km-centerLabel">
+                        <label class="km-search-items km-search-button-label">
                             <button class="button is-black km-search-button" x-on:click="SearchFilter()">Search ...</button>
                             <!-- <button class="button is-black" x-on:click="SearchFilterLocal()">Search ...</button> -->
                         </label>
+                        <fieldset class="km-search-items-thc km-max-thc">
+                            <legend>Max price to pay for THC?</legend>
+                            <div style="margin: 0 auto; min-width: 220px">
+                                <div class="select entrySelect ">
+                                    <select style="height: 37px; min-width: 93px;" x-model="selectedThcWeight" x-on:change="UpdateThcPriceRange()">
+                                        <option value="All">All</option>        
+                                        <option value="1g">1g</option>     
+                                        <option value="1/8oz">1/8oz</option>  
+                                        <option value="1/4oz">1/4oz</option>   
+                                        <option value="1/2oz">1/2oz</option>              
+                                        <option value="1oz">1oz</option>                                   
+                                    </select>
+                                </div>
+                                <input class="entrySelect km-max-thc-input" type="number" id="thcMax" name="thc max"/>
+                            </div>
+                        </fieldset>
                     </div>
     
                     <!-- Table colums -->
@@ -690,14 +717,14 @@ function vendor_products()
                         <div class="column is-two-thirds">
                             <div class="km-product-pic-title">     
                             </div>
-                            <div class="km-product-price-title is-size-4">   
+                            <div class="km-product-price-title is-size-5">   
                                 <strong>Product</strong>
                             </div>
                             <div class="km-product-concentrate-title"> 
                             </div>
                         </div>
                         <div class="column is-one-thirds">
-                            <div class="km-product-category-title is-size-4">                  
+                            <div class="km-product-category-title is-size-5">                  
                                 <strong>Category</strong>
                             </div>
                             <div class="km-product-view-title">                   
@@ -756,7 +783,29 @@ function vendor_products()
                     </template>
                 </div>
                 <div id="km-location" x-show="menuTab === 'map'" >
-                    <div id="km-map" style="width:400px;height:400px;"> </div>
+                    <!-- <div class="columns">  -->
+                        <div id="km-address"> 
+                        <template x-if="stores">
+                            <div class="km-location-store">    
+                                <strong><p class="is-size-6"> Store:</p> </strong>
+                                <p x-text="stores[0].address1"> </p>
+                                <p x-text="stores[0].address2"> </p>
+                                <p><span x-text="stores[0].city"></span>&nbsp;<span x-text="stores[0].state"></span> </p>
+                                <p x-text="stores[0].country"> </p>
+                                <p x-text="stores[0].postal_code"> </p>
+                            </div>
+                        </template>
+                        <template x-if="serviceArea">
+                            <div class="km-location-service">  
+                                <strong><p class="is-size-6"> Service Area:</p> </strong>   
+                                <p> <span x-text="serviceArea[0].city"></span>&nbsp;<span x-text="serviceArea[0].state"> </span></p>
+                                <p x-text="serviceArea[0].country"> </p>
+                                <!-- <p x-text="serviceArea[0].details"> </p> -->
+                            </div>
+                        </template>
+                        </div>
+                        <div id="km-map"> </div>
+                    <!-- </div> -->
                 </div>
                 <div id="km-photos" x-show="menuTab === 'photos'">
                     <strong><p> this is photos </p> </strong>

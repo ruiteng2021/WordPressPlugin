@@ -9,7 +9,7 @@
     float: right;
 }
 
-.km-products{
+.km-all-products{
     border-left: 3px solid rgb(80, 78, 78);
     padding-left: 40px;
 }
@@ -71,11 +71,33 @@
     margin-left: 5px;
 }
 
-.km-centerLabel {
+.km-search-items, .km-search-items-thc{
     display: flex;
     align-items: center;
     float: left;
-    width: 50%;
+    width: 33%;
+}
+
+.km-max-thc{
+    border: 1px solid rgb(219, 219, 219);
+    border-radius: 5px;
+    min-width: 220px;
+    margin-left: 10px;
+}
+
+.km-max-thc legend {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.km-max-thc-input {
+    height: 37px !important;
+    width: 100px;
+    margin-bottom: 5px;
+}
+
+.km-search-button-label{
+    padding-left: 30px;
 }
 
 .km-filters{
@@ -86,13 +108,13 @@
 
 .km-search{
     font-weight: 500;
-    /* padding-bottom: 30px; */
     border-bottom: 2px solid #eee;
     width: 100%;
     float: left;
     padding: 20px;
     padding-left: 0px;
-    padding-top: 30px;
+    display: flex;
+    align-items: center;
 }
 
 .km-filters-column {
@@ -149,12 +171,12 @@
 
 .km-product-category, 
 .km-product-category-title {
-    width: 50%;
+    width: 60%;
 }
 
 .km-product-view, 
 .km-product-view-title {
-    width: 50%;
+    width: 40%;
 }
 
 .km-product-pic, 
@@ -207,37 +229,41 @@
     margin-bottom: 40px;
 }
 
-/* .km-product-pic .image, .km-product-price{
-    transition: transform 1s;
-
+/* location Tab */
+#km-address{
+    min-width: 150px;
+    float:left;
 }
 
-.km-product-pic .image:hover{
-    transform: scale(1.5) translateX(20%);
+.km-location-store, .km-location-service {
+    width: 100%;
 }
 
-.km-product-price:hover{
-    transform: scale(1.1) translateX(40%);
-    background-color: aliceblue;
-} */
+.km-location-service{
+    margin-top: 20px;
+}
 
-/* @media only screen and (min-width: 690px)
-{
-    .km-filters-label-thc{
-        margin-left: 40px;
-    } 
+#km-map {
+    float: left;
+    width: 500px;
+    height:500px;
+}
 
-    .km-filters-label-cdb{
-        margin-left: 20px;
-    } 
-} */
-
+/* force to show google map pegman */
+.gm-svpc div img {
+    position: relative !important;
+}
 
 @media only screen and (max-width: 800px)
 {
     .km-logo {
         min-height: auto;
         margin-bottom: 100px;
+    }
+
+    .km-all-products{
+        border: 0;
+        padding-left: 10px;
     }
 
     .km-product-price-title{
@@ -297,10 +323,41 @@
         display: block;
     }
 
-    .km-search-button {
-        margin: 0 auto;
+    .km-search {
+        display:block;
     }
-    /* .km-product-price:hover{
-        transform: scale(1.1) translateX(-20%);
-    } */
+    .km-search-button-label{
+        padding-left: 40px;
+    }
+  
+    .km-search-items-thc{
+        margin-left: 0;
+        margin-top: 20px;
+    }
+
+    .tabs {
+        margin-bottom: 0 !important;
+        padding-bottom: 0;
+    }
+
+    #km-map {
+        width: 100%;
+        height:300px;
+    }
+
+    #km-address{
+        min-width: 300px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .km-location-store, .km-location-service {
+        width: 50%;
+        float: left;
+    }
+
+    .km-location-service {
+        margin-top: 0;
+    }
+
 }
