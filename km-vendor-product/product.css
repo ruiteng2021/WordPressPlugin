@@ -231,24 +231,55 @@
 
 /* location Tab */
 #km-address{
-    min-width: 150px;
     float:left;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .km-location-store, .km-location-service {
+    width: 50%;
+    float: left;
+}
+
+/* .km-location-service{
+    margin-top: 20px;
+} */
+#km-map-container, .km-map-direction, .km-map-driving{
+    float:left;
     width: 100%;
 }
 
-.km-location-service{
-    margin-top: 20px;
-}
-
 #km-map {
-    float: left;
-    width: 500px;
+    width: 100%;
     height:500px;
+    margin-bottom: 10px;;
 }
 
+.km-map-direction {
+    margin-bottom: 10px;
+}
+
+.km-map-direction .input {
+    width: calc(70% - 12px);
+    height: 40px;
+}
+
+.km-map-direction .is-primary {
+    width: 10%;
+}
+
+.km-map-direction .is-dark {
+    width: 20%;
+}
+
+.km-map-driving .select{
+    width: 50%;
+    float: left;
+}
+
+.km-map-driving .select select {
+    width: 100%;
+}
 /* force to show google map pegman */
 .gm-svpc div img {
     position: relative !important;
@@ -359,5 +390,19 @@
     .km-location-service {
         margin-top: 0;
     }
+
+    .km-map-direction .input {
+        width: calc(50% - 12px);
+        height: 40px;
+    }
+    
+    .km-map-direction .is-primary {
+        width: 15%;
+    }
+    
+    .km-map-direction .is-dark {
+        width: 35%;
+    }
+
 
 }

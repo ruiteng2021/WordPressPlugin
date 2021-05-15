@@ -16,7 +16,7 @@ function vendor_products()
     ob_start();
 
     ?>
-        <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAEc6aw19DrUE7sN0CoE-VhM20ighnm7Y&callback=LocationMap"type="text/javascript"></script> -->
+        <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAEc6aw19DrUE7sN0CoE-VhM20ighnm7Y"type="text/javascript"></script> -->
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A"type="text/javascript"></script>
         <script>          
             function kmData() {
@@ -29,7 +29,6 @@ function vendor_products()
                     data: false,
                     categories: [],
                     // filter parmeters begin//
-                    // selectedPrice: 'enter price in gram',
                     selectedWeight: '1g',
                     selectedPrice: 'All',
                     selectedTHC: 'All', 
@@ -46,6 +45,15 @@ function vendor_products()
                     meta: false,
                     menuTab: 'product',
                     urlSearchGlobal: false,
+                    // Google map //
+                    map: false,
+                    transport: "driving",
+                    transportUnit: "kilometers",
+                    directionsService: false,
+                    directionsRenderer: false,
+                    infoWindow: false,
+                    // Google map end //
+
                     async getData(url = this.startUrl) 
                     {
                         var self = this;
@@ -63,10 +71,7 @@ function vendor_products()
                                 }
                                 self.categories = [...new Set(self.categories)];
                                 // console.log(self.categories.toString());
-
-                                urlPage = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";
-                                // console.log("XXXX" + urlPage + "XXXX");   
-                                // console.log(urlPage);                                  
+                                urlPage = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";                                
                                 // urlPage = "https://api.kushmapper.com/v1/vendors/1/products?page_size=5&page=1";
                                 axios.get(urlPage)
                                     .then(function(response) {      
@@ -77,7 +82,18 @@ function vendor_products()
                             })
                             .catch(function(error) {
                                 console.log(error);
-                            })                            
+                            })  
+
+                        self.directionsService = new google.maps.DirectionsService();
+                        self.directionsRenderer = new google.maps.DirectionsRenderer();
+                        let mapOptions = {
+                            center: new google.maps.LatLng(42.976348, -81.2514795),
+                            zoom: 10,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        }
+                        self.map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
+                        self.directionsRenderer.setMap(self.map);     
+                        self.infoWindow = new google.maps.InfoWindow();                       
                     },
 
                     async SearchFilter(url = this.startUrl)
@@ -514,16 +530,92 @@ function vendor_products()
 
                     },
 
+                    GetCurrentCoordinate()
+                    {
+                        var self = this;
+                        console.log("XXXXX in map GetCurrentCoordinate XXXXX");
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (position) => {
+                                    const pos = {
+                                        lat: position.coords.latitude,
+                                        lng: position.coords.longitude,
+                                    };
+                                    self.infoWindow.setPosition(pos);
+                                    // self.infoWindow.setContent("Location found.");
+                                    // self.infoWindow.open(self.map);
+                                    console.log(pos);
+                                    console.log("AAAA" + pos.lat + "," + pos.lng + "AAAA");
+                                    // pos.lat = 43.00756;
+                                    // pos.lng = -81.21131;
+                                    coordinate = pos.lat + ", " + pos.lng;
+                                    document.getElementById("Coordinate").value = coordinate; 
+                                    self.map.setCenter(pos);
+
+                                    var marker = new google.maps.Marker({
+                                        position: pos,
+                                        // title:"Hello World!"
+                                    });
+
+                                    // To add the marker to the map, call setMap();
+                                    marker.setMap(self.map);
+                                },
+                                () => {
+                                    HandleLocationError(true, self.infoWindow, self.map.getCenter());
+                                }
+                            );
+                        } 
+                        else 
+                        {
+                            // Browser doesn't support Geolocation
+                            HandleLocationError(false, self.infoWindow, self.map.getCenter());
+                            console.log("XXXXX Error in GetVendorDirection XXXXX");
+                        }
+                    },
+
+                    HandleLocationError(browserHasGeolocation, infoWindow, pos) {
+                        var self = this;
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent(
+                            browserHasGeolocation
+                            ? "Error: The Geolocation service failed."
+                            : "Error: Your browser doesn't support geolocation."
+                        );
+                        infoWindow.open(self.map);
+                    },
+
+                    GetVendorDirection(){
+                        var self = this;
+                        console.log("XXXXX in map GetVendorDirection XXXXX");
+                        coord = document.getElementById('Coordinate').value;
+                        coord = coord.split(",");
+                        console.log("XXXX " + coord[0] + "," + coord[1] + " XXXX");
+                        start = new google.maps.LatLng(coord[0], coord[1]);
+                        console.log(start);
+                        var request = {
+                            origin: start,
+                            destination: "los angeles, ca",
+                            travelMode: 'DRIVING',
+                            unitSystem: google.maps.UnitSystem.METRIC,
+                            // unitSystem: google.maps.UnitSystem.IMPERIAL,
+                        };
+                        self.directionsService.route(request, function(result, status) {
+                            if (status == 'OK') {
+                            self.directionsRenderer.setDirections(result);
+                            }
+                        });
+                    },
+
                     InitMarkers()
                     {
-                        var mapOptions = {
-                            center: new google.maps.LatLng(42.976348, -81.2514795),
-                            zoom: 10,
-                            mapTypeId: google.maps.MapTypeId.ROADMAP
-                        }
-                        var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
-                        // var mapReadyEvent = new CustomEvent('map-ready');
-                        // window.dispatchEvent(mapReadyEvent);
+                        // var mapOptions = {
+                        //     center: new google.maps.LatLng(42.976348, -81.2514795),
+                        //     zoom: 10,
+                        //     mapTypeId: google.maps.MapTypeId.ROADMAP
+                        // }
+                        // var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
+                        // // var mapReadyEvent = new CustomEvent('map-ready');
+                        // // window.dispatchEvent(mapReadyEvent);
 
                         console.log("AAAAA in map initMarkers AAAAA");
                         // if(google != undefined)
@@ -785,26 +877,54 @@ function vendor_products()
                 <div id="km-location" x-show="menuTab === 'map'" >
                     <!-- <div class="columns">  -->
                         <div id="km-address"> 
-                        <template x-if="stores">
-                            <div class="km-location-store">    
-                                <strong><p class="is-size-6"> Store:</p> </strong>
-                                <p x-text="stores[0].address1"> </p>
-                                <p x-text="stores[0].address2"> </p>
-                                <p><span x-text="stores[0].city"></span>&nbsp;<span x-text="stores[0].state"></span> </p>
-                                <p x-text="stores[0].country"> </p>
-                                <p x-text="stores[0].postal_code"> </p>
-                            </div>
-                        </template>
-                        <template x-if="serviceArea">
-                            <div class="km-location-service">  
-                                <strong><p class="is-size-6"> Service Area:</p> </strong>   
-                                <p> <span x-text="serviceArea[0].city"></span>&nbsp;<span x-text="serviceArea[0].state"> </span></p>
-                                <p x-text="serviceArea[0].country"> </p>
-                                <!-- <p x-text="serviceArea[0].details"> </p> -->
-                            </div>
-                        </template>
+                            <template x-if="stores">
+                                <div class="km-location-store">    
+                                    <strong><p class="is-size-6"> Store:</p> </strong>
+                                    <p x-text="stores[0].address1"> </p>
+                                    <p x-text="stores[0].address2"> </p>
+                                    <p><span x-text="stores[0].city"></span>&nbsp;<span x-text="stores[0].state"></span> </p>
+                                    <p x-text="stores[0].country"> </p>
+                                    <p x-text="stores[0].postal_code"> </p>
+                                </div>
+                            </template>
+                            <template x-if="serviceArea">
+                                <div class="km-location-service">  
+                                    <strong><p class="is-size-6"> Service Area:</p> </strong>   
+                                    <p> <span x-text="serviceArea[0].city"></span>&nbsp;<span x-text="serviceArea[0].state"> </span></p>
+                                    <p x-text="serviceArea[0].country"> </p>
+                                    <!-- <p x-text="serviceArea[0].details"> </p> -->
+                                </div>
+                            </template>
                         </div>
-                        <div id="km-map"> </div>
+
+                        <div id="km-map-container"> 
+                            <div id="km-map"> 
+
+                            </div>
+                            <div class="km-map-direction"> 
+                                <input id="Coordinate" class="input is-link" type="text" placeholder="Link input">
+                                <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinate()"></button>
+                                <button class="button is-dark" x-on:click="GetVendorDirection()">Get Directions</button>
+                            </div>
+                            <div class="km-map-driving"> 
+                                <div class="select" x-model="transport">
+                                    <select>
+                                        <option value="driving">Driving</option>
+                                        <option value="walking">Walking</option>
+                                        <option value="bicycling">Bicycling</option>
+                                        <option value="public">Public Transport</option>
+                                    </select>
+                                </div>
+                                <div class="select" x-model="transportUnit">
+                                    <select>
+                                        <option value="kilometers">Kilometers</option>
+                                        <option value="miles">Miles</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
                     <!-- </div> -->
                 </div>
                 <div id="km-photos" x-show="menuTab === 'photos'">
