@@ -22,6 +22,7 @@ function vendor_products()
             function kmData() {
                 return {
                     startUrl: '<?php echo $startUrl; ?>',
+                    currentUrl: '<?php echo get_permalink(); ?>',
                     name: false,
                     stores: false,
                     products: [],
@@ -605,44 +606,9 @@ function vendor_products()
                             }
                         });
                     },
-
-                    InitMarkers()
-                    {
-                        // var mapOptions = {
-                        //     center: new google.maps.LatLng(42.976348, -81.2514795),
-                        //     zoom: 10,
-                        //     mapTypeId: google.maps.MapTypeId.ROADMAP
-                        // }
-                        // var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
-                        // // var mapReadyEvent = new CustomEvent('map-ready');
-                        // // window.dispatchEvent(mapReadyEvent);
-
-                        console.log("AAAAA in map initMarkers AAAAA");
-                        // if(google != undefined)
-                        // {
-                        //     user.marker = new google.maps.Marker({
-                        //     position: e.position,
-                        //     map: map,
-                        //     icon: '/img.png'
-                        //     });
-                        // }
-                    },
                 };
             }
 
-            function LocationMap()
-            {
-                // console.log("AAAAAAAAAAAAAA");
-                // debugger;
-                // var mapOptions = {
-                //     center: new google.maps.LatLng(42.976348, -81.2514795),
-                //     zoom: 10,
-                //     mapTypeId: google.maps.MapTypeId.HYBRID
-                // }
-                // var map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
-                // var mapReadyEvent = new CustomEvent('map-ready');
-                // window.dispatchEvent(mapReadyEvent);
-            }
         </script>
 
         <div class="columns is-full" x-data="kmData()" x-init="getData()" @map-ready.window="getData()">
@@ -673,7 +639,7 @@ function vendor_products()
                         </li>
                         <li :class="{'is-active' : menuTab === 'map'}">
                         <a href="#km-location"
-                            @click.prevent="menuTab = 'map'; InitMarkers()"
+                            @click.prevent="menuTab = 'map'"
                         >
                             <span class="icon"><i class="fas fa-globe-americas fa-fw" aria-hidden="true"></i></span>
                             <span>LOCATION</span>
@@ -859,7 +825,8 @@ function vendor_products()
                                     </strong>
                                 </div>
                                 <div class="km-product-view">                   
-                                    <button class="button is-rounded is-dark">View</button>
+                                    <!-- <button class="button is-rounded is-dark">View</button> -->
+                                    <a class="button is-rounded is-dark" :href="currentUrl + '/view-product/?vendor=' + product.vendor_id + '&id=' + product.id">View</a>
                                 </div>
                             </div>
                         </div>
@@ -950,7 +917,6 @@ function local_styles()
 {
     wp_enqueue_style('product', plugin_dir_url(__FILE__).'product.css');
     wp_enqueue_style('font', 'https://use.fontawesome.com/releases/v5.15.3/css/all.css?wpfas=true');
-    // wp_enqueue_script('map', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCAEc6aw19DrUE7sN0CoE-VhM20ighnm7Y&callback=LocationMap#asyncload', array() );
 }//end local_styles()
 
 
