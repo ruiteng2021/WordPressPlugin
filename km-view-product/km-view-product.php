@@ -109,8 +109,7 @@ function view_product()
 
 function local_styles_detail()
 {
-    wp_enqueue_style('product-detail', plugin_dir_url(__FILE__).'product-detail.css');
-    wp_enqueue_style('font', 'https://use.fontawesome.com/releases/v5.15.3/css/all.css?wpfas=true');
+    wp_enqueue_style('view-product', plugin_dir_url(__FILE__).'view-product.css');
 }//end local_styles()
 
 
