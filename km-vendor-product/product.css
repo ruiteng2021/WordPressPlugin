@@ -90,10 +90,29 @@
     margin-bottom: 10px;
 }
 
+.km-max-thc .select {
+    float: left;
+    width: 50%;
+}
+
+.km-max-thc .select select {
+    width: 100%;
+}
+
 .km-max-thc-input {
     height: 37px !important;
-    width: 100px;
+    width: 80%;
     margin-bottom: 5px;
+
+}
+
+.km-max-thc-currency {
+    width: calc(50% - 20px);
+    margin-left: 20px;
+    float: left;
+}
+.km-max-thc-currency::before{
+    content: "$";
 }
 
 /* .test::after {
