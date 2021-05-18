@@ -12,10 +12,10 @@ add_shortcode('vendor-products', 'vendor_products');
 function vendor_products()
 {
     $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
-    $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
-    $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
-    // $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA";
-    // $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7";
+    // $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
+    // $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
+    $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA"; // slyfox
+    $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7"; //SlyFox
 
     ob_start();
 
@@ -1019,7 +1019,7 @@ function vendor_products()
                                 <div class="field">
                                     <div class="control">
                                         <!-- <input class="input" type="url" placeholder="Website"> -->
-                                        <div class="g-recaptcha" data-sitekey="6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk"></div>
+                                        <div class="g-recaptcha" x-bind:data-sitekey=site_key></div>
                                     </div>
                                 </div>
                             </div>
