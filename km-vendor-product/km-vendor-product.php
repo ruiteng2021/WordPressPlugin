@@ -12,12 +12,17 @@ add_shortcode('vendor-products', 'vendor_products');
 function vendor_products()
 {
     $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
+    $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
+    $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
+    // $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA";
+    // $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7";
 
     ob_start();
 
     ?>
         <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAEc6aw19DrUE7sN0CoE-VhM20ighnm7Y"type="text/javascript"></script> -->
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A"type="text/javascript"></script>
+        <script async defer src="https://www.google.com/recaptcha/api.js"type="text/javascript"></script>
         <script>          
             function kmData() {
                 return {
@@ -41,7 +46,12 @@ function vendor_products()
                     oneHalf:    ["40-60", "60-80", "80-100", "100-120", "120-150"],
                     oneOz:      ["60-100", "100-140", "140-180", "180-220", "220-260"],
                     // filter parameters end //
-                    selectedThcWeight: '1/4oz',
+
+                    // THC max filter
+                    thcMaxWeight: '1/4oz',
+                    thcMaxPrice: '0',
+                    // THC max filter end
+
                     pageSize: '5',
                     meta: false,
                     menuTab: 'product',
@@ -55,6 +65,9 @@ function vendor_products()
                     infoWindow: false,
                     // Google map end //
 
+                    // google reCaptcha //
+                    site_key: '<?php echo $site_key; ?>',
+                    // reCaptcha end //
                     async getData(url = this.startUrl) 
                     {
                         var self = this;
@@ -526,9 +539,39 @@ function vendor_products()
                         range.innerHTML = html;                       
                     },
 
-                    UpdateThcPriceRange()
+                    async UpdateThcPriceRange(url = this.startUrl)
                     {
-
+                        console.log("XXXXXXXXXXX");
+                        url = url.replace("?include=", "/");
+                        var self = this;
+                        if (self.thcMaxWeight == "All")
+                        {
+                            url = url + "?sort_lowest_price=" + self.thcMaxPrice;
+                        }
+                        else 
+                        {
+                            if(self.thcMaxWeight == "1g")
+                                url = url + "?minimum_price_gram=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
+                            if(self.thcMaxWeight == "1oz")
+                                url = url + "?minimum_price_oz=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
+                            if(self.thcMaxWeight == "1/2oz")
+                                url = url + "?minimum_price_oz_half=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
+                            if(self.thcMaxWeight == "1/4oz")
+                                url = url + "?minimum_price_oz_fourth=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
+                            if(self.thcMaxWeight == "1/8oz")
+                                url = url + "?minimum_price_oz_eighth=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
+                        }
+                        
+                        console.log(url);
+                        await axios.get(url)
+                            .then(function(response) {
+                                // console.log(response);
+                                self.products = response.data.data;
+                                self.meta = response.data.meta;     
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            })                       
                     },
 
                     GetCurrentCoordinate()
@@ -606,6 +649,26 @@ function vendor_products()
                             }
                         });
                     },
+
+                    ResizeGoogleRecaptcha() 
+                    {
+                        // console.log("XXX in Resize Google RaCap XXX");
+                        // var width = jQuery('.g-recaptcha').parent().width();
+                        // console.log(jQuery('.g-recaptcha').parent());
+                        // var scale;
+                        // if (width < 302) {
+                        //     scale = width / 302;
+                        // } else{
+                        //     scale = 1.0; 
+                        // }
+                        // console.log(scale);
+                        // debugger;
+                        // jQuery('.g-recaptcha').css('transform', 'scale(' + scale + ')');
+                        // jQuery('.g-recaptcha').css('-webkit-transform', 'scale(' + scale + ')');
+                        // jQuery('.g-recaptcha').css('transform-origin', '0 0');
+                        // jQuery('.g-recaptcha').css('-webkit-transform-origin', '0 0');
+                    },
+                   
                 };
             }
 
@@ -654,8 +717,8 @@ function vendor_products()
                         </a>
                         </li> 
                         <li :class="{'is-active' : menuTab === 'reviews'}">
-                        <a href="#km-reviews"
-                            @click.prevent="menuTab = 'reviews'"
+                        <a href="#km-product-reviews"
+                            @click.prevent="menuTab = 'reviews'; ResizeGoogleRecaptcha()"
                         >
                             <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
                             <span>REVIEWS</span>
@@ -756,7 +819,7 @@ function vendor_products()
                             <legend>Max price to pay for THC?</legend>
                             <div style="margin: 0 auto; min-width: 220px">
                                 <div class="select entrySelect ">
-                                    <select style="height: 37px; min-width: 93px;" x-model="selectedThcWeight" x-on:change="UpdateThcPriceRange()">
+                                    <select style="height: 37px; min-width: 93px;" x-model="thcMaxWeight" x-on:change="UpdateThcPriceRange()">
                                         <option value="All">All</option>        
                                         <option value="1g">1g</option>     
                                         <option value="1/8oz">1/8oz</option>  
@@ -765,7 +828,7 @@ function vendor_products()
                                         <option value="1oz">1oz</option>                                   
                                     </select>
                                 </div>
-                                <input class="entrySelect km-max-thc-input" type="number" id="thcMax" name="thc max"/>
+                                <input class="entrySelect km-max-thc-input" type="number" id="thcMax" min="0" name="thc max" x-model="thcMaxPrice" @keydown.enter="UpdateThcPriceRange()"/>
                             </div>
                         </fieldset>
                     </div>
@@ -897,10 +960,79 @@ function vendor_products()
                 <div id="km-photos" x-show="menuTab === 'photos'">
                     <strong><p> this is photos </p> </strong>
                 </div>
-                <div id="km-reviews" x-show="menuTab === 'reviews'">
-                    <strong><p> this is reviews </p> </strong>
+                <div id="km-product-reviews" x-show="menuTab === 'reviews'">
+                    <form class="box" style="width: 100%">
+                        <div class="columns is-multiline">
+                            <div class="column is-full has-background-info km-reviews-general" style="color: white;">
+                                <div><i class="fas fa-info-circle"></i> Your email address will not be published.</div>                        
+                            </div>                        
+                            <div class="column is-full">
+                                <textarea class="textarea" placeholder="10 lines of textarea" rows="10"></textarea>
+                            </div>
+                            <div class="column is-full">
+                                <div class="field">
+                                    <div class="control">
+                                    <div class="container">
+                                        <div class="star-widget">
+                                            <div class="radios">
+                                                <input type="radio" name="rate" id="rate-5">
+                                                <label for="rate-5" class="fas fa-star"></label>
+                                                <input type="radio" name="rate" id="rate-4">
+                                                <label for="rate-4" class="fas fa-star"></label>
+                                                <input type="radio" name="rate" id="rate-3">
+                                                <label for="rate-3" class="fas fa-star"></label>
+                                                <input type="radio" name="rate" id="rate-2">
+                                                <label for="rate-2" class="fas fa-star"></label>
+                                                <input type="radio" name="rate" id="rate-1">
+                                                <label for="rate-1" class="fas fa-star"></label>
+                                                <header></header>
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-full">
+                                <div class="field">
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="Name (required)" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-full">
+                                <div class="field">
+                                    <div class="control">
+                                        <input class="input" type="email" placeholder="Email (required)" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-full">
+                                <div class="field">
+                                    <div class="control">
+                                    <input class="input" type="url" placeholder="Website">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-full">
+                                <div class="field">
+                                    <div class="control">
+                                        <!-- <input class="input" type="url" placeholder="Website"> -->
+                                        <div class="g-recaptcha" data-sitekey="6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-full has-background-light km-reviews-general">
+                                <label class="checkbox">
+                                    <input type="checkbox">
+                                    Save my name, email, and website in this browser for the next time I comment.
+                                </label>
+                            </div>  
+                            <button class="button is-black is-fullwidth">POST REVIEW</button>                     
+                        </div>
+                    </form>
                 </div>
-               
             </div>
         </div>
 
@@ -917,6 +1049,7 @@ function local_styles()
 {
     wp_enqueue_style('product', plugin_dir_url(__FILE__).'product.css');
     wp_enqueue_style('font', 'https://use.fontawesome.com/releases/v5.15.3/css/all.css?wpfas=true');
+    wp_enqueue_style('emoji', 'https://emoji-css.afeld.me/emoji.css');
 }//end local_styles()
 
 
