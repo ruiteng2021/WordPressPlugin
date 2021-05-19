@@ -50,8 +50,8 @@ function vendor_products()
                     // filter parameters end //
 
                     // THC max filter
-                    thcMaxWeight: '1/4oz',
-                    thcMaxPrice: '0',
+                    thcMaxWeight: 'All',
+                    thcMaxPrice: '',
                     // THC max filter end
 
                     pageSize: '5',
@@ -740,23 +740,107 @@ function vendor_products()
                         console.log("XXXXXXXXXXX");
                         url = url.replace("?include=", "/");
                         var self = this;
-                        if (self.thcMaxWeight == "All")
-                        {
-                            url = url + "?sort_lowest_price=" + self.thcMaxPrice;
+                        jQuery(".km-max-thc-input").attr('type', 'number'); 
+                        jQuery(".km-max-thc-input").attr('min', '0'); 
+
+                        self.selectedWeight = 'All',
+                        self.selectedPrice = 'All',
+                        self.selectedTHC = 'All', 
+                        self.selectedCBD = 'All', 
+                        self.selectedCat = 'All',
+
+                        weightSelect = "";
+                        sortString = "";
+                        if ( self.thcMaxWeight == "1g"){
+                            weightSelect = "filter[minimum_price_gram]=0&filter[maximum_price_gram]=";
+                            sortString = "sort=-price_gram&filter[minimum_price_gram]=0";
                         }
-                        else 
-                        {
-                            if(self.thcMaxWeight == "1g")
-                                url = url + "?minimum_price_gram=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
-                            if(self.thcMaxWeight == "1oz")
-                                url = url + "?minimum_price_oz=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
-                            if(self.thcMaxWeight == "1/2oz")
-                                url = url + "?minimum_price_oz_half=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
-                            if(self.thcMaxWeight == "1/4oz")
-                                url = url + "?minimum_price_oz_fourth=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
-                            if(self.thcMaxWeight == "1/8oz")
-                                url = url + "?minimum_price_oz_eighth=0" + "&filter[minimum_thc]=" + self.thcMaxPrice + "&sort=-thc_max";
+
+                        if ( self.thcMaxWeight == "1/8oz"){
+                            weightSelect = "filter[minimum_price_oz_eighth]=0&filter[maximum_price_oz_eighth]=";
+                            sortString = "sort=-price_oz_eighth&filter[minimum_price_oz_eighth]=0";
                         }
+
+                        if ( self.thcMaxWeight == "1/4oz"){
+                            weightSelect = "filter[minimum_price_oz_fourth=0]&filter[maximum_price_oz_fourth]=";
+                            sortString = "sort=-price_oz_fourth&filter[minimum_price_oz_fourth]=0";
+                        }
+
+                        if ( self.thcMaxWeight == "1/2oz"){
+                            weightSelect = "filter[minimum_price_oz_half=0]&filter[maximum_price_oz_half]=";
+                            sortString = "sort=-price_oz_half&filter[minimum_price_oz_half]=0";
+                        }
+
+                        if ( self.thcMaxWeight == "1oz"){
+                            weightSelect = "filter[minimum_price_oz=0]&filter[maximum_price_oz]=";
+                            sortString = "sort=-price_oz&filter[minimum_price_oz]=0";
+                        }
+
+                        // debugger;
+                        if ( (self.thcMaxWeight == "All") &&
+                            (self.thcMaxPrice == ''))
+                        {
+                            url = url + "?page_size=" + self.pageSize;
+                        }
+
+                        if ( (self.thcMaxWeight != "All") &&
+                            (self.thcMaxPrice == ''))
+                        {
+                            url = url + "?" + 
+                                sortString +
+                                "&page_size=" + self.pageSize;
+                        }
+
+                        if ( (self.thcMaxWeight == "All") &&
+                            (self.thcMaxPrice != ''))
+                        {
+                            url = url + "?" + 
+                                "filter[maximum_price_any]=" + self.thcMaxPrice + 
+                                "&page_size=" + self.pageSize;
+                        }
+
+                        if ( (self.thcMaxWeight != "All") &&
+                            (self.thcMaxPrice != ''))
+                        {
+                            url = url + "?" + 
+                            weightSelect + self.thcMaxPrice +
+                            "&" + sortString +
+                            "&page_size=" + self.pageSize;
+                        }
+
+
+                        // if (self.thcMaxWeight == "All")
+                        // {
+                        //     url = url + "?sort_lowest_price=" + self.thcMaxPrice;
+                        // }
+                        // else 
+                        // {
+                        //     if(self.thcMaxWeight == "1g")
+                        //         url = url + "?minimum_price_gram=0" + 
+                        //             "&filter[maximum_price_gram]=" + self.thcMaxPrice + 
+                        //             "&page_size=" + self.pageSize +
+                        //             "&sort=-thc_max";
+                        //     if(self.thcMaxWeight == "1oz")
+                        //         url = url + "?minimum_price_oz=0" + 
+                        //             "&filter[maximum_price_oz]=" + self.thcMaxPrice + 
+                        //             "&page_size=" + self.pageSize +
+                        //             "&sort=-thc_max";
+                        //     if(self.thcMaxWeight == "1/2oz")
+                        //         url = url + "?minimum_price_oz_half=0" + 
+                        //             "&filter[maximum_price_oz_half]=" + self.thcMaxPrice + 
+                        //             "&page_size=" + self.pageSize +
+                        //             "&sort=-thc_max";
+                        //     if(self.thcMaxWeight == "1/4oz")
+                        //         url = url + "?minimum_price_oz_fourth=0" + 
+                        //         "&filter[maximum_price_oz_fourth]=" + self.thcMaxPrice + 
+                        //         "&page_size=" + self.pageSize +
+                        //         "&sort=-thc_max";
+                        //     if(self.thcMaxWeight == "1/8oz")
+                        //         url = url + "?minimum_price_oz_eighth=0" + 
+                        //         "&filter[maximum_price_oz_eighth]=" + self.thcMaxPrice + 
+                        //         "&page_size=" + self.pageSize +
+                        //         "&sort=-thc_max";
+                        // }
                         
                         console.log(url);
                         await axios.get(url)
@@ -1002,7 +1086,7 @@ function vendor_products()
                             <legend>Max price to pay for THC?</legend>
                             <div style="margin: 0 auto; min-width: 220px">
                                 <div class="select entrySelect ">
-                                    <select style="height: 37px; min-width: 93px;" x-model="thcMaxWeight" x-on:change="UpdateThcPriceRange()">
+                                    <select style="height: 38px; min-width: 93px;" x-model="thcMaxWeight" x-on:change="UpdateThcPriceRange()">
                                         <option value="All">All</option>        
                                         <option value="1g">1g</option>     
                                         <option value="1/8oz">1/8oz</option>  
@@ -1012,7 +1096,8 @@ function vendor_products()
                                     </select>
                                 </div>
                                 <div class="km-max-thc-currency">
-                                    <input class="entrySelect km-max-thc-input" type="number" id="thcMax" min="0" name="thc max" x-model="thcMaxPrice" @keydown.enter="UpdateThcPriceRange()"/>
+                                    <!-- <input class="entrySelect km-max-thc-input" type="number" id="thcMax" min="0" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateThcPriceRange()"/> -->
+                                    <input class="entrySelect km-max-thc-input" type="text" id="thcMax" placeholder="price" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateThcPriceRange()"/>
                                 </div>
                             </div>
                         </fieldset>
