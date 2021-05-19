@@ -126,31 +126,31 @@ function vendor_products()
                         if ( self.selectedWeight == "1g"){
                             weightFilterMax = "filter[maximum_price_gram]";
                             weightFilterMin = "filter[minimum_price_gram]";
-                            weightFilter = "sort=-price_gram&filter[minimum_price_gram]=0";
+                            weightFilter = "sort=-price_gram";
                         }
 
                         if ( self.selectedWeight == "1/8oz"){
                             weightFilterMax = "filter[maximum_price_oz_eighth]";
                             weightFilterMin = "filter[minimum_price_oz_eighth]";
-                            weightFilter = "sort=-price_oz_eighth&filter[minimum_price_oz_eighth]=0";
+                            weightFilter = "sort=-price_oz_eighth";
                         }
 
                         if ( self.selectedWeight == "1/4oz"){
                             weightFilterMax = "filter[maximum_price_oz_fourth]";
                             weightFilterMin = "filter[minimum_price_oz_fourth]";
-                            weightFilter = "sort=-price_oz_fourth&filter[minimum_price_oz_fourth]=0";
+                            weightFilter = "sort=-price_oz_fourth";
                         }
 
                         if ( self.selectedWeight == "1/2oz"){
                             weightFilterMax = "filter[maximum_price_oz_half]";
                             weightFilterMin = "filter[minimum_price_oz_half]";
-                            weightFilter = "sort=-price_oz_half&filter[minimum_price_oz_half]=0";
+                            weightFilter = "sort=-price_oz_half";
                         }
 
                         if ( self.selectedWeight == "1oz"){
                             weightFilterMax = "filter[maximum_price_oz]";
                             weightFilterMin = "filter[minimum_price_oz]";
-                            weightFilter = "sort=-price_oz&filter[minimum_price_oz]=0";
+                            weightFilter = "sort=-price_oz";
                         }
 
                         // 0 0 0 0 0
@@ -1231,29 +1231,32 @@ function vendor_products()
                     <strong><p> this is photos </p> </strong>
                 </div>
                 <div id="km-product-reviews" x-show="menuTab === 'reviews'">
-                    <form class="box" style="width: 100%">
+                <!-- <form method="post" action="http://127.0.0.1/wordpress/test-page/" class="box" style="width: 100%"> -->
+                    <form method="post" action="https://kushmapper.com/wp-comments-post.php" class="box" style="width: 100%">
                         <div class="columns is-multiline">
                             <div class="column is-full has-background-info km-reviews-general" style="color: white;">
                                 <div><i class="fas fa-info-circle"></i> Your email address will not be published.</div>                        
-                            </div>                        
+                            </div>   
+                            <!-- text comment area -->
                             <div class="column is-full">
-                                <textarea class="textarea" placeholder="10 lines of textarea" rows="10"></textarea>
+                                <textarea class="textarea" name="comment" placeholder="10 lines of textarea" rows="10"></textarea>
                             </div>
+                            <!-- rating buttons -->
                             <div class="column is-full">
                                 <div class="field">
                                     <div class="control">
                                     <div class="container">
                                         <div class="star-widget">
                                             <div class="radios">
-                                                <input type="radio" name="rate" id="rate-5">
+                                                <input type="radio" name="rate5" id="rate-5">
                                                 <label for="rate-5" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-4">
+                                                <input type="radio" name="rate4" id="rate-4">
                                                 <label for="rate-4" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-3">
+                                                <input type="radio" name="rate3" id="rate-3">
                                                 <label for="rate-3" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-2">
+                                                <input type="radio" name="rate2" id="rate-2">
                                                 <label for="rate-2" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-1">
+                                                <input type="radio" name="rate1" id="rate-1">
                                                 <label for="rate-1" class="fas fa-star"></label>
                                                 <header></header>
                                             </div>
@@ -1264,27 +1267,31 @@ function vendor_products()
                                     </div>
                                 </div>
                             </div>
+                            <!-- Author name -->
                             <div class="column is-full">
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input" type="text" placeholder="Name (required)" required>
+                                        <input class="input" name="author" type="text" placeholder="Name (required)" required>
                                     </div>
                                 </div>
                             </div>
+                            <!-- email -->
                             <div class="column is-full">
                                 <div class="field">
                                     <div class="control">
-                                        <input class="input" type="email" placeholder="Email (required)" required>
+                                        <input class="input" type="email" name="email" placeholder="Email (required)" required>
                                     </div>
                                 </div>
                             </div>
+                            <!-- website -->
                             <div class="column is-full">
                                 <div class="field">
                                     <div class="control">
-                                    <input class="input" type="url" placeholder="Website">
+                                        <input class="input" name="url" type="url" placeholder="Website" required>
                                     </div>
                                 </div>
                             </div>
+                            <!-- google reCAPCHA -->
                             <div class="column is-full">
                                 <div class="field">
                                     <div class="control">
@@ -1293,20 +1300,20 @@ function vendor_products()
                                     </div>
                                 </div>
                             </div>
-                            <div class="column is-full has-background-light km-reviews-general">
+                            <!-- check box -->
+                            <div class="column is-full">
                                 <label class="checkbox">
-                                    <input type="checkbox">
+                                    <input type="checkbox" name="check_box">
                                     Save my name, email, and website in this browser for the next time I comment.
                                 </label>
                             </div>  
-                            <button class="button is-black is-fullwidth">POST REVIEW</button>                     
+                            <input class="button is-black is-fullwidth" type="submit" name="submit" value="POST REVIEW">                            
+                            <!-- <button class="button is-black is-fullwidth">POST REVIEW</button>                      -->
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-
 
     <?php
     $html = ob_get_clean();
