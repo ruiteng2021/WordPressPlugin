@@ -14,10 +14,10 @@ function vendor_products()
     $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
     // $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
     // $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
-    // $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA"; // slyfox
-    // $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7"; //SlyFox
-    $site_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"; // google development key
-    $secret_key = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"; // googledevelopment key
+    $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA"; // slyfox
+    $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7"; //SlyFox
+    // $site_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"; // google development key
+    // $secret_key = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"; // googledevelopment key
 
     ob_start();
 
@@ -1248,15 +1248,15 @@ function vendor_products()
                                     <div class="container">
                                         <div class="star-widget">
                                             <div class="radios">
-                                                <input type="radio" name="rate5" id="rate-5">
+                                                <input type="radio" name="rate" id="rate-5" value="5">
                                                 <label for="rate-5" class="fas fa-star"></label>
-                                                <input type="radio" name="rate4" id="rate-4">
+                                                <input type="radio" name="rate" id="rate-4" value="4">
                                                 <label for="rate-4" class="fas fa-star"></label>
-                                                <input type="radio" name="rate3" id="rate-3">
+                                                <input type="radio" name="rate" id="rate-3" value="3">
                                                 <label for="rate-3" class="fas fa-star"></label>
-                                                <input type="radio" name="rate2" id="rate-2">
+                                                <input type="radio" name="rate" id="rate-2" value="2">
                                                 <label for="rate-2" class="fas fa-star"></label>
-                                                <input type="radio" name="rate1" id="rate-1">
+                                                <input type="radio" name="rate" id="rate-1" value="1">
                                                 <label for="rate-1" class="fas fa-star"></label>
                                                 <header></header>
                                             </div>
