@@ -17,7 +17,7 @@ function vendor_products()
     $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA"; // slyfox
     $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7"; //SlyFox
     // $site_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"; // google development key
-    // $secret_key = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"; // googledevelopment key
+    // $secret_key = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"; // google development key
 
     ob_start();
 
@@ -1083,7 +1083,7 @@ function vendor_products()
                             <button class="button is-black km-search-button" x-on:click="SearchFilter()">Search ...</button>
                         </div>
                         <fieldset class="km-search-items-thc km-max-thc">
-                            <legend>Max price to pay for THC?</legend>
+                            <legend>Max Price</legend>
                             <div style="margin: 0 auto; min-width: 220px">
                                 <div class="select entrySelect ">
                                     <select style="height: 38px; min-width: 93px;" x-model="thcMaxWeight" x-on:change="UpdateThcPriceRange()">
