@@ -34,7 +34,7 @@
     text-overflow: ellipsis;
 }
 
-.tabs {
+.km-all-products .tabs {
     font-weight: bold;
     display: inline-block;
     padding-bottom: 30px;
@@ -42,11 +42,11 @@
     width: 100%;
 }
 
-.tabs.is-toggle li.is-active a {
+.km-all-products .tabs.is-toggle li.is-active a {
     background-color: black;
 }
 
-.tabs.is-toggle a {
+.km-all-products .tabs.is-toggle a {
     border: 0;
 }
 
@@ -82,12 +82,12 @@
     border: 1px solid rgb(219, 219, 219);
     border-radius: 5px;
     min-width: 220px;
-    margin-left: 10px;
+    /* margin-left: 10px; */
 }
 
 .km-max-thc legend {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .km-max-thc .select {
@@ -130,6 +130,9 @@
     width: 100%;
     float: left;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .km-search{
@@ -147,22 +150,49 @@
     display: flex; 
     align-items: center; 
     flex-wrap: wrap;
-    min-width: 200px;
-    height: 60px;
+    min-width: 130px;
+    width: 20%;
+    /* height: 60px; */
     float: left;
+    margin-top: 15px;
 }
 
 
-.km-filters-column-category{
+/* .km-filters-column-category{
     min-width: 300px;
-}
+} */
 
 .km-filters-label{
-    padding-right:10px;
+    margin: 0 auto;
+}
+
+
+.km-filters-label-thc::before{
+    content: "THC";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+    /* min-width: 120px; */
+}
+
+.km-filters-label-cdb::before{
+    content: "CBD";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+    /* min-width: 120px; */
+}
+
+.km-filters-label-category::before{
+    content: "Category";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+    /* min-width: 120px; */
 }
 
 .km-filters-price{
-    min-width: 350px;
+    min-width: 240px;
 }
 
 /* table to column settings */
@@ -481,10 +511,14 @@
   
     .km-search-items-thc{
         margin-left: 0;
-        margin-top: 20px;
+        /* margin-top: 20px; */
     }
 
-    .tabs {
+    .km-filters-label{
+        margin: 0;
+    }
+
+    .km-all-products .tabs {
         margin-bottom: 0 !important;
         padding-bottom: 0;
     }

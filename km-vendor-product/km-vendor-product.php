@@ -998,7 +998,27 @@ function vendor_products()
                     <!-- Filter dropsown lists -->
                     <div class="km-filters">                                            
                         <div class="km-filters-column km-filters-price"> 
-                            <label class="km-filters-label" for="price"> Weight/Price </label>  
+                            <fieldset class="km-search-items-thc km-max-thc">
+                                <legend>Max Price</legend>
+                                <div style="margin: 0 auto; min-width: 220px">
+                                    <div class="select entrySelect ">
+                                        <select style="height: 38px; min-width: 93px;" x-model="thcMaxWeight" x-on:change="UpdateThcPriceRange()">
+                                            <option value="All">All</option>        
+                                            <option value="1g">1g</option>     
+                                            <option value="1/8oz">1/8oz</option>  
+                                            <option value="1/4oz">1/4oz</option>   
+                                            <option value="1/2oz">1/2oz</option>              
+                                            <option value="1oz">1oz</option>                                   
+                                        </select>
+                                    </div>
+                                    <div class="km-max-thc-currency">
+                                        <!-- <input class="entrySelect km-max-thc-input" type="number" id="thcMax" min="0" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateThcPriceRange()"/> -->
+                                        <input class="entrySelect km-max-thc-input" type="text" id="thcMax" placeholder="price" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateThcPriceRange()"/>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- <label class="km-filters-label" for="price"> Weight/Price </label>  
                             <div class="select entrySelect">                        
                                 <select id="km-price-weight" x-model="selectedWeight" x-on:change="UpdatePriceRange()">
                                     <option value="All" name="all">All</option>    
@@ -1011,56 +1031,54 @@ function vendor_products()
                             </div>
                             <div class="select entrySelect">                        
                                 <select id="km-price-range" x-model="selectedPrice">
-                                    <option value="All" name="all">All</option>
-                                    <!-- <option value="15-20">15-20$</option>     
-                                    <option value="10-15">10-15$</option>    
-                                    <option value="5-10">5-10$</option>  
-                                    <option value="0-5">0-5$</option>                    -->
+                                    <option value="All" name="all">All</option>                                    
                                 </select>
-                            </div>                            
+                            </div>                             -->
                         </div>
             
                         <div class="km-filters-column">  
-                            <label class="km-filters-label km-filters-label-thc"  for="thc"> THC </label>
-                            <div class="select entrySelect">                        
-                                <select id="thc" x-model="selectedTHC">
-                                    <option value="All" name="all">All</option>
-                                    <option value="10-14" name="20">10-14%</option>     
-                                    <option value="14-18" name="15">14-18%</option>  
-                                    <option value="18-22" name="10">18-22%</option>   
-                                    <option value="22-26" name="5">22-26%</option>    
-                                    <option value="26-30" name="5">26-30%</option>   
-                                    <option value="30-34" name="5">30-34%</option>  
-                                    <option value="34-38" name="5">34-38%</option>                                      
-                                </select>
+                            <div class="km-filters-label km-filters-label-thc" >
+                                <div class="select entrySelect">                        
+                                    <select id="thc" x-model="selectedTHC">
+                                        <option value="All" name="all">All</option>
+                                        <option value="10-14" name="20">10-14%</option>     
+                                        <option value="14-18" name="15">14-18%</option>  
+                                        <option value="18-22" name="10">18-22%</option>   
+                                        <option value="22-26" name="5">22-26%</option>    
+                                        <option value="26-30" name="5">26-30%</option>   
+                                        <option value="30-34" name="5">30-34%</option>  
+                                        <option value="34-38" name="5">34-38%</option>                                      
+                                    </select>
+                                </div>
                             </div>
                         </div>
             
                         <div class="km-filters-column">  
-                            <label class="km-filters-label km-filters-label-cdb" for="cbd"> CBD </label>
-                            <div class="select entrySelect">                        
-                                <select id="cbd" x-model="selectedCBD">
-                                    <option value="All" name="all">All</option>
-                                    <option value="0-4" name="20">0-4%</option>  
-                                    <option value="4-8" name="15">4-8%</option>   
-                                    <option value="8-12" name="10">8-12%</option>   
-                                    <option value="12-16" name="5">12-16%</option>      
-                                    <option value="16-20" name="5">16-20%</option>   
-                                    <option value="20-24" name="5">20-24%</option>                                        
-                                </select>
-                            </div>                          
+                            <div class="km-filters-label km-filters-label-cdb">
+                                <div class="select entrySelect">                        
+                                    <select id="cbd" x-model="selectedCBD">
+                                        <option value="All" name="all">All</option>
+                                        <option value="0-4" name="20">0-4%</option>  
+                                        <option value="4-8" name="15">4-8%</option>   
+                                        <option value="8-12" name="10">8-12%</option>   
+                                        <option value="12-16" name="5">12-16%</option>      
+                                        <option value="16-20" name="5">16-20%</option>   
+                                        <option value="20-24" name="5">20-24%</option>                                        
+                                    </select>
+                                </div>  
+                            </div>                        
                         </div>
             
                         <div class="km-filters-column">  
-                            <label class="km-filters-label" for="cat"> Category </label>
-                            <div class="select entrySelect">                      
-                                <select name="Category" id= "cat" x-model="selectedCat">
-                                        <option value="All" name="all">All</option>
-                                        <template x-for="category in categories" :key="category">
-                                            <option :value="category" x-text="category"></option>
-                                        </template>                            
-                                </select>     
-    
+                            <div class="km-filters-label km-filters-label-category"> 
+                                <div class="select entrySelect">                      
+                                    <select name="Category" id= "cat" x-model="selectedCat">
+                                            <option value="All" name="all">All</option>
+                                            <template x-for="category in categories" :key="category">
+                                                <option :value="category" x-text="category"></option>
+                                            </template>                            
+                                    </select>     
+                                </div>
                             </div>                          
                         </div>                      
                     </div>  
@@ -1082,25 +1100,6 @@ function vendor_products()
                         <div class="km-search-items km-search-button-label">
                             <button class="button is-black km-search-button" x-on:click="SearchFilter()">Search ...</button>
                         </div>
-                        <fieldset class="km-search-items-thc km-max-thc">
-                            <legend>Max Price</legend>
-                            <div style="margin: 0 auto; min-width: 220px">
-                                <div class="select entrySelect ">
-                                    <select style="height: 38px; min-width: 93px;" x-model="thcMaxWeight" x-on:change="UpdateThcPriceRange()">
-                                        <option value="All">All</option>        
-                                        <option value="1g">1g</option>     
-                                        <option value="1/8oz">1/8oz</option>  
-                                        <option value="1/4oz">1/4oz</option>   
-                                        <option value="1/2oz">1/2oz</option>              
-                                        <option value="1oz">1oz</option>                                   
-                                    </select>
-                                </div>
-                                <div class="km-max-thc-currency">
-                                    <!-- <input class="entrySelect km-max-thc-input" type="number" id="thcMax" min="0" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateThcPriceRange()"/> -->
-                                    <input class="entrySelect km-max-thc-input" type="text" id="thcMax" placeholder="price" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateThcPriceRange()"/>
-                                </div>
-                            </div>
-                        </fieldset>
                     </div>
     
                     <!-- Table colums -->
