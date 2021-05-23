@@ -40,6 +40,7 @@
     padding-bottom: 30px;
     border-bottom: 2px solid #eee;
     width: 100%;
+    margin-bottom: 0;
 }
 
 .km-all-products .tabs.is-toggle li.is-active a {
@@ -50,11 +51,11 @@
     border: 0;
 }
 
-.menu {
+.km-all-products .menu {
     display: flex;
     flex-wrap: wrap;
 }
-.menu li {
+.km-all-products .menu li {
     flex-grow: 0 !important;
 }
 
@@ -75,7 +76,7 @@
     display: flex;
     align-items: center;
     float: left;
-    width: 33%;
+    width: 20%;
 }
 
 .km-max-thc{
@@ -101,26 +102,19 @@
 
 .km-max-thc-input {
     height: 37px !important;
-    width: 80%;
+    width: 85%;
     margin-bottom: 5px;
 
 }
 
 .km-max-thc-currency {
     width: calc(50% - 20px);
-    margin-left: 20px;
+    margin-left: 10px;
     float: left;
 }
 .km-max-thc-currency::before{
     content: "$";
 }
-
-/* .test::after {
-    position: absolute;
-    top: 0;
-    content:"$";
-    left: 5px;
-} */
 
 .km-search-button-label{
     padding-left: 30px;
@@ -156,11 +150,6 @@
     float: left;
     margin-top: 15px;
 }
-
-
-/* .km-filters-column-category{
-    min-width: 300px;
-} */
 
 .km-filters-label{
     margin: 0 auto;
@@ -297,9 +286,6 @@
     float: left;
 }
 
-/* .km-location-service{
-    margin-top: 20px;
-} */
 #km-map-container, .km-map-direction, .km-map-driving{
     float:left;
     width: 100%;
@@ -336,6 +322,7 @@
 .km-map-driving .select select {
     width: 100%;
 }
+
 /* force to show google map pegman */
 .gm-svpc div img {
     position: relative !important;
@@ -371,11 +358,6 @@
 .container .star-widget input{
     display: none;
 }
-
-/* .radios, .star-widget header {
-    float: left;
-    width: 50%;
-} */
 
 .star-widget label{
     font-size: 15px;
@@ -425,13 +407,6 @@
     content: "Excellent \01F60D";
 }
 
-/* google reCaptcha  */
-/* .g-recaptcha {
-    width: desired_width;
-    border-radius: 4px;
-    border-right: 1px solid #d8d8d8;
-    overflow: hidden;
-} */
 
 @media only screen and (max-width: 800px)
 {
