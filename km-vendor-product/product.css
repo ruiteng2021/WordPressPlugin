@@ -59,31 +59,15 @@
     flex-grow: 0 !important;
 }
 
-.entrySelect {
-    border-radius: 5%;
-    height: 35px !important;
-    padding-right: 5px;
-    padding-left: 5px;
-}
-
-.searchBox{
-    height: 35px !important;
-    width: 200px;
-    margin-left: 5px;
-}
-
-.km-search-items, .km-search-items-thc{
-    display: flex;
-    align-items: center;
-    float: left;
-    width: 20%;
+/* Filter dropsown lists shared with Adam */
+.km-filters{
+    margin-top: 20px;
 }
 
 .km-max-thc{
     border: 1px solid rgb(219, 219, 219);
     border-radius: 5px;
-    min-width: 220px;
-    /* margin-left: 10px; */
+    min-width: 210px;
 }
 
 .km-max-thc legend {
@@ -93,7 +77,8 @@
 
 .km-max-thc .select {
     float: left;
-    width: 50%;
+    width: calc(50% - 10px) !important;
+    margin-left: 10px;
 }
 
 .km-max-thc .select select {
@@ -101,14 +86,13 @@
 }
 
 .km-max-thc-input {
-    height: 37px !important;
-    width: 85%;
+    height: 40px !important;
+    width: calc(100% - 20px);
     margin-bottom: 5px;
-
 }
 
 .km-max-thc-currency {
-    width: calc(50% - 20px);
+    width: calc(50% - 10px);
     margin-left: 10px;
     float: left;
 }
@@ -116,18 +100,41 @@
     content: "$";
 }
 
-.km-search-button-label{
-    padding-left: 30px;
+.km-filters-column .select{
+    width: 100%;
 }
 
-.km-filters{
+.km-filters-column .select select{
     width: 100%;
-    float: left;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
 }
+
+.km-filters-label-thc, 
+.km-filters-label-cbd,
+.km-filters-label-category{
+    width: 100%;
+}
+
+.km-filters-label-thc::before{
+    content: "THC";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.km-filters-label-cbd::before{
+    content: "CBD";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.km-filters-label-category::before{
+    content: "Category";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+/* Filter dropsown lists end */
 
 .km-search{
     font-weight: 500;
@@ -138,50 +145,6 @@
     padding-left: 0px;
     display: flex;
     align-items: center;
-}
-
-.km-filters-column {
-    display: flex; 
-    align-items: center; 
-    flex-wrap: wrap;
-    min-width: 130px;
-    width: 20%;
-    /* height: 60px; */
-    float: left;
-    margin-top: 15px;
-}
-
-.km-filters-label{
-    margin: 0 auto;
-}
-
-
-.km-filters-label-thc::before{
-    content: "THC";
-    display: flex;
-    align-items: flex-start;
-    padding-left: 10px;
-    /* min-width: 120px; */
-}
-
-.km-filters-label-cdb::before{
-    content: "CBD";
-    display: flex;
-    align-items: flex-start;
-    padding-left: 10px;
-    /* min-width: 120px; */
-}
-
-.km-filters-label-category::before{
-    content: "Category";
-    display: flex;
-    align-items: flex-start;
-    padding-left: 10px;
-    /* min-width: 120px; */
-}
-
-.km-filters-price{
-    min-width: 240px;
 }
 
 /* table to column settings */
@@ -484,15 +447,6 @@
         padding-left: 40px;
     }
   
-    .km-search-items-thc{
-        margin-left: 0;
-        /* margin-top: 20px; */
-    }
-
-    .km-filters-label{
-        margin: 0;
-    }
-
     .km-all-products .tabs {
         margin-bottom: 0 !important;
         padding-bottom: 0;

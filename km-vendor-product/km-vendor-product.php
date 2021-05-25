@@ -810,13 +810,13 @@ function vendor_products()
                 <!-- Product infomation  -->
                 <div id="km-product-menu" x-show="menuTab === 'product'">
                     <!-- Filter dropsown lists -->
-                    <div class="km-filters">                                            
-                        <div class="km-filters-column km-filters-price"> 
-                            <fieldset class="km-search-items-thc km-max-thc">
+                    <div class="columns km-filters">                                            
+                        <div class="column km-filters-column"> 
+                            <fieldset class="km-max-thc">
                                 <legend>Max Price</legend>
-                                <div style="margin: 0 auto; min-width: 220px">
-                                    <div class="select entrySelect ">
-                                        <select style="height: 38px; min-width: 93px;" x-model="thcMaxWeight">
+                                <div>
+                                    <div class="select">
+                                        <select x-model="thcMaxWeight">
                                             <option value="All">All</option>        
                                             <option value="1g">1g</option>     
                                             <option value="1/8oz">1/8oz</option>  
@@ -826,15 +826,15 @@ function vendor_products()
                                         </select>
                                     </div>
                                     <div class="km-max-thc-currency">
-                                        <input class="entrySelect km-max-thc-input" type="text" id="thcMax" placeholder="price" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateInputType()"/>
+                                        <input class="km-max-thc-input" type="text" id="thcMax" placeholder="price" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateInputType()"/>
                                     </div>
                                 </div>
                             </fieldset>
                         </div>
             
-                        <div class="km-filters-column">  
-                            <div class="km-filters-label km-filters-label-thc" >
-                                <div class="select entrySelect">                        
+                        <div class="column km-filters-column">  
+                            <div class="km-filters-label-thc" >
+                                <div class="select">                        
                                     <select id="thc" x-model="selectedTHC">
                                         <option value="All" name="all">All</option>
                                         <option value="10-14" name="20">10-14%</option>     
@@ -849,9 +849,9 @@ function vendor_products()
                             </div>
                         </div>
             
-                        <div class="km-filters-column">  
-                            <div class="km-filters-label km-filters-label-cdb">
-                                <div class="select entrySelect">                        
+                        <div class="column km-filters-column">  
+                            <div class="km-filters-label-cbd">
+                                <div class="select">                        
                                     <select id="cbd" x-model="selectedCBD">
                                         <option value="All" name="all">All</option>
                                         <option value="0-4" name="20">0-4%</option>  
@@ -865,9 +865,9 @@ function vendor_products()
                             </div>                        
                         </div>
             
-                        <div class="km-filters-column">  
-                            <div class="km-filters-label km-filters-label-category"> 
-                                <div class="select entrySelect">                      
+                        <div class="column km-filters-column">  
+                            <div class="km-filters-label-category"> 
+                                <div class="select">                      
                                     <select name="Category" id= "cat" x-model="selectedCat">
                                             <option value="All" name="all">All</option>
                                             <template x-for="category in categories" :key="category">
