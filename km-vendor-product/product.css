@@ -136,6 +136,7 @@
 }
 /* Filter dropsown lists end */
 
+/* Search button, entyry dropdown list */
 .km-search{
     font-weight: 500;
     border-bottom: 2px solid #eee;
@@ -146,6 +147,20 @@
     display: flex;
     align-items: center;
 }
+
+.km-search-items{
+    display: flex;
+    align-items: center;
+    min-width: 150px;
+    float: left;
+    width: 20%;
+}
+
+.km-search-items .select{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+/* Search button, entyry dropdown list end*/
 
 /* table to column settings */
 .km-product-pic, 
@@ -443,6 +458,7 @@
     .km-search {
         display:block;
     }
+
     .km-search-button-label{
         padding-left: 40px;
     }

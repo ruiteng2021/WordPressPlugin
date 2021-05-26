@@ -1,0 +1,76 @@
+/* Filter dropsown lists shared with Adam */
+.km-filters-location-product{
+    margin-top: 20px;
+}
+
+.km-max-thc-location-product{
+    border: 1px solid rgb(219, 219, 219);
+    border-radius: 5px;
+    min-width: 210px;
+}
+
+.km-max-thc-location-product legend {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.km-max-thc-location-product .select {
+    float: left;
+    width: calc(50% - 10px) !important;
+    margin-left: 10px;
+}
+
+.km-max-thc-location-product .select select {
+    width: 100%;
+}
+
+.km-max-thc-input-location-product {
+    height: 40px !important;
+    width: calc(100% - 20px);
+    margin-bottom: 5px;
+}
+
+.km-max-thc-currency-location-product {
+    width: calc(50% - 10px);
+    margin-left: 10px;
+    float: left;
+}
+.km-max-thc-currency-location-product::before{
+    content: "$";
+}
+
+.km-filters-column-location-product .select{
+    width: 100%;
+}
+
+.km-filters-column-location-product .select select{
+    width: 100%;
+}
+
+.km-filters-label-thc-location-product, 
+.km-filters-label-cbd-location-product,
+.km-filters-label-category-location-product{
+    width: 100%;
+}
+
+.km-filters-label-thc-location-product::before{
+    content: "THC";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.km-filters-label-cbd-location-product::before{
+    content: "CBD";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.km-filters-label-category-location-product::before{
+    content: "Category";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+/* Filter dropsown lists end */

@@ -1146,8 +1146,6 @@ function km_product_index($atts)
 
 {
 
-
-
     $a = shortcode_atts( array(
 
         'id' => 1, 
@@ -1190,7 +1188,8 @@ function km_product_index($atts)
 
     $page_number = km_get_api_page();
 
-
+    error_log($page_number);
+    error_log("AAAAAAAAAAAAA");
 
     if ($page_number) {
 
@@ -1202,7 +1201,7 @@ function km_product_index($atts)
 
     $page_size = $a['page_size'];
 
-    
+    error_log($page_size);
 
     $startUrl = "https://api.kushmapper.com/v1/products?page_size={$page_size}{$page_query}&append={$a['appends']}";
 
@@ -1210,7 +1209,8 @@ function km_product_index($atts)
 
     $location = km_get_location();
 
-
+    error_log(count($location));
+    error_log("FFFFFFFFFFFF");
 
     if ($a['use_location'] && count($location) == 3) {
 
@@ -1320,7 +1320,7 @@ function km_renderProductIndexTemplate($startUrl, $options)
 
     $data = km_get_api_data($startUrl);
 
-
+    error_log("WWWWWWWWWWWWWWW");
 
     $componentFunction = "kmProductData_" . $options['id'] . "()";
 
@@ -1340,18 +1340,17 @@ function km_renderProductIndexTemplate($startUrl, $options)
 
                 functionName: '<?php echo $componentFunction; ?>',
 
+                // products: null,
                 categories: [],
-
-                // THC max filter begin //
-                thcMaxWeight: 'All',
-                thcMaxPrice: '',
-                // THC max filter end //
-
-                // filter parmeters begin//
-                selectedTHC: 'All', 
-                selectedCBD: 'All', 
-                selectedCat: 'All',
-                // filter parameters end //
+                // bind these filter properties to form inputs using x-model
+                filter: {
+                    page_size: 10,
+                    category: 'All',
+                    maxPrice: '',
+                    weight: 'All',
+                    minThc: 'All',
+                    minCbd: 'All',
+                },
 
                 startUrl: '<?php echo $startUrl; ?>',
 
@@ -1365,8 +1364,7 @@ function km_renderProductIndexTemplate($startUrl, $options)
 
                     var self = this;
 
-
-
+                    console.log(url);
                     if (!url) {
 
                         return;
@@ -1378,15 +1376,14 @@ function km_renderProductIndexTemplate($startUrl, $options)
 
                         .then(function(response) {
 
-                            console.log(response);
+                            // console.log(response);
 
                             self.data = response.data.data;
 
                             self.meta = response.data.meta;
 
-                            debugger;
-                            for ( product in self.data) {
-                                    self.categories.push =  product.category;
+                            for (let i in self.data) {
+                                self.categories[i] =  self.data[i].category;
                             }
                             self.categories = [...new Set(self.categories)];
 
@@ -1408,6 +1405,7 @@ function km_renderProductIndexTemplate($startUrl, $options)
 
                 getProductUrl(slug){
 
+                    // console.log("SSSSS" + slug + "SSSSS")
                     return '/product/'+slug+'/';
 
                 },
@@ -1490,23 +1488,94 @@ function km_renderProductIndexTemplate($startUrl, $options)
 
                 },
 
+                // dynamically build api url string based on form inputs.  Use ternary structure to set empty string if input is empty.
+                async getApiString() {
+
+                    var self = this;
+                    weightSelect = "";
+                    sortPrice = "";
+                    if ( this.filter.weight == "1g"){
+                        weightSelect = "filter[minimum_price_gram]=0&filter[maximum_price_gram]=";
+                        sortPrice = "sort=-price_gram&filter[minimum_price_gram]=0";
+                    }
+
+                    if ( this.filter.weight == "1/8oz"){
+                        weightSelect = "filter[minimum_price_oz_eighth]=0&filter[maximum_price_oz_eighth]=";
+                        sortPrice = "sort=-price_oz_eighth&filter[minimum_price_oz_eighth]=0";
+                    }
+
+                    if ( this.filter.weight == "1/4oz"){
+                        weightSelect = "filter[minimum_price_oz_fourth=0]&filter[maximum_price_oz_fourth]=";
+                        sortPrice = "sort=-price_oz_fourth&filter[minimum_price_oz_fourth]=0";
+                    }
+
+                    if ( this.filter.weight == "1/2oz"){
+                        weightSelect = "filter[minimum_price_oz_half=0]&filter[maximum_price_oz_half]=";
+                        sortPrice = "sort=-price_oz_half&filter[minimum_price_oz_half]=0";
+                    }
+
+                    if ( this.filter.weight == "1oz"){
+                        weightSelect = "filter[minimum_price_oz=0]&filter[maximum_price_oz]=";
+                        sortPrice = "sort=-price_oz&filter[minimum_price_oz]=0";
+                    }
+
+                    if ( this.filter.minThc != "All"){
+                        thc = this.filter.minThc.split("-");
+                        thcString = "&filter[minimum_cbd]=" + thc[0] + "&filter[maximum_cbd]=" + thc[1];
+                    }
+
+                    if ( this.filter.minCbd != "All"){
+                        cbd = this.filter.minCbd.split("-");
+                        cbdString = "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1];
+                    }
+
+                    let baseString = "https://api.kushmapper.com/v1/products";
+                    let pageSizeString = "?page_size=" + this.filter.page_size;
+                    let maxPriceString = this.filter.maxPrice != '' ? "&filter[maximum_price_any]=" + this.filter.maxPrice : '';
+                    let weightString = this.filter.weight != 'All' ? sortPrice : '';
+                    let categoryString = this.filter.category != 'All' ? "&filter[category]=" + this.filter.category : '';
+                    let minThcString = this.filter.minThc != 'All' ? thcString : '';
+                    let minCbdString = this.filter.minCbd != 'All' ? cbdString : '';
+
+                    urlSearch = baseString + pageSizeString + maxPriceString + categoryString + minThcString + minCbdString;
+                    console.log(urlSearch);
+                    await axios.get(urlSearch)
+                            .then(function(response) {     
+                                self.data = response.data.data;  
+                                self.meta = response.data.meta;
+                                console.log(self.data); 
+                                console.log(self.meta);
+                            })
+                            .catch(function(error) {
+                                console.log(error);
+                            })         
+
+                    // return baseString + pageSizeString + maxPriceString + categoryString + minThcString + minCbdString;
+                },
+
+                UpdateInputType()
+                {
+                    jQuery(".km-max-thc-input").attr('type', 'number'); 
+                    jQuery(".km-max-thc-input").attr('min', '0');                    
+                },
+
             };
 
         }
 
     </script>
 
-    <div x-data="<?php echo $componentFunction;?>">
+    <div x-data="<?php echo $componentFunction;?>" x-init="getData()">
 
 
         <template x-if="functionName == 'kmProductData_2()'">
-            <div class="columns km-filters">
-                <div class="column km-filters-column">              
-                    <fieldset class="km-max-thc">
+            <div class="columns km-filters-location-product">
+                <div class="column km-filters-column-location-product">              
+                    <fieldset class="km-max-thc-location-product">
                         <legend>Max Price</legend>
                         <div>
                             <div class="select">
-                                <select x-model="thcMaxWeight">
+                                <select x-model="filter.weight" x-on:change="getApiString()">
                                     <option value="All">All</option>        
                                     <option value="1g">1g</option>     
                                     <option value="1/8oz">1/8oz</option>  
@@ -1515,17 +1584,22 @@ function km_renderProductIndexTemplate($startUrl, $options)
                                     <option value="1oz">1oz</option>                                   
                                 </select>
                             </div>
-                            <div class="km-max-thc-currency">
-                                <input class="km-max-thc-input" type="text" id="thcMax" placeholder="price" name="thc max"  x-model="thcMaxPrice" x-on:change="UpdateInputType()"/>
+                            <div class="km-max-thc-currency-location-product">
+                                <input class="km-max-thc-input-location-product" 
+                                    type="text" 
+                                    id="thcMax" 
+                                    placeholder="price"  
+                                    x-model="filter.maxPrice" 
+                                    x-on:change="UpdateInputType(); getApiString()"/>
                             </div>
                         </div>
                     </fieldset>
                 </div>
                 
-                <div class="column  km-filters-column">     
-                    <div class="km-filters-label-thc"> 
+                <div class="column  km-filters-column-location-product">     
+                    <div class="km-filters-label-thc-location-product"> 
                         <div class="select">        
-                            <select id="thc" x-model="selectedTHC">
+                            <select id="thc" x-model="filter.minThc" x-on:change="getApiString()">
                                 <option value="All" name="all">All</option>
                                 <option value="10-14" name="20">10-14%</option>     
                                 <option value="14-18" name="15">14-18%</option>  
@@ -1539,11 +1613,10 @@ function km_renderProductIndexTemplate($startUrl, $options)
                     </div>
                 </div>
 
-
-                <div class="column  km-filters-column">      
-                    <div class="km-filters-label-cbd"> 
+                <div class="column km-filters-column-location-product">      
+                    <div class="km-filters-label-cbd-location-product"> 
                         <div class="select">          
-                            <select id="cbd" x-model="selectedCBD">
+                            <select id="cbd" x-model="filter.minCbd" x-on:change="getApiString()">
                                 <option value="All" name="all">All</option>
                                 <option value="0-4" name="20">0-4%</option>  
                                 <option value="4-8" name="15">4-8%</option>   
@@ -1556,22 +1629,20 @@ function km_renderProductIndexTemplate($startUrl, $options)
                     </div>
                 </div>
 
-                <div class="column  km-filters-column">      
-                    <div class="km-filters-label-category">         
+                <div class="column  km-filters-column-location-product">      
+                    <div class="km-filters-label-category-location-product">         
                         <div class="select"> 
-                            <select name="Category" id= "cat" x-model="selectedCat">
-                                    <option value="All" name="all">All</option>
-                                    <template x-for="category in categories" :key="category">
-                                        <option :value="category" x-text="category"></option>
-                                    </template>                            
+                            <select name="Category" id= "cat" x-model="filter.category" x-on:change="getApiString()">
+                                <option value="All" name="all">All</option>
+                                <template x-for="category in categories" :key="category">
+                                    <option :value="category" x-text="category"></option>
+                                </template>                            
                             </select> 
                         </div>        
                     </div>
                 </div>
             </div>
         </template>
-
-
 
 
         <template x-if="data">
@@ -1636,7 +1707,7 @@ function km_renderProductSliderTemplate($startUrl, $options)
 
     $data = km_get_api_data($startUrl);
 
-
+    error_log("DDDDDDDDDDD");
 
     $html ='<div class="swiper-container km-slide-container km-product-slider-' . $options['id'] . '"><div class="swiper-wrapper">';
 
@@ -1848,3 +1919,11 @@ function km_rewrite_rules() {
 
 add_action('init', 'km_rewrite_rules');
 
+
+function local_styles_css()
+{
+    wp_enqueue_style('filter', plugin_dir_url(__FILE__).'filter.css');
+}//end local_styles()
+
+
+add_action('wp_enqueue_scripts', 'local_styles_css');

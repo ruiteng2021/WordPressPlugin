@@ -881,8 +881,8 @@ function vendor_products()
     
                     <!-- Search button, entyry dropdown list and thc max search -->
                     <div class="km-search">
-                        <label style="min-width: 200px" class="km-search-items"> Show 
-                            <div class="select entrySelect">
+                        <label class="km-search-items">Show 
+                            <div class="select">
                                 <select name="Entries" id= "entries" x-model="pageSize" x-on:change="UpdatePages()">
                                     <option value="5" name="5">5</option>     
                                     <option value="10" name="10">10</option>     
