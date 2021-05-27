@@ -37,6 +37,15 @@ function vendor_products()
                     data: false,
                     categories: [],
 
+                    filter: {
+                        page_size: 10,
+                        category: 'All',
+                        maxPrice: '',
+                        weight: 'All',
+                        minThc: 'All',
+                        minCbd: 'All',
+                    },
+
                     // THC max filter begin //
                     thcMaxWeight: 'All',
                     thcMaxPrice: '',
@@ -108,6 +117,23 @@ function vendor_products()
                         self.infoWindow = new google.maps.InfoWindow();                       
                     },
 
+                    async searchProduct() 
+                    {
+                        var self = this;
+                        url = this.getApiString();
+                        console.log("New Filter");
+                        console.log(url);
+                        await axios.get(url)
+                        .then(function(response) {      
+                            self.products = response.data.data;  
+                            self.meta = response.data.meta;
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        })    
+
+                    },
+
                     async SearchFilter(url = this.startUrl)
                     {                        
                         var self = this;
@@ -118,116 +144,116 @@ function vendor_products()
 
                         weightSelect = "";
                         sortPrice = "";
-                        if ( self.thcMaxWeight == "1g"){
+                        if ( self.filter.weight == "1g"){
                             weightSelect = "filter[minimum_price_gram]=0&filter[maximum_price_gram]=";
                             sortPrice = "sort=-price_gram&filter[minimum_price_gram]=0";
                         }
 
-                        if ( self.thcMaxWeight == "1/8oz"){
+                        if ( self.filter.weight == "1/8oz"){
                             weightSelect = "filter[minimum_price_oz_eighth]=0&filter[maximum_price_oz_eighth]=";
                             sortPrice = "sort=-price_oz_eighth&filter[minimum_price_oz_eighth]=0";
                         }
 
-                        if ( self.thcMaxWeight == "1/4oz"){
+                        if ( self.filter.weight == "1/4oz"){
                             weightSelect = "filter[minimum_price_oz_fourth=0]&filter[maximum_price_oz_fourth]=";
                             sortPrice = "sort=-price_oz_fourth&filter[minimum_price_oz_fourth]=0";
                         }
 
-                        if ( self.thcMaxWeight == "1/2oz"){
+                        if ( self.filter.weight == "1/2oz"){
                             weightSelect = "filter[minimum_price_oz_half=0]&filter[maximum_price_oz_half]=";
                             sortPrice = "sort=-price_oz_half&filter[minimum_price_oz_half]=0";
                         }
 
-                        if ( self.thcMaxWeight == "1oz"){
+                        if ( self.filter.weight == "1oz"){
                             weightSelect = "filter[minimum_price_oz=0]&filter[maximum_price_oz]=";
                             sortPrice = "sort=-price_oz&filter[minimum_price_oz]=0";
                         }
 
                         // 0 0 0 0 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
                             urlSearch = urlSearch + "?page_size=" + self.pageSize;
                         }
 
                         // 0 0 0 0 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
                             urlSearch = urlSearch + 
-                                "?filter[category]=" + self.selectedCat + 
+                                "?filter[category]=" + self.filter.category + 
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 0 0 1 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&page_size=" + self.pageSize;;
                         }
 
                         // 0 0 0 1 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat + 
+                                "&filter[category]=" + self.filter.category + 
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 0 1 0 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 0 1 0 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 0 1 1 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
@@ -235,145 +261,145 @@ function vendor_products()
                         }
 
                         // 0 0 1 1 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 0 0 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
                             console.log("0 1 0 0 0");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 0 0 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            price = self.thcMaxPrice.split("-");
+                            price = self.filter.maxPrice.split("-");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
-                                "&filter[category]=" + self.selectedCat + 
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
+                                "&filter[category]=" + self.filter.category + 
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 0 1 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 0 1 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 1 0 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 1 0 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 1 1 0
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 0 1 1 1 1
-                        if( (self.thcMaxWeight == "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight == "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + "filter[maximum_price_any]=" + self.thcMaxPrice +
+                                "?" + "filter[maximum_price_any]=" + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 0 0 0
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
                             urlSearch = urlSearch + 
                                 "?" + sortPrice +
@@ -381,26 +407,26 @@ function vendor_products()
                         }
 
                         // 1 0 0 0 1 
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
                             urlSearch = urlSearch + 
-                                "?filter[category]=" + self.selectedCat + 
+                                "?filter[category]=" + self.filter.category + 
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 0 1 0
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&" + sortPrice +
@@ -408,28 +434,28 @@ function vendor_products()
                         }
 
                         // 1 0 0 1 1
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat + 
+                                "&filter[category]=" + self.filter.category + 
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 1 0 0  ///////////////////
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&" + sortPrice +
@@ -437,29 +463,29 @@ function vendor_products()
                         }
 
                         // 1 0 1 0 1
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 0 1 1 0
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
@@ -468,123 +494,123 @@ function vendor_products()
                         }
 
                         // 1 0 1 1 1
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice == "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice == "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
                                 "?filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 0 0 0
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
                             console.log("1 0 0 0");
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
+                                "?" + weightSelect + self.filter.maxPrice +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 0 0 1
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
-                                "&filter[category]=" + self.selectedCat + 
+                                "?" + weightSelect + self.filter.maxPrice +
+                                "&filter[category]=" + self.filter.category + 
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 0 1 0
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
+                                "?" + weightSelect + self.filter.maxPrice +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 0 1 1
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC == "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc == "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            cbd = self.selectedCBD.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
+                                "?" + weightSelect + self.filter.maxPrice +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 1 0 0
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
+                                "?" + weightSelect + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 1 0 1
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD == "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd == "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
+                            thc = self.filter.minThc.split("-");
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
+                                "?" + weightSelect + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
 
                         // 1 1 1 1 0
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat == "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category == "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
+                                "?" + weightSelect + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
                                 "&" + sortPrice +
@@ -592,19 +618,19 @@ function vendor_products()
                         }
 
                         // 1 1 1 1 1
-                        if( (self.thcMaxWeight != "All") &&
-                            (self.thcMaxPrice != "") &&
-                            (self.selectedTHC != "All") &&
-                            (self.selectedCBD != "All") &&
-                            (self.selectedCat != "All") )                   
+                        if( (self.filter.weight != "All") &&
+                            (self.filter.maxPrice != "") &&
+                            (self.filter.minThc != "All") &&
+                            (self.filter.minCbd != "All") &&
+                            (self.filter.category != "All") )                   
                         {
-                            thc = self.selectedTHC.split("-");
-                            cbd = self.selectedCBD.split("-");
+                            thc = self.filter.minThc.split("-");
+                            cbd = self.filter.minCbd.split("-");
                             urlSearch = urlSearch + 
-                                "?" + weightSelect + self.thcMaxPrice +
+                                "?" + weightSelect + self.filter.maxPrice +
                                 "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1] +
                                 "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1] +
-                                "&filter[category]=" + self.selectedCat +
+                                "&filter[category]=" + self.filter.category +
                                 "&" + sortPrice +
                                 "&page_size=" + self.pageSize;
                         }
@@ -660,8 +686,72 @@ function vendor_products()
                                 self.meta = response.data.meta;
                                 console.log(self.meta.links);
                         })
-                    },        
+                    },      
                     
+                    // dynamically build api url string based on form inputs.  Use ternary structure to set empty string if input is empty.
+                    getApiString() 
+                    {
+                        weightSelect = "";
+                        sortPrice = "";
+                        if ( this.filter.weight == "1g"){
+                            weightSelect = "&filter[minimum_price_gram]=0&filter[maximum_price_gram]=";
+                            sortPrice = "&sort=-price_gram&filter[minimum_price_gram]=0";
+                        }
+
+                        if ( this.filter.weight == "1/8oz"){
+                            weightSelect = "&filter[minimum_price_oz_eighth]=0&filter[maximum_price_oz_eighth]=";
+                            sortPrice = "&sort=-price_oz_eighth&filter[minimum_price_oz_eighth]=0";
+                        }
+
+                        if ( this.filter.weight == "1/4oz"){
+                            weightSelect = "&filter[minimum_price_oz_fourth=0]&filter[maximum_price_oz_fourth]=";
+                            sortPrice = "&sort=-price_oz_fourth&filter[minimum_price_oz_fourth]=0";
+                        }
+
+                        if ( this.filter.weight == "1/2oz"){
+                            weightSelect = "&filter[minimum_price_oz_half=0]&filter[maximum_price_oz_half]=";
+                            sortPrice = "&sort=-price_oz_half&filter[minimum_price_oz_half]=0";
+                        }
+
+                        if ( this.filter.weight == "1oz"){
+                            weightSelect = "&filter[minimum_price_oz=0]&filter[maximum_price_oz]=";
+                            sortPrice = "&sort=-price_oz&filter[minimum_price_oz]=0";
+                        }
+
+                        if ( this.filter.minThc != "All"){
+                            thc = this.filter.minThc.split("-");
+                            thcString = "&filter[minimum_thc]=" + thc[0] + "&filter[maximum_thc]=" + thc[1];
+                        }
+
+                        if ( this.filter.minCbd != "All"){
+                            cbd = this.filter.minCbd.split("-");
+                            cbdString = "&filter[minimum_cbd]=" + cbd[0] + "&filter[maximum_cbd]=" + cbd[1];
+                        }
+
+                        this.filter.page_size = this.pageSize;
+                        // let baseString = "https://api.kushmapper.com/v1/products";
+                        let baseString = "https://api.kushmapper.com/v1/vendors/1/products";
+                        let pageSizeString = "?page_size=" + this.filter.page_size;
+                        let maxPriceString = this.filter.weight == 'All' && this.filter.maxPrice != '' ? "&filter[maximum_price_any]=" + this.filter.maxPrice : '';
+                        let weightStringAll = this.filter.weight != 'All' && this.filter.maxPrice != '' ? sortPrice + weightSelect + this.filter.maxPrice : '';
+                        let weightStringSingle = this.filter.weight != 'All' && this.filter.maxPrice == '' ? sortPrice : '';
+                        let categoryString = this.filter.category != 'All' ? "&filter[category]=" + this.filter.category : '';
+                        let minThcString = this.filter.minThc != 'All' ? thcString : '';
+                        let minCbdString = this.filter.minCbd != 'All' ? cbdString : '';
+
+                        return baseString + pageSizeString + maxPriceString + weightStringAll + weightStringSingle + categoryString + minThcString + minCbdString;
+                    },
+                    
+                    resetFilter()
+                    { 
+                        this.filter.category = 'All';
+                        this.filter.maxPrice = '';
+                        this.filter.weight = 'All';
+                        this.filter.minThc = 'All';
+                        this.filter.minCbd = 'All';
+                        this.searchProduct();
+                    },
+
                     UpdateInputType()
                     {
                         jQuery(".km-max-thc-input").attr('type', 'number'); 
@@ -745,10 +835,6 @@ function vendor_products()
                             }
                         });
                     },
-
-                    ResizeGoogleRecaptcha() 
-                    {
-                    },
                    
                 };
             }
@@ -799,7 +885,7 @@ function vendor_products()
                         </li> 
                         <li :class="{'is-active' : menuTab === 'reviews'}">
                         <a href="#km-product-reviews"
-                            @click.prevent="menuTab = 'reviews'; ResizeGoogleRecaptcha()"
+                            @click.prevent="menuTab = 'reviews'"
                         >
                             <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
                             <span>REVIEWS</span>
@@ -816,7 +902,7 @@ function vendor_products()
                                 <legend>Max Price</legend>
                                 <div>
                                     <div class="select">
-                                        <select x-model="thcMaxWeight">
+                                        <select x-model="filter.weight" x-on:change="searchProduct()">
                                             <option value="All">All</option>        
                                             <option value="1g">1g</option>     
                                             <option value="1/8oz">1/8oz</option>  
@@ -826,7 +912,13 @@ function vendor_products()
                                         </select>
                                     </div>
                                     <div class="km-max-thc-currency">
-                                        <input class="km-max-thc-input" type="text" id="thcMax" placeholder="price" name="thc max" x-model="thcMaxPrice" x-on:change="UpdateInputType()"/>
+                                        <input class="km-max-thc-input" 
+                                        type="text" 
+                                        id="thcMax" 
+                                        placeholder="price" 
+                                        x-model="filter.maxPrice" 
+                                        x-on:change="searchProduct()"
+                                        x-on:click="UpdateInputType()" />
                                     </div>
                                 </div>
                             </fieldset>
@@ -835,7 +927,7 @@ function vendor_products()
                         <div class="column km-filters-column">  
                             <div class="km-filters-label-thc" >
                                 <div class="select">                        
-                                    <select id="thc" x-model="selectedTHC">
+                                    <select id="thc" x-model="filter.minThc" x-on:change="searchProduct()">
                                         <option value="All" name="all">All</option>
                                         <option value="10-14" name="20">10-14%</option>     
                                         <option value="14-18" name="15">14-18%</option>  
@@ -852,7 +944,7 @@ function vendor_products()
                         <div class="column km-filters-column">  
                             <div class="km-filters-label-cbd">
                                 <div class="select">                        
-                                    <select id="cbd" x-model="selectedCBD">
+                                    <select id="cbd" x-model="filter.minCbd" x-on:change="searchProduct()">
                                         <option value="All" name="all">All</option>
                                         <option value="0-4" name="20">0-4%</option>  
                                         <option value="4-8" name="15">4-8%</option>   
@@ -868,7 +960,7 @@ function vendor_products()
                         <div class="column km-filters-column">  
                             <div class="km-filters-label-category"> 
                                 <div class="select">                      
-                                    <select name="Category" id= "cat" x-model="selectedCat">
+                                    <select name="Category" id= "cat" x-model="filter.category" x-on:change="searchProduct()">
                                             <option value="All" name="all">All</option>
                                             <template x-for="category in categories" :key="category">
                                                 <option :value="category" x-text="category"></option>
@@ -876,7 +968,11 @@ function vendor_products()
                                     </select>     
                                 </div>
                             </div>                          
-                        </div>                      
+                        </div>       
+                        
+                        <div class="column km-filters-column">
+                            <button class="button is-black" x-on:click="resetFilter()">Reset</button>
+                        </div>
                     </div>  
     
                     <!-- Search button, entyry dropdown list and thc max search -->
@@ -895,6 +991,7 @@ function vendor_products()
                         </label>
                         <div class="km-search-items km-search-button-label">
                             <button class="button is-black km-search-button" x-on:click="SearchFilter()">Search ...</button>
+                            <!-- <button class="button is-black km-search-button" x-on:click="searchProduct()">Search ...</button> -->
                         </div>
                     </div>
     
