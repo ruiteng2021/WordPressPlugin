@@ -12,6 +12,7 @@ add_shortcode('vendor-products', 'vendor_products');
 function vendor_products()
 {
     $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
+    // $startUrl = 'https://api.kushmapper.com/v1/vendors/1';
     // $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
     // $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
     $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA"; // slyfox
@@ -30,13 +31,11 @@ function vendor_products()
                 return {
                     startUrl: '<?php echo $startUrl; ?>',
                     currentUrl: '<?php echo get_permalink(); ?>',
-                    name: false,
-                    stores: false,
-                    products: [],
-                    serviceArea: false,
-                    data: false,
-                    categories: [],
+                    // google reCaptcha begin//
+                    site_key: '<?php echo $site_key; ?>',
+                    // google reCaptcha end //
 
+                    // filter info //
                     filter: {
                         page_size: 10,
                         category: 'All',
@@ -46,70 +45,67 @@ function vendor_products()
                         minCbd: 'All',
                     },
 
+                    // global used info //
+                    data: false, // for logo and location tab
+                    menuTab: 'product',    
                     pageSize: '5',
+                    categories: [],
+                    products: [],
                     meta: false,
-                    menuTab: 'product',
                     urlSearchGlobal: false,
+                    // global used info end //                                   
 
                     // Google map begin//
-                    map: false,
-                    transport: "driving",
-                    transportUnit: "kilometers",
-                    directionsService: false,
-                    directionsRenderer: false,
-                    infoWindow: false,
+                    googleMap: {
+                        map: false,
+                        transport: "driving",
+                        transportUnit: "kilometers",
+                        directionsService: false,
+                        directionsRenderer: false,
+                        infoWindow: false,
+                    },
                     // Google map end //
-
-                    // google reCaptcha begin//
-                    site_key: '<?php echo $site_key; ?>',
-                    // google reCaptcha end //
 
                     async getData(url = this.startUrl) 
                     {
                         var self = this;
-                        await axios.get(url)
-                            .then(function(response) {
-                                // console.log(response);
-                                self.data = response.data.data;
-                                self.name = response.data.data["name"];
-                                self.stores = response.data.data["stores"];
-                                self.serviceArea = response.data.data["service_areas"];      
-                                self.products = response.data.data["products"];                                
+                        productUrl = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";  
+                        const generalInfo = axios.get(url);
+                        const productInfo = axios.get(productUrl);
+                        
+                        await axios.all([generalInfo, productInfo]).then(axios.spread(function(generalInfoRes, productInfoRes) {
+                                self.data = generalInfoRes.data.data;
+                                products = generalInfoRes.data.data["products"];                                
                                 // remove duplicate categories
-                                for ( let i in self.products) {
-                                    self.categories[i] =  self.products[i].category;
+                                for ( let i in products) {
+                                    self.categories[i] =  products[i].category;
                                 }
                                 self.categories = [...new Set(self.categories)];
-                                // console.log(self.categories.toString());
-                                urlPage = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";                                
-                                // urlPage = "https://api.kushmapper.com/v1/vendors/1/products?page_size=5&page=1";
-                                axios.get(urlPage)
-                                    .then(function(response) {      
-                                        self.products = response.data.data;
-                                        self.meta = response.data.meta;                                      
-                                    })
-                                
-                            })
+
+                                self.products = productInfoRes.data.data;
+                                self.meta = productInfoRes.data.meta;  
+                            }))
                             .catch(function(error) {
                                 console.log(error);
-                            })  
+                            }) 
 
-                        self.directionsService = new google.maps.DirectionsService();
-                        self.directionsRenderer = new google.maps.DirectionsRenderer();
+                        self.googleMap.directionsService = new google.maps.DirectionsService();
+                        self.googleMap.directionsRenderer = new google.maps.DirectionsRenderer();
                         let mapOptions = {
                             center: new google.maps.LatLng(42.976348, -81.2514795),
                             zoom: 10,
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         }
-                        self.map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
-                        self.directionsRenderer.setMap(self.map);     
-                        self.infoWindow = new google.maps.InfoWindow();                       
+                        self.googleMap.map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
+                        self.googleMap.directionsRenderer.setMap(self.googleMap.map);     
+                        self.googleMap.infoWindow = new google.maps.InfoWindow();                       
                     },
 
                     async searchProduct() 
                     {
                         var self = this;
                         url = this.getApiString();
+                        self.urlSearchGlobal = url;
                         // console.log("New Filter");
                         console.log(url);
                         await axios.get(url)
@@ -130,12 +126,16 @@ function vendor_products()
                         urlEntries = url.replace("?include=", "/");
                         // urlEntries = "https://api.kushmapper.com/v1/vendors/1/products";
                         urlEntries = urlEntries + "?page_size=" + self.pageSize;
-
+                        console.log("XXXXX" + self.urlSearchGlobal);
                         if(self.urlSearchGlobal)
                         {
+                            // debugger;
                             index = self.urlSearchGlobal.indexOf("page_size");
-                            urlEntries = self.urlSearchGlobal.slice(0, index);
+                            urlEntries = self.urlSearchGlobal.slice(0, index);            
                             urlEntries = urlEntries + "page_size=" + self.pageSize;
+                            index = self.urlSearchGlobal.indexOf("&filter");
+                            urlEntriesPart2 = self.urlSearchGlobal.slice(index);  
+                            urlEntries = urlEntries + urlEntriesPart2;
                         }
 
                         console.log(urlEntries);
@@ -245,7 +245,7 @@ function vendor_products()
                                         lat: position.coords.latitude,
                                         lng: position.coords.longitude,
                                     };
-                                    self.infoWindow.setPosition(pos);
+                                    self.googleMap.infoWindow.setPosition(pos);
                                     // self.infoWindow.setContent("Location found.");
                                     // self.infoWindow.open(self.map);
                                     console.log(pos);
@@ -254,7 +254,7 @@ function vendor_products()
                                     // pos.lng = -81.21131;
                                     coordinate = pos.lat + ", " + pos.lng;
                                     document.getElementById("Coordinate").value = coordinate; 
-                                    self.map.setCenter(pos);
+                                    self.googleMap.map.setCenter(pos);
 
                                     var marker = new google.maps.Marker({
                                         position: pos,
@@ -262,17 +262,17 @@ function vendor_products()
                                     });
 
                                     // To add the marker to the map, call setMap();
-                                    marker.setMap(self.map);
+                                    marker.setMap(self.googleMap.map);
                                 },
                                 () => {
-                                    HandleLocationError(true, self.infoWindow, self.map.getCenter());
+                                    HandleLocationError(true, self.googleMap.infoWindow, self.googleMap.map.getCenter());
                                 }
                             );
                         } 
                         else 
                         {
                             // Browser doesn't support Geolocation
-                            HandleLocationError(false, self.infoWindow, self.map.getCenter());
+                            HandleLocationError(false, self.googleMap.infoWindow, self.googleMap.map.getCenter());
                             console.log("XXXXX Error in GetVendorDirection XXXXX");
                         }
                     },
@@ -286,7 +286,7 @@ function vendor_products()
                             ? "Error: The Geolocation service failed."
                             : "Error: Your browser doesn't support geolocation."
                         );
-                        infoWindow.open(self.map);
+                        infoWindow.open(self.googleMap.map);
                     },
 
                     GetVendorDirection()
@@ -305,9 +305,9 @@ function vendor_products()
                             unitSystem: google.maps.UnitSystem.METRIC,
                             // unitSystem: google.maps.UnitSystem.IMPERIAL,
                         };
-                        self.directionsService.route(request, function(result, status) {
+                        self.googleMap.directionsService.route(request, function(result, status) {
                             if (status == 'OK') {
-                            self.directionsRenderer.setDirections(result);
+                            self.googleMap.directionsRenderer.setDirections(result);
                             }
                         });
                     },
@@ -372,7 +372,7 @@ function vendor_products()
                 <!-- Product infomation  -->
                 <div id="km-product-menu" x-show="menuTab === 'product'">
                     <!-- Filter dropsown lists -->
-                    <div class="columns km-filters">                                            
+                    <div class="columns km-filters is-multiline">                                            
                         <div class="column km-filters-column"> 
                             <fieldset class="km-max-thc">
                                 <legend>Max Price</legend>
@@ -545,25 +545,24 @@ function vendor_products()
                 <div id="km-location" x-show="menuTab === 'map'" >
                     <!-- <div class="columns">  -->
                         <div id="km-address"> 
-                            <template x-if="stores">
+                            <template x-if="data">
                                 <div class="km-location-store">    
                                     <strong><p class="is-size-6"> Store:</p> </strong>
-                                    <p x-text="stores[0].address1"> </p>
-                                    <p x-text="stores[0].address2"> </p>
-                                    <p><span x-text="stores[0].city"></span>&nbsp;<span x-text="stores[0].state"></span> </p>
-                                    <p x-text="stores[0].country"> </p>
-                                    <p x-text="stores[0].postal_code"> </p>
+                                    <p x-text="data.stores[0].address1"> </p>
+                                    <p x-text="data.stores[0].address2"> </p>
+                                    <p><span x-text="data.stores[0].city"></span>&nbsp;<span x-text="data.stores[0].state"></span> </p>
+                                    <p x-text="data.stores[0].country"> </p>
+                                    <p x-text="data.stores[0].postal_code"> </p>
                                 </div>
                             </template>
-                            <template x-if="serviceArea">
+                            <template x-if="data">
                                 <div class="km-location-service">  
                                     <strong><p class="is-size-6"> Service Area:</p> </strong>   
-                                    <p> <span x-text="serviceArea[0].city"></span>&nbsp;<span x-text="serviceArea[0].state"> </span></p>
-                                    <p x-text="serviceArea[0].country"> </p>
-                                    <!-- <p x-text="serviceArea[0].details"> </p> -->
+                                    <p> <span x-text="data.service_areas[0].city"></span>&nbsp;<span x-text="data.service_areas[0].state"> </span></p>
+                                    <p x-text="data.service_areas[0].country"> </p>                                    
                                 </div>
                             </template>
-                        </div>
+                        </div>        
 
                         <div id="km-map-container"> 
                             <div id="km-map"> 
@@ -575,7 +574,7 @@ function vendor_products()
                                 <button class="button is-dark" x-on:click="GetVendorDirection()">Get Directions</button>
                             </div>
                             <div class="km-map-driving"> 
-                                <div class="select" x-model="transport">
+                                <div class="select" x-model="googleMap.transport">
                                     <select>
                                         <option value="driving">Driving</option>
                                         <option value="walking">Walking</option>
@@ -583,7 +582,7 @@ function vendor_products()
                                         <option value="public">Public Transport</option>
                                     </select>
                                 </div>
-                                <div class="select" x-model="transportUnit">
+                                <div class="select" x-model="googleMap.transportUnit">
                                     <select>
                                         <option value="kilometers">Kilometers</option>
                                         <option value="miles">Miles</option>
@@ -599,7 +598,7 @@ function vendor_products()
                     <strong><p> this is photos </p> </strong>
                 </div>
                 <div id="km-product-reviews" x-show="menuTab === 'reviews'">
-                <!-- <form method="post" action="http://127.0.0.1/wordpress/test-page/" class="box" style="width: 100%"> -->
+                    <!-- <form method="post" action="http://127.0.0.1/wordpress/test-page/" class="box" style="width: 100%"> -->
                     <form method="post" action="https://kushmapper.com/wp-comments-post.php" class="box" style="width: 100%">
                         <div class="columns is-multiline">
                             <div class="column is-full has-background-info km-reviews-general" style="color: white;">
