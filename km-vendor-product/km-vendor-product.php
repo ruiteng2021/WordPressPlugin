@@ -101,12 +101,9 @@ function vendor_products()
                         self.googleMap.infoWindow = new google.maps.InfoWindow();                       
                     },
 
-                    async searchProduct() 
+                    async updateApiData(url)
                     {
                         var self = this;
-                        url = this.getApiString();
-                        self.urlSearchGlobal = url;
-                        // console.log("New Filter");
                         console.log(url);
                         await axios.get(url)
                         .then(function(response) {      
@@ -116,20 +113,23 @@ function vendor_products()
                         .catch(function(error) {
                             console.log(error);
                         })    
-
                     },
 
-                    async UpdatePages(url = this.startUrl)
+                    searchProduct() 
+                    {
+                        url = this.getApiString();
+                        this.urlSearchGlobal = url;
+                        this.updateApiData(url);   
+                    },
+
+                    UpdatePages(url = this.startUrl)
                     {  
                         var self = this;
-                        // debugger;
                         urlEntries = url.replace("?include=", "/");
                         // urlEntries = "https://api.kushmapper.com/v1/vendors/1/products";
                         urlEntries = urlEntries + "?page_size=" + self.pageSize;
-                        console.log("XXXXX" + self.urlSearchGlobal);
                         if(self.urlSearchGlobal)
                         {
-                            // debugger;
                             index = self.urlSearchGlobal.indexOf("page_size");
                             urlEntries = self.urlSearchGlobal.slice(0, index);            
                             urlEntries = urlEntries + "page_size=" + self.pageSize;
@@ -137,35 +137,19 @@ function vendor_products()
                             urlEntriesPart2 = self.urlSearchGlobal.slice(index);  
                             urlEntries = urlEntries + urlEntriesPart2;
                         }
-
-                        console.log(urlEntries);
-                        await axios.get(urlEntries)
-                            .then(function(response) {
-                                self.products = response.data.data;
-                                self.meta = response.data.meta;
-                        })
-
+                        this.updateApiData(urlEntries);
                     },
 
-                    async Pagenation(url)
+                    Pagenation(url)
                     {  
-                        console.log(url);
                         if (!url) {
                             return;
                         }
-                        var self = this;
-                        console.log(self.pageSize);
-                        await axios.get(url)
-                            .then(function(response) {
-                                // debugger;
-                                self.products = response.data.data;
-                                self.meta = response.data.meta;
-                                console.log(self.meta.links);
-                        })
+                        this.updateApiData(url);
                     },      
                     
                     // dynamically build api url string based on form inputs.  Use ternary structure to set empty string if input is empty.
-                    getApiString() 
+                    getApiString(url = this.startUrl) 
                     {
                         weightSelect = "";
                         sortPrice = "";
@@ -205,8 +189,9 @@ function vendor_products()
                         }
 
                         this.filter.page_size = this.pageSize;
-                        // let baseString = "https://api.kushmapper.com/v1/products";
-                        let baseString = "https://api.kushmapper.com/v1/vendors/1/products";
+                        // let baseString = "https://api.kushmapper.com/v1/products";                        
+                        // let baseString = "https://api.kushmapper.com/v1/vendors/1/products";
+                        let baseString = url.replace("?include=", "/");
                         let pageSizeString = "?page_size=" + this.filter.page_size;
                         let maxPriceString = this.filter.weight == 'All' && this.filter.maxPrice != '' ? "&filter[maximum_price_any]=" + this.filter.maxPrice : '';
                         let weightStringAll = this.filter.weight != 'All' && this.filter.maxPrice != '' ? sortPrice + weightSelect + this.filter.maxPrice : '';
@@ -292,18 +277,18 @@ function vendor_products()
                     GetVendorDirection()
                     {
                         var self = this;
-                        console.log("XXXXX in map GetVendorDirection XXXXX");
                         coord = document.getElementById('Coordinate').value;
                         coord = coord.split(",");
-                        console.log("XXXX " + coord[0] + "," + coord[1] + " XXXX");
                         start = new google.maps.LatLng(coord[0], coord[1]);
                         console.log(start);
+                        end = self.data.service_areas[0].city + "," + self.data.service_areas[0].state;
+                        console.log(self.googleMap.transport.toUpperCase());
+                        console.log(self.googleMap.transportUnit);
                         var request = {
                             origin: start,
-                            destination: "los angeles, ca",
-                            travelMode: 'DRIVING',
-                            unitSystem: google.maps.UnitSystem.METRIC,
-                            // unitSystem: google.maps.UnitSystem.IMPERIAL,
+                            destination: end,
+                            travelMode: self.googleMap.transport.toUpperCase(),
+                            unitSystem: self.googleMap.transportUnit == "kilometers" ? google.maps.UnitSystem.METRIC : google.maps.UnitSystem.IMPERIAL,
                         };
                         self.googleMap.directionsService.route(request, function(result, status) {
                             if (status == 'OK') {
@@ -576,10 +561,10 @@ function vendor_products()
                             <div class="km-map-driving"> 
                                 <div class="select" x-model="googleMap.transport">
                                     <select>
-                                        <option value="driving">Driving</option>
-                                        <option value="walking">Walking</option>
-                                        <option value="bicycling">Bicycling</option>
-                                        <option value="public">Public Transport</option>
+                                        <option value="DRIVING">Driving</option>
+                                        <option value="WALKING">Walking</option>
+                                        <option value="BICYCLING">Bicycling</option>
+                                        <option value="TRANSIT">Public Transport</option>
                                     </select>
                                 </div>
                                 <div class="select" x-model="googleMap.transportUnit">
