@@ -554,8 +554,8 @@ function vendor_products()
 
                             </div>
                             <div class="km-map-direction"> 
-                                <input id="Coordinate" class="input is-link" type="text" placeholder="Link input">
-                                <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinate()"></button>
+                                <input id="Coordinate" class="input is-link" type="text" placeholder="Enter your location">
+                                <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinate()" title="use my location"></button>
                                 <button class="button is-dark" x-on:click="GetVendorDirection()">Get Directions</button>
                             </div>
                             <div class="km-map-driving"> 
