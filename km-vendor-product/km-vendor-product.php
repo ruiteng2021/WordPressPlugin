@@ -250,14 +250,14 @@ function vendor_products()
                                     marker.setMap(self.googleMap.map);
                                 },
                                 () => {
-                                    HandleLocationError(true, self.googleMap.infoWindow, self.googleMap.map.getCenter());
+                                    this.HandleLocationError(true, self.googleMap.infoWindow, self.googleMap.map.getCenter());
                                 }
                             );
                         } 
                         else 
                         {
                             // Browser doesn't support Geolocation
-                            HandleLocationError(false, self.googleMap.infoWindow, self.googleMap.map.getCenter());
+                            this.HandleLocationError(false, self.googleMap.infoWindow, self.googleMap.map.getCenter());
                             console.log("XXXXX Error in GetVendorDirection XXXXX");
                         }
                     },
@@ -542,7 +542,7 @@ function vendor_products()
                             </template>
                             <template x-if="data">
                                 <div class="km-location-service">  
-                                    <strong><p class="is-size-6"> Service Area:</p> </strong>   
+                                    <strong><p class="is-size-6"> Delivery Area:</p> </strong>   
                                     <p> <span x-text="data.service_areas[0].city"></span>&nbsp;<span x-text="data.service_areas[0].state"> </span></p>
                                     <p x-text="data.service_areas[0].country"> </p>                                    
                                 </div>
