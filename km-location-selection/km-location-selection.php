@@ -41,51 +41,23 @@ function location_selection()
                                         latitude: 0.0,
                                         longitude:0.0,
                                     };
-                                   
-                                    // let now = new Date().getTime();
-                                    // console.log(now);
-                                    // while(new Date().getTime() < now + 1000){ /* do nothing */ } 
-                                    // let after = new Date().getTime();
-                                    // console.log(after);
-                                    
-                                    // console.log("XXX"+ data.city);
-                                    base = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-                                    // https://maps.googleapis.com/maps/api/geocode/json?address=407 Central Ave+Montreal+QC+Canada&key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A
+                                
+                                    addressString = "https://maps.googleapis.com/maps/api/geocode/json?address=";
                                     store.address = data.address1 + "+" + data.city + "+" + data.state + "+" + data.country;
-                                    base = base + store.address + "&key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A";
-                                    console.log(base);
-                                    axios.get(base)
+                                    addressString = addressString + store.address + "&key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A";
+                                    // console.log(addressString);
+                                    axios.get(addressString)
                                     .then(function(response) {      
-                                        // console.log("XXXXXXXXX");
-                                        console.log(response);
+                                        // console.log(response);
                                         store.latitude = response.data.results[0].geometry.location.lat;
                                         store.longitude = response.data.results[0].geometry.location.lng;
                                         store.city = response.config.url.split("+")[1];
-                                        // store.city = data.city;
-                                        // console.log(store.latitude);
-                                        // console.log(store.longitude);
                                         console.log(store.city);
                                         self.storeAddresses.push(store); 
                                     })
                                     .catch(function(error) {
                                         console.log(error);
-                                    })    
-
-                                    // debugger;
-                                    // geocoder.geocode({'address': store.address}, function(results, status) {
-                                    //     if (status == google.maps.GeocoderStatus.OK) 
-                                    //     {
-                                    //         store.latitude = results[0].geometry.location.lat();
-                                    //         store.longitude = results[0].geometry.location.lng();
-                                    //         store.city = data.city;
-                                    //         self.storeAddresses.push(store); 
-                                    //     } 
-                                    //     else 
-                                    //     {
-                                    //         alert('Geocode was not successful for the following reason: ' + status);
-                                    //     }
-                                    // });
-
+                                    })
                                 }
                             })
                             .catch(function(error) {
