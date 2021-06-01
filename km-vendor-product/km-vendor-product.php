@@ -258,7 +258,6 @@ function vendor_products()
                         {
                             // Browser doesn't support Geolocation
                             this.HandleLocationError(false, self.googleMap.infoWindow, self.googleMap.map.getCenter());
-                            console.log("XXXXX Error in GetVendorDirection XXXXX");
                         }
                     },
 
