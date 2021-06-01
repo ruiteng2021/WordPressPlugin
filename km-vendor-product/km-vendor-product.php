@@ -11,7 +11,13 @@ add_shortcode('vendor-products', 'vendor_products');
 
 function vendor_products()
 {
-    $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
+
+    $slug = get_query_var('slug');
+    $request = wp_remote_get( 'https://api.kushmapper.com/v1/vendors/slug/' . $slug );
+    $body = wp_remote_retrieve_body( $request );
+    $data = json_decode( $body );
+    $startUrl = "https://api.kushmapper.com/v1/vendors/{$data->data->id}?include=products";
+    // $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
     // $startUrl = 'https://api.kushmapper.com/v1/vendors/1';
     // $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
     // $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
@@ -511,7 +517,8 @@ function vendor_products()
                                 </div>
                                 <div class="km-product-view">                   
                                     <!-- <button class="button is-rounded is-dark">View</button> -->
-                                    <a class="button is-rounded is-dark" :href="currentUrl + '/view-product/?vendor=' + product.vendor_id + '&id=' + product.id">View</a>
+                                    <!-- <a class="button is-rounded is-dark" :href="currentUrl + '/view-product/?vendor=' + product.vendor_id + '&id=' + product.id">View</a> -->
+                                    <a class="button is-rounded is-dark" :href="'/product/' + product.slug">View</a>
                                 </div>
                             </div>
                         </div>

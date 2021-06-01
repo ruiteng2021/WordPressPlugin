@@ -11,9 +11,15 @@ add_shortcode('view-product', 'view_product');
 
 function view_product()
 {
-    $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
-    global $wp;
-    $linkUrl = home_url(add_query_arg(array($_GET), $wp->request));
+    $slug = get_query_var('slug');
+    $request = wp_remote_get( 'https://api.kushmapper.com/v1/products/slug/' . $slug );
+    $body = wp_remote_retrieve_body( $request );
+    $data = json_decode( $body );
+    $startUrl = "https://api.kushmapper.com/v1/vendors/{$data->data->vendor_id}?include=products";
+    $id = $data->data->id;
+    // $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
+    // global $wp;
+    // $linkUrl = home_url(add_query_arg(array($_GET), $wp->request));
 
     ob_start();
 
@@ -21,8 +27,8 @@ function view_product()
         <script>          
             function kmData() {
                 return {
-                    startUrl: '<?php echo $startUrl; ?>',
-                    linkUrl: '<?php echo  $linkUrl; ?>',
+                    startUrl:   '<?php echo $startUrl; ?>',
+                    id:         '<?php echo $id; ?>',
                     data: false,
                     product: false,
                     // name: false,
@@ -31,19 +37,12 @@ function view_product()
                         var self = this;
                         await axios.get(url)
                             .then(function(response) {
-                                // console.log(response);
                                 self.data = response.data.data;
                                 products = response.data.data["products"];   
-                                let productInfo = self.linkUrl.split("?");
-                                console.log(productInfo[1]);
-                                productInfo = productInfo[1].split("&");
-                                console.log(productInfo);
-                                id = productInfo[1].split("=");
-                                console.log(id);
                                 for ( let product of products) {
                                     // debugger;
-                                    console.log("XXX " + product.id + " XXX");
-                                    if (product.id == id[1]){
+                                    // console.log("XXX " + product.id + " XXX");
+                                    if (product.id == self.id){
                                         self.product = product;  
                                         break;
                                     }
