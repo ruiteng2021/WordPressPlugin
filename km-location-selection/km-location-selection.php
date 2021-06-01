@@ -11,8 +11,9 @@ add_shortcode('location-selection', 'location_selection');
 
 function location_selection()
 {
-    $startUrl = 'http://api.kushmapper.com/v1/stores';
-   
+    // $startUrl = 'http://api.kushmapper.com/v1/stores';
+    // $startUrl = 'http://api.kushmapper.com/v1/stores';
+    $startUrl =  'http://api.kushmapper.com/v1/vendors?page_size=1000';
     ob_start();
 
     ?>
@@ -31,10 +32,26 @@ function location_selection()
                         await axios.get(url)
                             .then(function(response) {
                                 self.data = response.data.data;
-                                geocoder = new google.maps.Geocoder();
+                                // console.log(response);
 
+                                stores = [];
                                 for (let data of self.data) 
                                 {
+                                    if(data.stores.length)
+                                        stores.push(data.stores[0]);
+                                    else
+                                        continue;
+                                }
+                                // remove the duplicate cities                            
+                                let adressesNoDuplicate = [...new Map(stores.map(item => [item.city, item])).values()];
+                                console.log(adressesNoDuplicate);
+
+                                geocoder = new google.maps.Geocoder();
+                                let n = 0;
+                                // for (let data of self.data) 
+                                for (let data of adressesNoDuplicate) 
+                                {
+                                    n = n + 1;
                                     let store = {
                                         address: "",
                                         city: "",
@@ -42,18 +59,33 @@ function location_selection()
                                         longitude:0.0,
                                     };
                                 
+                                    if(n%50 == 0) {
+                                        // delay every 50 time
+                                        // limitation of geolocation 
+                                        // only 50 time requests every second.
+                                        let now = new Date().getTime();
+                                        console.log(now);
+                                        while(new Date().getTime() < now + 500){ /* do nothing */ } 
+                                    }
+                                    
                                     addressString = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+                                    // console.log(data.stores.length);
+                                    // if(data.stores.length)
+                                    //     store.address = data.stores[0].address1 + "+" + data.stores[0].city + "+" + data.stores[0].state + "+" + data.stores[0].country;
+                                    // else
+                                    //     continue;
                                     store.address = data.address1 + "+" + data.city + "+" + data.state + "+" + data.country;
                                     addressString = addressString + store.address + "&key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A";
                                     // console.log(addressString);
                                     axios.get(addressString)
                                     .then(function(response) {      
-                                        // console.log(response);
+                                        console.log(response);
                                         store.latitude = response.data.results[0].geometry.location.lat;
                                         store.longitude = response.data.results[0].geometry.location.lng;
                                         store.city = response.config.url.split("+")[1];
                                         console.log(store.city);
                                         self.storeAddresses.push(store); 
+                                        console.log(self.storeAddresses.length);
                                     })
                                     .catch(function(error) {
                                         console.log(error);
@@ -63,7 +95,7 @@ function location_selection()
                             .catch(function(error) {
                                 console.log(error);
                             })    
-                            self.getCurrentLocation();       
+                            self.getCurrentLocation();   
                     },
 
 
