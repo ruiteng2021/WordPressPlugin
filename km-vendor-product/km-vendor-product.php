@@ -17,7 +17,7 @@ function vendor_products()
     $body = wp_remote_retrieve_body( $request );
     $data = json_decode( $body );
     $startUrl = "https://api.kushmapper.com/v1/vendors/{$data->data->id}?include=products";
-    // $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
+    // $startUrl = 'https://api.kushmapper.com/v1/vendors/132?include=products';
     // $startUrl = 'https://api.kushmapper.com/v1/vendors/1';
     // $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
     // $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
@@ -95,6 +95,13 @@ function vendor_products()
                                 console.log(error);
                             }) 
 
+                        if (Object.keys(self.data.service_areas).length == 0)
+                        {
+                            // create dummy date to avoid display error
+                            self.data.service_areas = [{city: "", state: '', country: ''}];
+                            console.log(self.data.service_areas);
+                        }
+                            
                         self.googleMap.directionsService = new google.maps.DirectionsService();
                         self.googleMap.directionsRenderer = new google.maps.DirectionsRenderer();
                         let mapOptions = {
@@ -286,7 +293,7 @@ function vendor_products()
                         coord = coord.split(",");
                         start = new google.maps.LatLng(coord[0], coord[1]);
                         console.log(start);
-                        end = self.data.service_areas[0].city + "," + self.data.service_areas[0].state;
+                        end = self.data.stores[0].city + "," + self.data.stores[0].state;
                         console.log(self.googleMap.transport.toUpperCase());
                         console.log(self.googleMap.transportUnit);
                         var request = {
@@ -546,13 +553,17 @@ function vendor_products()
                                     <p x-text="data.stores[0].postal_code"> </p>
                                 </div>
                             </template>
-                            <template x-if="data">
+                            
                                 <div class="km-location-service">  
                                     <strong><p class="is-size-6"> Delivery Area:</p> </strong>   
-                                    <p> <span x-text="data.service_areas[0].city"></span>&nbsp;<span x-text="data.service_areas[0].state"> </span></p>
-                                    <p x-text="data.service_areas[0].country"> </p>                                    
-                                </div>
-                            </template>
+                                    <template x-if="data">
+                                        <div>
+                                            <p> <span x-text="data.service_areas[0].city"></span>&nbsp;<span x-text="data.service_areas[0].state"> </span></p>
+                                            <p x-text="data.service_areas[0].country"> </p>   
+                                        </div>
+                                    </template>                         
+                                </div>    
+                                          
                         </div>        
 
                         <div id="km-map-container"> 
