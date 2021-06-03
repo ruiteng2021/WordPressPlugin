@@ -11,9 +11,7 @@ add_shortcode('location-selection', 'location_selection');
 
 function location_selection()
 {
-    // $startUrl = 'http://api.kushmapper.com/v1/stores';
-    // $startUrl = 'http://api.kushmapper.com/v1/stores';
-    $startUrl =  'http://api.kushmapper.com/v1/vendors?page_size=1000';
+    $startUrl =  'https://api.kushmapper.com/v1/locations';
     ob_start();
 
     ?>
@@ -31,78 +29,52 @@ function location_selection()
                     startUrl: '<?php echo $startUrl; ?>',
                     data: false,
                     storeAddresses: [],
-                    currentPos: {},
-                    distances: [],
                     
                     getData(url = this.startUrl) 
                     {
                         var self = this;
-                        self.getCurrentLocation();   
                         axios.get(url)
                             .then(function(response) {
                                 self.data = response.data.data;
                                 // console.log(response);
-
-                                stores = [];
-                                for (let data of self.data) 
-                                {
-                                    if(data.stores.length)
-                                        stores.push(data.stores[0]);
-                                    else
-                                        continue; // skip stores not exist
-                                }
-                                // remove the duplicate cities                            
-                                let adressesNoDuplicate = [...new Map(stores.map(item => [item.city, item])).values()];
-                                // console.log(adressesNoDuplicate);
-
+                                currentPos = {};
+                                currentPos = self.getCurrentLocation();   
                                 geocoder = new google.maps.Geocoder();
-                                // let n = 0;
-                                // for (let data of self.data) 
-                                for (let data of adressesNoDuplicate) 
+
+                                // collect city info 
+                                for (let data of self.data) 
                                 {            
-                                    let store = {
-                                        address: "",
+                                    let cityInfo = {
                                         country: "",
                                         province: "",
                                         city: "",
                                         latitude: 0.0,
                                         longitude: 0.0,
                                         distance: 0.0,
-                                    };
-                                
-                                    // n = n + 1;
-                                    // if(n%50 == 0) {
-                                    //     // delay every 50 time
-                                    //     // limitation of geolocation 
-                                    //     // only 50 time requests every second.
-                                    //     let now = new Date().getTime();
-                                    //     console.log(now);
-                                    //     while(new Date().getTime() < now + 500){ /* do nothing */ } 
-                                    // }
+                                    };                                
                                     
                                     addressString = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-                                    store.address = data.address1 + "+" + data.city + "+" + data.state + "+" + data.country;
-                                    addressString = addressString + store.address + "&key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A";
+                                    cityInfo.address = data.city + "+" + data.state + "+" + data.country;
+                                    addressString = addressString + cityInfo.address + "&key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A";
                                     // console.log(addressString);
                                     axios.get(addressString)
                                     .then(function(response) {     
-                                        console.log(response);
-                                        store.latitude = response.data.results[0].geometry.location.lat;
-                                        store.longitude = response.data.results[0].geometry.location.lng;
-                                        store.country = response.config.url.split("+")[3].split("&")[0];
-                                        store.province = response.config.url.split("+")[2];
-                                        store.city = response.config.url.split("+")[1];
-                                        console.log(store.city);   
+                                        // console.log(response);
+                                        cityInfo.latitude = response.data.results[0].geometry.location.lat;
+                                        cityInfo.longitude = response.data.results[0].geometry.location.lng;
+                                        cityInfo.country = response.config.url.split("+")[2].split("&")[0];
+                                        cityInfo.province = response.config.url.split("+")[1];
+                                        cityInfo.city = response.config.url.split("+")[0].split("=")[1];
+                                        // console.log(cityInfo.city);   
                                         cityPos = {};                                     
-                                        cityPos.lat = store.latitude,
-                                        cityPos.lng = store.longitude,
-                                        distance = self.haversine_distance (self.currentPos, cityPos);
-                                        store.distance = distance;
+                                        cityPos.lat = cityInfo.latitude,
+                                        cityPos.lng = cityInfo.longitude,
+                                        distance = self.haversine_distance (currentPos, cityPos);
+                                        cityInfo.distance = distance;
                                         console.log("distance: " + distance);
-                                        // distances.push(distance); 
-                                        self.storeAddresses.push(store); 
+                                        self.storeAddresses.push(cityInfo); 
+                                        // sort city distance to acsending order
                                         self.storeAddresses.sort((a,b)=> (a.distance > b.distance ? 1 : -1))
-                                        // console.log(self.storeAddresses);
                                     })
                                     .catch(function(error) {
                                         console.log(error);
@@ -114,7 +86,6 @@ function location_selection()
                             })       
                     },
 
-
                     getCurrentLocation(){
                         currentPosition = {};
                         if (navigator.geolocation) 
@@ -125,50 +96,12 @@ function location_selection()
                                         lat: position.coords.latitude,
                                         lng: position.coords.longitude,
                                     };
-                                    this.currentPos.lat = pos.lat;
-                                    this.currentPos.lng = pos.lng;
+                                    currentPosition.lat = pos.lat;
+                                    currentPosition.lng = pos.lng;
                                 },
                             );
                         } 
-                    },
-
-                    getStoreLocation(address)
-                    {   
-                        // cityPos = {};
-                        // distances = [];
-                        // for (let data of this.data) 
-                        // {
-                        //     if(data.latitude !=null && data.longitude !=null)
-                        //     {
-                        //         cityPos.lat = data.latitude,
-                        //         cityPos.lng = data.longitude,
-                        //         distance = this.haversine_distance (this.currentPos, cityPos);
-                        //         distances.push(distance);                  
-                        //     }
-                        // }    
-                        // for (let address of this.storeAddresses) 
-                        // {
-                        //     // console.log(address);
-                        //     if(address.latitude !=null && address.longitude !=null)
-                        //     {
-                        //         cityPos.lat = address.latitude,
-                        //         cityPos.lng = address.longitude,
-                        //         distance = this.haversine_distance (this.currentPos, cityPos);
-                        //         console.log("distance: " + distance);
-                        //         distances.push(distance);                  
-                        //     }               
-                        // }
-                        // console.log(this.distances);
-                        // minDistancePos = 0;
-                        // minDistancePos =  this.distances.indexOf(Math.min(...this.distances));
-                        // console.log("min distance Pos: " + minDistancePos);
-                        // console.log("min distance city: " + this.storeAddresses[minDistancePos].city);
-                        // minDistanceAddress = this.storeAddresses[minDistancePos];
-                        // console.log(minDistanceAddress);
-                        // delete this.storeAddresses[minDistancePos];
-                        // this.storeAddresses.unshift(minDistanceAddress);  
-                        console.log(address);    
-                        console.log(this.storeAddresses);  
+                        return currentPosition;
                     },
 
                     haversine_distance(mk1, mk2) 
@@ -191,7 +124,7 @@ function location_selection()
                 <select class="km-location-select" name="state" onchange="location = this.options[this.selectedIndex].value;">
                     <option value="city">Select a City</option>
                     <template x-for="address in storeAddresses" :key="address">
-                        <option :value="address.country + '/' + address.province  + '/' + address.city" x-text="address.city"></option>
+                        <option :value="'/wordpress/location/' + address.country + '/' + address.province  + '/' + address.city" x-text="address.city"></option>
                     </template>       
                 </select>
             </div>
