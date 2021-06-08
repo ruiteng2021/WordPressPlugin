@@ -1,0 +1,175 @@
+<html>
+  <head>
+    <title>Using Select2</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Select2 CSS -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" rel="stylesheet" />
+
+</head>
+  <body>
+
+    <select class="km-location-select">
+      <option value="city">Select a City</option>
+      <option value="London">London</option>
+      <option value="Edmonton">Edmonton</option>
+      <option value="Toronto">Toronto</option>
+      <option value="Victoria">Victoria</option>  
+    </select>
+
+    <div class="jumbotron">
+      <div class="container bg-danger">
+        <!-- <div class="col-md-6">
+          <label>Single Select</label>
+          <select class="single" class="js-states form-control" onchange="storeHistory(this)">
+            <option>Java</option>
+            <option>Javascript</option>
+            <option>PHP</option>
+            <option>Visual Basic</option>
+          </select>
+
+        </div>
+        <div class="col-md-6">
+          <label>Multiple Select2</label>
+          <select id="multiple" class="js-states form-control" multiple>
+            <option>Java</option>
+            <option>Javascript</option>
+            <option>PHP</option>
+            <option>Visual Basic</option>
+          </select>
+        </div> -->
+
+
+        <!-- <select class="templatingSelect2">
+          <option value=""></option>
+          <option value="usd">XXX</option>
+          <option value="euro">Euro</option>
+          <option value="gbp">Pound</option>
+        </select> -->
+
+
+
+
+      </div>
+    </div>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Select2 -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+
+    <script>
+      
+      $(".single").select2({
+          placeholder: "Select a programming language",
+          allowClear: true
+      });
+      $("#multiple").select2({
+          placeholder: "Select a programming language",
+          allowClear: true
+      });
+
+      $(".templatingSelect2").select2({
+        placeholder: "What currency do you use?", //placeholder
+        templateResult: setCurrency,
+        templateSelection: setCurrency
+      });
+
+      function setCurrency (currency) {
+        // console.log(currency);
+        if (!currency.id) { 
+          return currency.text; 
+        }
+        var $currency = $('<span class="glyphicon glyphicon-' + currency.element.value + '">' + currency.text + '</span>');
+        return $currency;
+      };
+
+
+      // jQuery(document).ready(function() {
+      //     jQuery('.km-location-select').select2({
+      //         theme: "classic",
+      //         // data:content,
+      //         width: '100%',
+      //         // templateResult:formatState,
+      //         // templateSelection: formatState
+      //     });
+      // });
+
+
+
+      // var content = [
+      //     {id: 0, text: "London"},
+      //     {id: 1, text: "Edmonton"},
+      //     {id: 2, text: "Toronto"},
+      //     {id: 3, text: "Victoria"},
+      // ];
+      
+
+      // function formatState (state) {
+      //     // console.log(state);
+      //     if (!state.id) { 
+      //       return state.text; 
+      //     }
+
+      //     html = "";
+      //     // html += "<i style='z-index: 1; position: relative;' class='info'>link</i>";
+      //     // html += '<label for="' + state.text + '">'+ state.text +'</label>';
+      //     // html += '<input class="info" onclick="btn_handler(this)" type="button" id="' + state.text + '" value="x"><br>';
+           
+      //     var $state = $(html);
+      //     return $state;
+      //     // return state.text + " <i class='info'>link</i>";
+      // };
+
+      $(".km-location-select").select2({
+        width: '100%',
+        templateResult: function (data) {
+          if (data.id == null) {
+            return data.text;
+          }
+          
+          html = "";
+          html += '<label for="' + data.text + '">'+ data.text +'</label>';
+          html += '<input class="info" onclick="btn_handler(this)" type="button" id="' + data.text + '" value="x"><br>';
+
+          var $option = $("<span></span>");
+          var $preview = $(html);
+          $preview.prop("href", data.id);
+          $preview.on('mouseup', function (evt) {
+            // Select2 will remove the dropdown on `mouseup`, which will prevent any `click` events from being triggered
+            // So we need to block the propagation of the `mouseup` event
+            evt.stopPropagation();
+          });
+          
+          $preview.on('click', function (evt) {
+            console.log('the link was clicked');
+          });
+          
+          $option.text(data.text);
+          $option.append($preview);
+          
+          return $option;
+        }
+      });
+
+
+      function btn_handler(city) {
+        console.log(city.id);
+        // var data = jQuery('.km-location-select').select2('data');
+        // // console.log(data[0]);
+        alert(city.id);
+      }
+
+
+      function storeHistory(selection)
+      {
+          cityHistory = localStorage.getItem("city");
+          console.log(cityHistory);
+          // jQuery(".km-location-select option").eq(1).before(jQuery("<option></option>").val("cityHistory").text(cityHistory));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+body {
+    font-family: sans-serif;
+}
+
+ul {
+    padding: 0;
+}
+
+.info {
+    color: #00f;
+    font-weight: bold;
+    font-size: 10px;
+    float: right;
+    position: relative;
+    z-index: 1;
+}
+
+.info:hover {
+    text-decoration: underline;
+}
