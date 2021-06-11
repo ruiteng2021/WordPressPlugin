@@ -72,13 +72,18 @@ function location_selection()
                 if( data.history == true){
 
                     html = "";
+                    html += '<i class="fas fa-history" style="margin-right: 10px;"></i><strong>' + data.text + '</strong>';
                     html += '<label for="' + data.text + '">'+ "" +'</label>';
                     html += '<input style="padding: 5px 10px 5px 10px; color: black; margin-left: 40px; border: 0; float:right; background:white;" class="info" type="button" id="' + data.text + '" value="x"><br>';
+                    
+                    // var $option = jQuery(html);
+                    // html = "";
+                    // html += '<label for="' + data.text + '">'+ "" +'</label>';
+                    // html += '<input style="padding: 5px 10px 5px 10px; color: black; margin-left: 40px; border: 0; float:right; background:white;" class="info" type="button" id="' + data.text + '" value="x"><br>';
 
                     var $option = jQuery("<span></span>");
-                    // console.log($option);
+                    
                     var $preview = jQuery(html);
-                    // console.log($preview);
                     $preview.prop("href", data.id);
                     $preview.on('mouseup', function (evt) {
                         // Select2 will remove the dropdown on `mouseup`, which will prevent any `click` events from being triggered
@@ -92,18 +97,15 @@ function location_selection()
                         jQuery(id).css("display", "none");  
                         removeHistory(data.text);
                     });
-                    
-                    $option.text(data.text);
+
+                    // $option.text(data.text);
                     $option.append($preview);
                 }
                 else 
                 {
                     html = "";
-                    var $option = jQuery("<span></span>");
-                    var $preview = jQuery(html);
-                    $preview.prop("href", data.id);
-                    $option.text(data.text);
-                    $option.append($preview);
+                    html += '<span><i class="fas fa-map-marker-alt" style="margin-right: 10px;"></i><strong>' + data.text + '</strong></span>';
+                    var $option = jQuery(html);
                 }
                 
                 return $option;
@@ -222,8 +224,8 @@ function location_selection()
                 {   
                     if (citySlug == address.city_slug)
                     {
-                        location = '/wordpress/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
-                        // location = '/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
+                        // location = '/wordpress/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
+                        location = '/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
                         console.log(location);
                         return  location;
                     }
@@ -269,6 +271,9 @@ function location_selection()
                 // console.log(cities);
                 // console.log(storeAddresses);
                 html = '';
+                if(cities == null){
+                    return;
+                }
                 for ( let city of cities) {
 
                     let cityShow = {
@@ -295,6 +300,9 @@ function location_selection()
             function preparePreloadData(addresses){
                 result = [];               
                 cities = JSON.parse(localStorage.getItem("cities"));  
+                if(cities == null){
+                    return;
+                }
                 for (let city of cities) 
                 {   
                     let preLoad = { 
