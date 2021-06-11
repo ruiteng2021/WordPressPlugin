@@ -19,6 +19,66 @@
       <option value="Victoria">Victoria</option>  
     </select>
 
+
+
+    <!-- <div
+    x-data="{ selectedCity: '' }"
+    x-init="() => {
+        select2 = jQuery($refs.select).select2();
+        select2.on('select2:select', (event) => {
+        selectedCity = event.target.value;
+        });
+        $watch('selectedCity', (value) => {
+        select2.val(value).trigger('change');
+        });
+    }"
+    >
+    <select x-ref="select" data-placeholder="Select a City">
+        <option></option>
+        <option value="London">London</option>
+        <option value="New York">New York</option>
+    </select>
+    <p>Selected value (bound in Alpine.js): <code x-text="selectedCity"></code></p>
+    <p>
+        <button @click="selectedCity = ''">
+        Reset selectedCity
+        </button>
+    </p>
+    <p>
+        <button @click="selectedCity = 'London'">
+        Trigger selection of London
+        </button>
+    </p>
+    <p>
+        <button @click="selectedCity = 'New York'">
+        Trigger selection of New York
+        </button>
+    </p>
+</div>
+
+
+
+
+
+<select class="combo">
+  <option></option>
+  <option value="1">Opt 1</option>
+  <option value="2">Opt 2</option>
+  <option value="3">Opt 3</option>
+  <option value="4">Opt 4</option>
+  <option value="5">Opt 5</option>
+</select>
+
+
+
+
+ -->
+
+
+
+
+
+
     <div class="jumbotron">
       <div class="container bg-danger">
         <!-- <div class="col-md-6">
@@ -48,10 +108,6 @@
           <option value="euro">Euro</option>
           <option value="gbp">Pound</option>
         </select> -->
-
-
-
-
       </div>
     </div>
     <!-- jQuery -->
@@ -63,6 +119,12 @@
 
     <script>
       
+      jQuery(".combo").select2({
+                placeholder: "Select a programming language",
+                allowClear: true,
+                width: "resolve"
+            });
+
       $(".single").select2({
           placeholder: "Select a programming language",
           allowClear: true
@@ -124,43 +186,113 @@
       //     // return state.text + " <i class='info'>link</i>";
       // };
 
+      // var data = [{
+      //     id: 0,
+      //     text: '<div style="color:green">enhancement</div>',
+      //     html: '<div style="color:green">enhancement</div><div><b>Select2</b> supports custom themes using the theme option so you can style Select2 to match the rest of your application.</div>',
+      //     title: 'enchancement'
+      // }, {
+      //     id: 1,
+      //     text: '<div style="color:red">bug</div>',
+      //     html: '<div style="color:red">bug</div><div><small>This is some small text on a new line</small></div>',
+      //     title: 'bug'
+      // }];
+
+      var preload_data = [
+        { id: 'user0', text: 'Disabled User', history: true}
+        , { id: 'user1', text: 'Jane Doe', history: true}
+        , { id: 'user2', text: 'John Doe', history: true }
+        , { id: 'user3', text: 'Robert Paulson', history: true }
+        , { id: 'user5', text: 'Spongebob Squarepants', history: true}
+        , { id: 'user6', text: 'Planet Bob',history: true }
+        , { id: 'user7', text: 'Inigo Montoya', history: true }
+      ];
+
+      // $('.km-location-select').select2('data', preload_data );
+
       $(".km-location-select").select2({
-        width: '100%',
+        width: '30%',
+
+        data: preload_data,
+
+
+
+
+        escapeMarkup: function(markup) {
+          return markup;
+        },
+
         templateResult: function (data) {
+          console.log(data);
+
           if (data.id == null) {
             return data.text;
           }
           
-          html = "";
-          html += '<label for="' + data.text + '">'+ data.text +'</label>';
-          html += '<input class="info" onclick="btn_handler(this)" type="button" id="' + data.text + '" value="x"><br>';
+          if(data.history == true) {
+            html = "";
+            html += '<label for="' + data.text + '">'+ "" +'</label>';
+            html += '<input style="color: black; margin-left: 40px; border: 0; float:right; background:white;" class="info" onclick="btn_handler(this)" type="button" id="' + data.text + '" value="x"><br>';
 
-          var $option = $("<span></span>");
-          var $preview = $(html);
-          $preview.prop("href", data.id);
-          $preview.on('mouseup', function (evt) {
-            // Select2 will remove the dropdown on `mouseup`, which will prevent any `click` events from being triggered
-            // So we need to block the propagation of the `mouseup` event
-            evt.stopPropagation();
-          });
-          
-          $preview.on('click', function (evt) {
-            console.log('the link was clicked');
-          });
-          
-          $option.text(data.text);
-          $option.append($preview);
-          
+            var $option = $("<span></span>");
+            var $preview = $(html);
+            $preview.prop("href", data.id);
+
+            $preview.on('mouseup', function (evt) {
+
+              // Select2 will remove the dropdown on `mouseup`, which will prevent any `click` events from being triggered
+              // So we need to block the propagation of the `mouseup` event
+              evt.stopPropagation();
+
+            });
+
+            $preview.on('click', function (evt) {
+              // console.log(evt);
+              console.log('the link was clicked');
+              // console.log(data.text);
+              // console.log(data._resultId);
+              id = "#" + data._resultId;
+              $(id).css("display", "none");
+            });
+            
+            $option.text(data.text);
+            $option.append($preview);
+          }
+          else
+          {
+            html = "";
+            var $option = $("<span></span>");
+            var $preview = $(html);
+            $preview.prop("href", data.id);
+            $option.text(data.text);
+            $option.append($preview);
+          }
+       
           return $option;
-        }
-      });
+        },
 
+        // templateSelection: function(data) {
+        //   // return data.text;
+        // }
+
+
+      }).trigger('change');
+
+      // $('.km-location-select').on('select2:selecting', function(e) {
+      //   console.log('Selecting: ' , e.params.args.data);
+      // });
 
       function btn_handler(city) {
-        console.log(city.id);
+        // console.log(city.id);
+        // findCity = ".km-location-select option[value='" + city.id + "']";
+        // console.log(findCity);
+        // $(findCity).detach();
+        // $('.km-location-select').val(null).trigger('change');
+        // $(".km-location-select option[value='London']").remove();
+        // $('.km-location-select').find(':selected');
         // var data = jQuery('.km-location-select').select2('data');
         // // console.log(data[0]);
-        alert(city.id);
+        // alert(city.id);
       }
 
 
