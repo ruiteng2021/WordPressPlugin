@@ -12,7 +12,14 @@ add_shortcode('view-product', 'view_product');
 function view_product()
 {
     $slug = get_query_var('slug');
-    $startUrl = "https://api.kushmapper.com/v1/products/slug/{$slug}";
+    $request = wp_remote_get( 'https://api.kushmapper.com/v1/products/slug/' . $slug );
+    $body = wp_remote_retrieve_body( $request );
+    $data = json_decode( $body );
+    $startUrl = "https://api.kushmapper.com/v1/vendors/{$data->data->vendor_id}?include=products";
+    $id = $data->data->id;
+    // $startUrl = 'https://api.kushmapper.com/v1/vendors/1?include=products';
+    // global $wp;
+    // $linkUrl = home_url(add_query_arg(array($_GET), $wp->request));
 
     ob_start();
 
@@ -21,18 +28,25 @@ function view_product()
             function kmData() {
                 return {
                     startUrl:   '<?php echo $startUrl; ?>',
+                    id:         '<?php echo $id; ?>',
+                    data: false,
                     product: false,
-                    name: {},
+                    // name: false,
                     async getData(url = this.startUrl) 
                     {
                         var self = this;
-                        // console.log(url);
                         await axios.get(url)
                             .then(function(response) {
-                                // console.log(response);
-                                self.product = response.data.data;
-                                self.name.slug = self.product.vendor.slug;
-                                self.name.name = self.product.vendor.name;
+                                self.data = response.data.data;
+                                products = response.data.data["products"];   
+                                for ( let product of products) {
+                                    // debugger;
+                                    // console.log("XXX " + product.id + " XXX");
+                                    if (product.id == self.id){
+                                        self.product = product;  
+                                        break;
+                                    }
+                                }
                             })
                             .catch(function(error) {
                                 console.log(error);
@@ -59,9 +73,8 @@ function view_product()
                         <h4 x-show="product.category != null"><span x-text="product.category"></span></h4>
                         <p x-show="product.description != null"><span x-text="product.description"></span></p>   
                         <div class="content is-medium km-product-detail-link-1">  
-                            <!-- <p>Vendors: <a :href="'/wordpress/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p> -->
-                            <p>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p>
-                            <a class="button is-rounded is-dark" :href=product.url>VIEW WEBSITE</a>
+                            <p>Vendors: <a :href=data.website><span style="text-decoration: underline;" x-text="data.name"></span></a></p>
+                            <a class="button is-rounded is-dark" :href=data.website>VIEW WEBSITE</a>
                         <div>                    
                     </div>
                 </div>
@@ -80,10 +93,9 @@ function view_product()
                     </div>
                 </div>
             </template>
-            <div class="content is-medium km-product-detail-link-2"> 
-                <!-- <p>Vendors: <a :href="'/wordpress/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p> -->
-                <p>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p>
-                <a class="button is-rounded is-dark" :href=product.url>VIEW WEBSITE</a>
+            <div class="content is-medium km-product-detail-link-2">  
+                <p>Vendors: <a :href=data.website><span style="text-decoration: underline;" x-text="data.name"></span></a></p>
+                <a class="button is-rounded is-dark" :href=data.website>VIEW WEBSITE</a>
             <div>  
         </div>
         

@@ -1,0 +1,16 @@
+.km-product-detail-link-2{
+    display: none;
+}
+
+@media only screen and (max-width: 800px)
+{
+    .km-product-detail-link-1{
+        display: none;
+    }
+
+    .km-product-detail-link-2{
+        display: block;
+        margin-bottom: 20px;
+        margin-left: 10px;
+    }
+}
