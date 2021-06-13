@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="custom.css" />
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Lora:400,700|Nunito:400,700"
+      rel="stylesheet"
+    />
+
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.8/dist/alpine.js"
+      defer
+    ></script>
+
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"
+    ></script>
+
+    <link
+      href="images/favicon_32.ico"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
+    <link href="images/favicon_256.ico" rel="apple-touch-icon" />
+  </head>
+  <body
+    x-data="images()"
+    x-init="fetch('https://pixabay.com/api/?key=15819227-ef2d84d1681b9442aaa9755b8&q=yellow+flowers&image_type=photo').then(response => response.json()).then(response => { images = response.hits })"
+  >
+    
+    <div class="columns has-background-light">
+          <div class="column has-background-primary is-one-quarter">Auto</div>
+          <div class="column">   
+              <div class="columns">
+                <div class="column has-background-danger">
+                  <p class="bd-notification is-primary is-half">                  
+                    First Column First Column First Column First Column
+                  </p>
+                  <!-- <div class="control"> -->
+                    <label for="fader">Volume</label>
+                    <input type="range" min="0" max="1" value="1" step="0.1"id="fader">
+                  <!-- </div> -->
+                </div>
+                <div class="column has-background-info">
+                  <p class="bd-notification is-primary">                    
+                    Second Column Second Column
+                  </p>
+                </div>
+                <div class="column has-background-warning">
+                  <p class="bd-notification is-primary">                    
+                    Third Column 
+                  </p>
+                </div>
+                <div class="column has-background-success">
+                  <p class="bd-notification is-primary">                    
+                    Fourth Column 
+                  </p>
+                </div>
+              </div>
+
+              <div class="columns is-desktop">
+                <div class="column has-background-danger">
+                  <p class="bd-notification is-primary is-half">                  
+                    First Column First Column First Column First Column
+                  </p>
+                </div>
+                <div class="column has-background-info">
+                  <p class="bd-notification is-primary">                    
+                    Second Column Second Column
+                  </p>
+                </div>
+                <div class="column has-background-warning">
+                  <p class="bd-notification is-primary">                    
+                    Third Column 
+                  </p>
+                </div>
+                <div class="column has-background-success">
+                  <p class="bd-notification is-primary">                    
+                    Fourth Column 
+                  </p>
+                </div>
+              </div>
+
+
+              <div class="columns is-desktop">
+                <div class="column has-background-danger">
+                  <p class="bd-notification is-primary is-half">                  
+                    First Column First Column First Column First Column
+                  </p>
+                </div>
+                <div class="column has-background-info">
+                  <p class="bd-notification is-primary">                    
+                    Second Column Second Column
+                  </p>
+                </div>
+                <div class="column has-background-warning">
+                  <p class="bd-notification is-primary">                    
+                    Third Column 
+                  </p>
+                </div>
+                <div class="column has-background-success">
+                  <p class="bd-notification is-primary">                    
+                    Fourth Column 
+                  </p>
+                </div>
+              </div>
+              <form action="#">
+              <fieldset class="km-search-items km-max-thc">
+                <legend>Max price to pay for THC?</legend>
+                <select >
+                    <option value="All">All</option>        
+                    <option value="1g">1g</option>     
+                    <option value="1/8oz">1/8oz</option>  
+                    <option value="1/4oz">1/4oz</option>   
+                    <option value="1/2oz">1/2oz</option>              
+                    <option value="1oz">1oz</option>                                   
+                </select>
+                <input type="number" id="thcMax" name="thc max"/>
+              </fieldset>
+            </form>
+
+
+            <div class="field is-grouped is-grouped-centered">
+              <p class="control">
+                <a class="button is-primary">
+                  Submit
+                </a>
+              </p>
+            </div>
+
+              <h1>My First Google Map</h1>
+              <div id="map" style="width:1005;height:600px;background:grey"></div>
+
+              <script>
+
+                let map, infoWindow;
+
+                function initMap() {
+                  map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: -34.397, lng: 150.644 },
+                    zoom: 6,
+                  });
+                  infoWindow = new google.maps.InfoWindow();
+                  const locationButton = document.createElement("button");
+                  locationButton.textContent = "Pan to Current Location";
+                  locationButton.classList.add("custom-map-control-button");
+                  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+                  locationButton.addEventListener("click", () => {
+                    // Try HTML5 geolocation.
+                    if (navigator.geolocation) {
+                      navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                          const pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                          };
+                          infoWindow.setPosition(pos);
+                          infoWindow.setContent("Location found.");
+                          infoWindow.open(map);
+                          map.setCenter(pos);
+                        },
+                        () => {
+                          handleLocationError(true, infoWindow, map.getCenter());
+                        }
+                      );
+                    } else {
+                      // Browser doesn't support Geolocation
+                      handleLocationError(false, infoWindow, map.getCenter());
+                    }
+                  });
+                }
+
+                function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                  infoWindow.setPosition(pos);
+                  infoWindow.setContent(
+                    browserHasGeolocation
+                      ? "Error: The Geolocation service failed."
+                      : "Error: Your browser doesn't support geolocation."
+                  );
+                  infoWindow.open(map);
+                }
+
+
+
+              // function myMap() {
+              // var mapOptions = {
+              //     center: new google.maps.LatLng(51.5, -0.12),
+              //     zoom: 10,
+              //     mapTypeId: google.maps.MapTypeId.HYBRID
+              // }
+              // var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+              // }
+              </script>
+              <script 
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A&callback=initMap">
+              </script>
+
+
+
+            <div class="select">
+              <select>
+                <option>Select dropdown</option>
+                <option>With options</option>
+              </select>
+            </div>
+
+
+
+          </div>
+    </div>
+
+
+    <div x-ref="demo2">
+      <div x-data="data()">
+          <input type="hidden" :value="selected.value">
+          <input type="text" x-model="search" placeholder="Click to search..." @click="optionsVisible = !optionsVisible">
+          <div x-show="optionsVisible">
+              <template x-for="option in filteredOptions()">
+                  <a @click.prevent="selected = option; optionsVisible = false" x-text="option.label" style="display: block;"></a>
+              </template>
+          </div>
+          <p>Current search: <span x-text="search"></span></p>
+          <p>Selected option: <span x-text="selected.label"></span></p>
+    
+
+
+          <script type="text/javascript">
+          
+
+            function data() {
+              return {
+                  optionsVisible: false,
+                  search: "",
+                  selected: {
+                      label: "",
+                      value: ""
+                  },
+                  options: [
+                      {
+                          label: "Abattoir Worker",
+                          value: "abattoir worker"
+                      },
+                      {
+                          label: "Abbot",
+                          value: "abbot"
+                      },
+                      {
+                        label: "Zoology Consultant",
+                        value: "zoology consultant"
+                    }
+                ],
+                filteredOptions() {
+                    return this.options.filter((option) => {
+                        return option.value.includes(this.search.toLowerCase());
+                    });
+                }
+              };
+            }  
+
+          </script>
+      </div>
+    </div>
+
+
+
+
+    
+  </body>
+</html>

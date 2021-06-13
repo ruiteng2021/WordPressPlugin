@@ -1,0 +1,115 @@
+/* Banner section */
+.km-banner-image {
+    background-image: linear-gradient(rgba(92, 88, 88, 0.5), rgba(0, 0, 0, 0.5)), url("banner2.jpg");
+    height: 400px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.km-banner-container {
+    width: 80%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.km-banner-container {
+    width: 80%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.km-banner-favorates .buttons {
+    float: right;
+}
+
+.km-banner-favorates .buttons .button{
+    background-color:rgba(255, 255, 255, 0.0);
+    color: white;
+    font-size: x-large;
+    border: 0;
+}
+
+.km-banner-text h1 {
+    text-align: center;
+    color: white;
+    font-family: "Lato", Sans-serif;
+    font-size: 62px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.km-banner-address{
+    text-align: center;
+    color: white;
+    font-family: "Lato", Sans-serif;
+    font-size: 20px;    
+}
+
+.km-banner-mail-order {
+    text-align: center;
+    color: white;
+    font-family: "Lato", Sans-serif;
+    font-size: 20px;    
+    text-transform: uppercase;
+}
+
+.km-banner-icons .buttons { 
+    float: right;
+}
+
+.km-banner-icon {
+    border-radius: 50% !important;
+    padding-left: 16px !important; 
+    padding-right: 16px !important; 
+    margin-left: 5px;
+}
+
+.km-banner-featured {
+    margin-left: 5px;
+}
+
+@media only screen and (max-width: 800px)
+{
+    .km-banner-image {
+        height: 350px;
+    }
+
+    .km-banner-favorates {
+        height: 50px;
+    }
+
+    .km-banner-favorates .buttons .button {
+        font-size: medium;
+        height: 50px;
+    }
+
+    .km-banner-text {
+        padding-bottom: 0;
+    }
+
+    .km-banner-text h1 {
+        font-size: 25px;
+    }
+
+    .km-banner-address{
+        font-size: 15px;  
+        padding-bottom: 0;  
+    }
+
+    .km-banner-mail-order {
+        font-size: 15px;    
+        padding-bottom: 0;
+    }
+
+    .km-banner-featured-verify {
+        margin-top: 50px;
+    } 
+    
+    .km-banner-icons .buttons { 
+        float: left;
+    }
+
+}

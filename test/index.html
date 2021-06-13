@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Bootstrap CSS -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    /> -->
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css" />
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Lora:400,700|Nunito:400,700"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.8/dist/alpine.js"
+      defer
+    ></script>
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"
+    ></script>
+    <link
+      href="images/favicon_32.ico"
+      rel="shortcut icon"
+      type="image/x-icon"
+    />
+    <link href="images/favicon_256.ico" rel="apple-touch-icon" />
+  </head>
+  <body
+    x-data="images()"
+    x-init="fetch('https://pixabay.com/api/?key=15819227-ef2d84d1681b9442aaa9755b8&q=yellow+flowers&image_type=photo').then(response => response.json()).then(response => { images = response.hits })"
+  >
+    <!-- Header section -->
+    <header class="navigation">
+      <div class="container navigation-content">
+        <nav class="navbar navbar-expand-lg navbar-light">
+          <a class="navbar-brand" href="index.html"
+            ><img
+              src="https://godwinekuma.github.io/we-connect/images/logo-white.svg"
+              alt="weconnect logo"
+              height="50"
+              class="navbar-brand-image"
+            />
+            PictureGram</a
+          >
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </nav>
+      </div>
+    </header>
+    <!-- Header section /-->
+
+    <!-- <div class="columns">
+        <div class="column">
+          First column
+        </div>
+        <div class="column">
+          Second column
+        </div>
+        <div class="column">
+          Third column
+        </div>
+        <div class="column">
+          Fourth column
+        </div>
+    </div> -->
+
+
+      <!-- <div class="columns is-vcentered">
+        <div class="column is-8">
+          <p>First column</p>
+        </div>
+        <div class="column">
+          <p>Second column with more content. This is so you can see the vertical alignment.</p>
+        </div>
+      </div> -->
+
+      <div class="columns has-background-light">
+        <div class="column has-background-primary is-one-quarter-desktop"></div>
+        <!-- <div class="column has-background-link has-text-white">Auto</div>
+        <div class="column has-background-info has-text-white">Auto</div> -->
+    </div>
+
+
+
+
+    <!-- Hero Section -->
+    <div>
+      <section class="hero">
+        <div class="container">
+          <div class="d-flex flex-column align-items-center">
+            <h1 class="display-4" style="text-align:center">
+              Search for images.
+            </h1>
+            <h2 class="" style="text-align:center">
+              Pixel perfect images can be found here.
+            </h2>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="search images"
+                x-model="q"
+                aria-label="Text input with segmented dropdown button"
+              />
+              <select class="custom-select" x-model="image_type">
+                <option selected>choose image type</option>
+                <option value="all">All</option>
+                <option value="photo">Photo</option>
+                <option value="illustration">Illustration</option>
+                <option value="vector">Vector</option>
+              </select>
+              <div class="input-group-append">
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  x-on:click="getImages()"
+                >
+                  Search
+                </button>
+
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  x-on:click="getXXXX()"
+                >
+                  Search2
+                </button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="photos" class="my-5">
+        <template x-for="image in images" :key="image.id">
+          <img x-bind:src="image.webformatURL" alt="image.tags[0]" />
+        </template>
+      </section>
+    </div>
+    <script>
+        function images() {
+            return {
+                images: [],
+                param1: "",
+                q: "",
+                image_type: "",
+
+                getImages: async function() 
+                {
+                    console.log("params", this.q, this.image_type);
+                    const response = await fetch(`https://pixabay.com/api/?key=15819227-ef2d84d1681b9442aaa9755b8&q=${this.q}&image_type=${this.image_type}`);
+                    const data = await response.json();
+                    this.images = data.hits;
+                },
+
+                getXXXX: async function() 
+                {
+                    // console.log("params", this.q, this.image_type);
+                    // const response = await fetch(`https://pixabay.com/api/?key=15819227-ef2d84d1681b9442aaa9755b8&q=${this.q}&image_type=${this.image_type}`);
+                    // const data = await response.json();
+                    this.param1 = "AAAAAAAAAAAAAA";  
+                    console.log(this.param1);
+                }
+
+
+            };
+        }
+
+    </script>
+  </body>
+</html>
