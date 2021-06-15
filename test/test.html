@@ -41,7 +41,38 @@
   >
     
     <div class="columns has-background-light">
-          <div class="column has-background-primary is-one-quarter">Auto</div>
+          <div class="column has-background-primary is-one-quarter">
+            
+            <div class="km-product-request">
+                <form method="post" action="http://127.0.0.1/wordpress/test-page/" style="width: 100%">
+                <!-- <form method="post" action="https://kushmapper.com/wp-comments-post.php" class="box" style="width: 100%"> -->
+                    <div class="columns is-multiline"> 
+                        <!-- text comment area -->
+                        <div class="column is-full">
+                            <textarea class="textarea" name="comment" placeholder="10 lines of textarea" rows="5"></textarea>
+                        </div>
+                        <!-- Author name -->
+                        <div class="column is-full">
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input" name="author" type="text" placeholder="Name (required)" required>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- email -->
+                        <div class="column is-full">
+                            <div class="field">
+                                <div class="control">
+                                    <input class="input" type="email" name="email" placeholder="Email (required)" required>
+                                </div>
+                            </div>
+                        </div> 
+                        <input class="button is-black is-fullwidth" type="submit" name="submit" value="SEND REQUEST">                            
+                    </div>
+                </form>
+            </div>
+
+          </div>
           <div class="column">   
               <div class="columns">
                 <div class="column has-background-danger">

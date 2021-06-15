@@ -1,6 +1,6 @@
-
+/* Logo section */
 .km-logo{
-    margin-right: 20px !important;
+    margin-right: 20px;
     min-height: 800px;
 }
 
@@ -32,6 +32,44 @@
     white-space:normal;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.km-hour {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: normal;
+    margin-bottom: 0 !important;
+    /* min-width: 260px; */
+}
+
+.km-hour .column {
+    padding-right: 0;
+}
+
+.km-hour .is-one-quarter{
+    padding-left: 35px;
+    min-width: 100px;
+}
+
+.km-hour:hover {
+    background-color:#eee;
+}
+
+.km-request-form {
+    margin-top: 20px;
+}
+
+.km-request-form .column,
+.km-request-form h3
+{
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.km-request-form .button
+{
+    margin-top: 10px;
+    border-radius: 4px;
 }
 
 .km-all-products .tabs {
@@ -408,9 +446,49 @@
 
 @media only screen and (max-width: 800px)
 {
+    /* .km-banner-image {
+        height: 350px;
+    } */
+
+    .km-banner-favorates {
+        height: 50px;
+    }
+
+    .km-banner-favorates .buttons .button {
+        font-size: medium;
+        height: 50px;
+    }
+
+    .km-banner-text {
+        padding-bottom: 0;
+    }
+
+    .km-banner-text h1 {
+        font-size: 25px;
+    }
+
+    .km-banner-address{
+        font-size: 15px;  
+        padding-bottom: 0;  
+    }
+
+    .km-banner-mail-order {
+        font-size: 15px;    
+        padding-bottom: 0;
+    }
+
+    .km-banner-featured-verify {
+        margin-top: 50px;
+    } 
+    
+    .km-banner-icons .buttons { 
+        float: left;
+    }
+
     .km-logo {
         min-height: auto;
-        margin-bottom: 100px;
+        margin-bottom: 10px;
+        margin-right: 0 !important;
     }
 
     .km-all-products{
@@ -451,13 +529,13 @@
     .km-product-pic {
         width: 35%;
         padding-bottom: 10px;
-        min-height: 250px;
+        min-height: 280px;
     }
 
     .km-product-price {
         width: 65%;
         padding-bottom: 10px;
-        min-height: 250px;
+        min-height: 280px;
     }
 
     .km-product-pic figure{

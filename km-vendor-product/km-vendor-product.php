@@ -13,14 +13,7 @@ function vendor_products()
 {
 
     $slug = get_query_var('slug');
-    $request = wp_remote_get( 'https://api.kushmapper.com/v1/vendors/slug/' . $slug );
-    $body = wp_remote_retrieve_body( $request );
-    $data = json_decode( $body );
-    $startUrl = "https://api.kushmapper.com/v1/vendors/{$data->data->id}?include=products";
-    // $startUrl = 'https://api.kushmapper.com/v1/vendors/132?include=products';
-    // $startUrl = 'https://api.kushmapper.com/v1/vendors/1';
-    // $site_key = "6LeK79gaAAAAAMJkKOHduzuO8EPhNHHUouFfButk";
-    // $secret_key = "6LeK79gaAAAAAPU56ZijQTG_g4zzT2XvWmaAIhGK";
+    $startUrl = "https://api.kushmapper.com/v1/vendors/slug/". $slug . "?include=products";
     $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA"; // slyfox
     $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7"; //SlyFox
     // $site_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"; // google development key
@@ -36,7 +29,7 @@ function vendor_products()
             function kmData() {
                 return {
                     startUrl: '<?php echo $startUrl; ?>',
-                    currentUrl: '<?php echo get_permalink(); ?>',
+
                     // google reCaptcha begin//
                     site_key: '<?php echo $site_key; ?>',
                     // google reCaptcha end //
@@ -59,6 +52,7 @@ function vendor_products()
                     products: [],
                     meta: false,
                     urlSearchGlobal: false,
+                    store: false,
                     // global used info end //                                   
 
                     // Google map begin//
@@ -78,7 +72,7 @@ function vendor_products()
                         productUrl = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";  
                         const generalInfo = axios.get(url);
                         const productInfo = axios.get(productUrl);
-                        
+                        self.detectWeekday();
                         await axios.all([generalInfo, productInfo]).then(axios.spread(function(generalInfoRes, productInfoRes) {
                                 self.data = generalInfoRes.data.data;
                                 products = generalInfoRes.data.data["products"];                                
@@ -101,7 +95,9 @@ function vendor_products()
                             self.data.service_areas = [{city: "", state: '', country: ''}];
                             console.log(self.data.service_areas);
                         }
-                            
+                        if(self.data.stores.length == 1)
+                            self.store = true;
+
                         self.googleMap.directionsService = new google.maps.DirectionsService();
                         self.googleMap.directionsRenderer = new google.maps.DirectionsRenderer();
                         let mapOptions = {
@@ -117,7 +113,7 @@ function vendor_products()
                     async updateApiData(url)
                     {
                         var self = this;
-                        console.log(url);
+                        // console.log(url);
                         await axios.get(url)
                         .then(function(response) {      
                             self.products = response.data.data;  
@@ -235,7 +231,7 @@ function vendor_products()
                     GetCurrentCoordinate()
                     {
                         var self = this;
-                        console.log("XXXXX in map GetCurrentCoordinate XXXXX");
+                        // console.log("XXXXX in map GetCurrentCoordinate XXXXX");
                         if (navigator.geolocation) {
                             navigator.geolocation.getCurrentPosition(
                                 (position) => {
@@ -289,6 +285,10 @@ function vendor_products()
                     GetVendorDirection()
                     {
                         var self = this;
+                        if(!self.store)
+                        {
+                            return;
+                        }
                         coord = document.getElementById('Coordinate').value;
                         coord = coord.split(",");
                         start = new google.maps.LatLng(coord[0], coord[1]);
@@ -309,377 +309,529 @@ function vendor_products()
                         });
                     },
                    
+                    detectWeekday()
+                    {
+                        let date = new Date();
+                        let day = date.getDay();
+                        // console.log("day:" + day);
+                        switch(day) {
+                            case 0:
+                                jQuery(".km-sunday").attr("style", "color:#44c553 !important");
+                                break;
+                            case 1:
+                                jQuery(".km-monday").attr("style", "color: #44c553 !important");
+                                break;
+                            case 2:
+                                jQuery(".km-tuesday").attr("style", "color:#44c553 !important");
+                                break;
+                            case 3:
+                                jQuery(".km-wednsday").attr("style", "color:#44c553 !important");
+                                break;
+                            case 4:
+                                jQuery(".km-thursday").attr("style", "color:#44c553 !important");
+                                break;
+                            case 5:
+                                jQuery(".km-friday").attr("style", "color:#44c553 !important");
+                                break;
+                            case 6:
+                                jQuery(".km-saturday").attr("style", "color:#44c553 !important");
+                                break;
+                        }
+                    },
                 };
             }
-
         </script>
 
-        <div class="columns is-full" x-data="kmData()" x-init="getData()" @map-ready.window="getData()">
-        <template x-if="data">
-            <!-- Left column for logo -->
-            <div class="km-logo column is-one-quarter">    
-                <figure class="vendorlogo">
-                    <img :src="data.logo_url" alt="product img" />
-                </figure>   
-                <p x-text="data.name"> </p>
-                <p x-text="data.phone"> </p>
-                <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
-                <button class="button is-black">Claim Listing</button>
-            </div>
-        </template>
-            <!-- Right column for product -->
-            <div class="column km-all-products">
-                <!-- Menu tabs -->
-                <div class="tabs is-toggle is-fullwidth is-medium">
-                    <ul class="menu">
-                        <li :class="{'is-active' : menuTab === 'product'}">
-                        <a href="#km-product-memu"
-                            @click.prevent="menuTab = 'product'"
-                        >
-                            <span class="icon"><i class="fas fa-shopping-basket fa-fw" aria-hidden="true"></i></span>
-                            <span>PRODUCT MENU</span>
-                        </a>
-                        </li>
-                        <li :class="{'is-active' : menuTab === 'map'}">
-                        <a href="#km-location"
-                            @click.prevent="menuTab = 'map'"
-                        >
-                            <span class="icon"><i class="fas fa-globe-americas fa-fw" aria-hidden="true"></i></span>
-                            <span>LOCATION</span>
-                        </a>
-                        </li>
-                        <li :class="{'is-active' : menuTab === 'photos'}">
-                        <a href="#km-photos"
-                            @click.prevent="menuTab = 'photos'"
-                        >
-                            <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
-                            <span>PHOTOS</span>
-                        </a>
-                        </li> 
-                        <li :class="{'is-active' : menuTab === 'reviews'}">
-                        <a href="#km-product-reviews"
-                            @click.prevent="menuTab = 'reviews'"
-                        >
-                            <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
-                            <span>REVIEWS</span>
-                        </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Product infomation  -->
-                <div id="km-product-menu" x-show="menuTab === 'product'">
-                    <!-- Filter dropsown lists -->
-                    <div class="columns km-filters is-multiline">                                            
-                        <div class="column km-filters-column"> 
-                            <fieldset class="km-max-thc">
-                                <legend>Max Price</legend>
-                                <div>
-                                    <div class="select">
-                                        <select x-model="filter.weight" x-on:change="searchProduct()">
-                                            <option value="All">All</option>        
-                                            <option value="1g">1g</option>     
-                                            <option value="1/8oz">1/8oz</option>  
-                                            <option value="1/4oz">1/4oz</option>   
-                                            <option value="1/2oz">1/2oz</option>              
-                                            <option value="1oz">1oz</option>                                   
-                                        </select>
-                                    </div>
-                                    <div class="km-max-thc-currency">
-                                        <input class="km-max-thc-input" 
-                                        type="text" 
-                                        id="thcMax" 
-                                        placeholder="price" 
-                                        x-model="filter.maxPrice" 
-                                        x-on:change="searchProduct()"
-                                        x-on:click="UpdateInputType()" />
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-            
-                        <div class="column km-filters-column">  
-                            <div class="km-filters-label-thc" >
-                                <div class="select">                        
-                                    <select id="thc" x-model="filter.minThc" x-on:change="searchProduct()">
-                                        <option value="All" name="all">All</option>
-                                        <option value="10-14" name="20">10-14%</option>     
-                                        <option value="14-18" name="15">14-18%</option>  
-                                        <option value="18-22" name="10">18-22%</option>   
-                                        <option value="22-26" name="5">22-26%</option>    
-                                        <option value="26-30" name="5">26-30%</option>   
-                                        <option value="30-34" name="5">30-34%</option>  
-                                        <option value="34-38" name="5">34-38%</option>                                      
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <div class="column km-filters-column">  
-                            <div class="km-filters-label-cbd">
-                                <div class="select">                        
-                                    <select id="cbd" x-model="filter.minCbd" x-on:change="searchProduct()">
-                                        <option value="All" name="all">All</option>
-                                        <option value="0-4" name="20">0-4%</option>  
-                                        <option value="4-8" name="15">4-8%</option>   
-                                        <option value="8-12" name="10">8-12%</option>   
-                                        <option value="12-16" name="5">12-16%</option>      
-                                        <option value="16-20" name="5">16-20%</option>   
-                                        <option value="20-24" name="5">20-24%</option>                                        
-                                    </select>
-                                </div>  
-                            </div>                        
-                        </div>
-            
-                        <div class="column km-filters-column">  
-                            <div class="km-filters-label-category"> 
-                                <div class="select">                      
-                                    <select name="Category" id= "cat" x-model="filter.category" x-on:change="searchProduct()">
-                                            <option value="All" name="all">All</option>
-                                            <template x-for="category in categories" :key="category">
-                                                <option :value="category" x-text="category"></option>
-                                            </template>                            
-                                    </select>     
-                                </div>
-                            </div>                          
-                        </div>       
-                        
-                        <div class="column km-filters-column">
-                            <button class="button is-black" x-on:click="resetFilter()">Reset</button>
-                        </div>
-                    </div>  
-    
-                    <!-- Search button, entyry dropdown list and thc max search -->
-                    <div class="km-search">
-                        <label class="km-search-items">Show 
-                            <div class="select">
-                                <select name="Entries" id= "entries" x-model="pageSize" x-on:change="UpdatePages()">
-                                    <option value="5" name="5">5</option>     
-                                    <option value="10" name="10">10</option>     
-                                    <option value="25" name="25">25</option>             
-                                    <option value="50" name="50">50</option>             
-                                    <option value="100" name="100">100</option>      
-                                </select>
-                            </div>
-                            entries
-                        </label>
-                        <div class="km-search-items km-search-button-label">
-                            <!-- <button class="button is-black km-search-button" x-on:click="SearchFilter()">Search ...</button> -->
-                            <button class="button is-black km-search-button" x-on:click="searchProduct()">Search ...</button>
-                        </div>
-                    </div>
-    
-                    <!-- Table colums -->
-                    <div class="columns km-products-info">
-                        <div class="column is-two-thirds">
-                            <div class="km-product-pic-title">     
-                            </div>
-                            <div class="km-product-price-title is-size-5">   
-                                <strong>Product</strong>
-                            </div>
-                            <div class="km-product-concentrate-title"> 
-                            </div>
-                        </div>
-                        <div class="column is-one-thirds">
-                            <div class="km-product-category-title is-size-5">                  
-                                <strong>Category</strong>
-                            </div>
-                            <div class="km-product-view-title">                   
-                            </div>
-                        </div>
-                    </div>
-    
-                    <div class="km-table">
-                        <template x-for="product in products">
-                        <div class="columns km-products-info">
-                            <div class="column is-two-thirds">
-                                <div class="km-product-pic">                  
-                                    <figure class="image">
-                                        <img :src="product.image_url" alt="product img" />
-                                    </figure>        
-                                </div>
-                                <div class="km-product-price">                
-                                    <strong>
-                                        <a :href="product.url"><p class="is-size-4" x-text="product.name" ></p></a>
-                                        <p style="text-decoration: underline;" x-show="product.price_gram != null"><span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
-                                        <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
-                                        <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
-                                        <p style="text-decoration: underline;" x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span><span class="km-small-text">&nbsp;per 1/2 oz</span></p>
-                                        <p style="text-decoration: underline;" x-show="product.price_oz != null"><span x-text="product.price_oz"></span><span class="km-small-text">&nbsp;per 1 oz</span></p>
-                                        <p class="km-no-dispaly">THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
-                                        <p class="km-no-dispaly">CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
-                                    </strong>
-                                </div>
-                                <div class="km-product-concentrate">                  
-                                    <strong>
-                                        <p>THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
-                                        <p>CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
-                                    </strong>
-                                </div>
-                            </div>
-                            <div class="column is-one-thirds">
-                                <div class="km-product-category">                  
-                                    <strong>    
-                                        <p class="is-size-10" x-text="product.category"></p>
-                                    </strong>
-                                </div>
-                                <div class="km-product-view">                   
-                                    <!-- <button class="button is-rounded is-dark">View</button> -->
-                                    <!-- <a class="button is-rounded is-dark" :href="currentUrl + '/view-product/?vendor=' + product.vendor_id + '&id=' + product.id">View</a> -->
-                                    <a class="button is-rounded is-dark" :href="'/product/' + product.slug">View</a>
-                                </div>
-                            </div>
-                        </div>
-                        </template>
-                    </div>
-                    
-                    <template x-if="meta">
-                        <div style="float: left">
-                            <template x-for="link in meta.links">
-                                <a :class="{'button':true, 'is-active':link.active}" :href="link.url" @click.prevent="Pagenation(link.url)" x-html="link.label"></a>
-                            </template>
+        <div class="km-vendor-product" x-data="kmData()" x-init="getData()" @map-ready.window="getData()">
+            <div class="columns is-full">            
+                <!-- Left column for logo -->
+                <div class="km-logo column is-one-quarter">    
+                    <template x-if="data">
+                        <div>
+                            <figure class="vendorlogo">
+                                <img :src="data.logo_url" alt="product img" />
+                            </figure>   
+                            <p x-text="data.name"> </p>
+                            <p x-text="data.phone"> </p>
+                            <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
+                            <button style="width: 100%; margin-bottom: 20px" class="button is-black">Claim Listing</button>
                         </div>
                     </template>
-                </div>
-                <div id="km-location" x-show="menuTab === 'map'" >
-                    <!-- <div class="columns">  -->
-                        <div id="km-address"> 
-                            <template x-if="data">
-                                <div class="km-location-store">    
-                                    <strong><p class="is-size-6"> Store:</p> </strong>
-                                    <p x-text="data.stores[0].address1"> </p>
-                                    <p x-text="data.stores[0].address2"> </p>
-                                    <p><span x-text="data.stores[0].city"></span>&nbsp;<span x-text="data.stores[0].state"></span> </p>
-                                    <p x-text="data.stores[0].country"> </p>
-                                    <p x-text="data.stores[0].postal_code"> </p>
-                                </div>
-                            </template>
-                            
-                                <div class="km-location-service">  
-                                    <strong><p class="is-size-6"> Delivery Area:</p> </strong>   
-                                    <template x-if="data">
-                                        <div>
-                                            <p> <span x-text="data.service_areas[0].city"></span>&nbsp;<span x-text="data.service_areas[0].state"> </span></p>
-                                            <p x-text="data.service_areas[0].country"> </p>   
-                                        </div>
-                                    </template>                         
-                                </div>    
-                                          
-                        </div>        
-
-                        <div id="km-map-container"> 
-                            <div id="km-map"> 
-
-                            </div>
-                            <div class="km-map-direction"> 
-                                <input id="Coordinate" class="input is-link" type="text" placeholder="Enter your location">
-                                <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinate()" title="use my location"></button>
-                                <button class="button is-dark" x-on:click="GetVendorDirection()">Get Directions</button>
-                            </div>
-                            <div class="km-map-driving"> 
-                                <div class="select" x-model="googleMap.transport">
-                                    <select>
-                                        <option value="DRIVING">Driving</option>
-                                        <option value="WALKING">Walking</option>
-                                        <option value="BICYCLING">Bicycling</option>
-                                        <option value="TRANSIT">Public Transport</option>
-                                    </select>
-                                </div>
-                                <div class="select" x-model="googleMap.transportUnit">
-                                    <select>
-                                        <option value="kilometers">Kilometers</option>
-                                        <option value="miles">Miles</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
+                    <div class="columns is-full is-mobile km-monday km-hour">
+                        <div class="column is-one-quarter">
+                            <p>Mon</p>
                         </div>
-                        
-                    <!-- </div> -->
-                </div>
-                <div id="km-photos" x-show="menuTab === 'photos'">
-                    <strong><p> this is photos </p> </strong>
-                </div>
-                <div id="km-product-reviews" x-show="menuTab === 'reviews'">
-                    <!-- <form method="post" action="http://127.0.0.1/wordpress/test-page/" class="box" style="width: 100%"> -->
-                    <form method="post" action="https://kushmapper.com/wp-comments-post.php" class="box" style="width: 100%">
-                        <div class="columns is-multiline">
-                            <div class="column is-full has-background-info km-reviews-general" style="color: white;">
-                                <div><i class="fas fa-info-circle"></i> Your email address will not be published.</div>                        
-                            </div>   
-                            <!-- text comment area -->
+                        <div class="column is-three-quarter">
+                            <p>9:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                    <div class="columns is-full is-mobile km-tuesday km-hour">
+                        <div class="column is-one-quarter">
+                            <p>Tue</p>
+                        </div>
+                        <div class="column is-three-quarter">
+                            <p>9:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                    <div class="columns is-full is-mobile km-wednsday km-hour">
+                        <div class="column is-one-quarter">
+                            <p>Wed</p>
+                        </div>
+                        <div class="column is-three-quarter">
+                            <p>9:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                    <div class="columns is-full is-mobile km-thursday km-hour">
+                        <div class="column is-one-quarter">
+                            <p>Thu</p>
+                        </div>
+                        <div class="column is-three-quarter">
+                            <p>9:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                    <div class="columns is-full is-mobile km-friday km-hour">
+                        <div class="column is-one-quarter">
+                            <p>Fri</p>
+                        </div>
+                        <div class="column is-three-quarter">
+                            <p>9:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                    <div class="columns is-full is-mobile km-saturday km-hour">
+                        <div class="column is-one-quarter">
+                            <p>Sat</p>
+                        </div>
+                        <div class="column is-three-quarter">
+                            <p>9:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                    <div class="columns is-full is-mobile km-sunday km-hour">
+                        <div class="column is-one-quarter">
+                            <p>Sun</p>
+                        </div>
+                        <div class="column is-three-quarter">
+                            <p>9:00 am - 8:00 pm</p>
+                        </div>
+                    </div>
+                    <form class="box km-request-form" method="post" action="/request-response/" style="width: 100%">
+                        <!-- <form class="box km-request-form" method="post" action="/wordpress/request-response/" style="width: 100%"> -->
+                        <div class="columns is-multiline"> 
                             <div class="column is-full">
-                                <textarea class="textarea" name="comment" placeholder="10 lines of textarea" rows="10"></textarea>
+                                <h3 class="title is-5">Product Request Form</h3>
                             </div>
-                            <!-- rating buttons -->
+                            <!-- name -->
                             <div class="column is-full">
-                                <div class="field">
-                                    <div class="control">
-                                    <div class="container">
-                                        <div class="star-widget">
-                                            <div class="radios">
-                                                <input type="radio" name="rate" id="rate-5" value="5">
-                                                <label for="rate-5" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-4" value="4">
-                                                <label for="rate-4" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-3" value="3">
-                                                <label for="rate-3" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-2" value="2">
-                                                <label for="rate-2" class="fas fa-star"></label>
-                                                <input type="radio" name="rate" id="rate-1" value="1">
-                                                <label for="rate-1" class="fas fa-star"></label>
-                                                <header></header>
-                                            </div>
-                                            
-                                        </div>
-                                        
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Author name -->
-                            <div class="column is-full">
-                                <div class="field">
-                                    <div class="control">
-                                        <input class="input" name="author" type="text" placeholder="Name (required)" required>
-                                    </div>
+                            <label class="label">Name</label>
+                                <div class="control">
+                                    <input class="input" name="author" type="text" placeholder="Name (required)" required>
                                 </div>
                             </div>
                             <!-- email -->
                             <div class="column is-full">
-                                <div class="field">
-                                    <div class="control">
-                                        <input class="input" type="email" name="email" placeholder="Email (required)" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- website -->
+                                <label class="label">Email</label>
+                                <div class="control">
+                                    <input class="input" type="email" name="email" placeholder="Email (required)" required>
+                                </div>                                    
+                            </div> 
+                            <!-- phone -->
                             <div class="column is-full">
-                                <div class="field">
-                                    <div class="control">
-                                        <input class="input" name="url" type="url" placeholder="Website" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- google reCAPCHA -->
+                                <label class="label">Phone</label>
+                                <div class="control">
+                                    <input class="input" type="phone" name="phone" placeholder="phone">
+                                </div>                                    
+                            </div> 
+                            <!-- text comment area -->
                             <div class="column is-full">
-                                <div class="field">
-                                    <div class="control">
-                                        <!-- <input class="input" type="url" placeholder="Website"> -->
-                                        <div class="g-recaptcha" x-bind:data-sitekey=site_key></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- check box -->
-                            <div class="column is-full">
-                                <label class="checkbox">
-                                    <input type="checkbox" name="check_box">
-                                    Save my name, email, and website in this browser for the next time I comment.
-                                </label>
-                            </div>  
-                            <input class="button is-black is-fullwidth" type="submit" name="submit" value="POST REVIEW">                            
-                            <!-- <button class="button is-black is-fullwidth">POST REVIEW</button>                      -->
+                                <textarea class="textarea" name="comment" placeholder="Request Products (required)" rows="5" required></textarea>
+                            </div>                                
+                            <input class="button is-black is-fullwidth" type="submit" name="submit" value="SEND REQUEST">                            
                         </div>
                     </form>
+                </div>
+                <!-- Right column for product -->
+                <div class="column km-all-products">
+                    <!-- Menu tabs -->
+                    <div class="tabs is-toggle is-fullwidth is-medium">
+                        <ul class="menu">
+                            <li :class="{'is-active' : menuTab === 'product'}">
+                            <a href="#km-product-memu"
+                                @click.prevent="menuTab = 'product'"
+                            >
+                                <span class="icon"><i class="fas fa-shopping-basket fa-fw" aria-hidden="true"></i></span>
+                                <span>PRODUCT MENU</span>
+                            </a>
+                            </li>
+                            <li :class="{'is-active' : menuTab === 'map'}">
+                            <a href="#km-location"
+                                @click.prevent="menuTab = 'map'"
+                            >
+                                <span class="icon"><i class="fas fa-globe-americas fa-fw" aria-hidden="true"></i></span>
+                                <span>LOCATION</span>
+                            </a>
+                            </li>
+                            <li :class="{'is-active' : menuTab === 'profile'}">
+                            <a href="#km-profile"
+                                @click.prevent="menuTab = 'profile'"
+                            >
+                                <span class="icon"><i class="fas fa-home fa-fw" aria-hidden="true"></i></span>
+                                <span>PROFILE</span>
+                            </a>
+                            </li> 
+                            <li :class="{'is-active' : menuTab === 'photos'}">
+                            <a href="#km-photos"
+                                @click.prevent="menuTab = 'photos'"
+                            >
+                                <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
+                                <span>PHOTOS</span>
+                            </a>
+                            </li> 
+                            <li :class="{'is-active' : menuTab === 'reviews'}">
+                            <a href="#km-product-reviews"
+                                @click.prevent="menuTab = 'reviews'"
+                            >
+                                <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
+                                <span>REVIEWS</span>
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Product infomation  -->
+                    <div id="km-product-menu" x-show="menuTab === 'product'">
+                        <!-- Filter dropsown lists -->
+                        <div class="columns km-filters is-multiline">                                            
+                            <div class="column km-filters-column"> 
+                                <fieldset class="km-max-thc">
+                                    <legend>Max Price</legend>
+                                    <div>
+                                        <div class="select">
+                                            <select x-model="filter.weight" x-on:change="searchProduct()">
+                                                <option value="All">All</option>        
+                                                <option value="1g">1g</option>     
+                                                <option value="1/8oz">1/8oz</option>  
+                                                <option value="1/4oz">1/4oz</option>   
+                                                <option value="1/2oz">1/2oz</option>              
+                                                <option value="1oz">1oz</option>                                   
+                                            </select>
+                                        </div>
+                                        <div class="km-max-thc-currency">
+                                            <input class="km-max-thc-input" 
+                                            type="text" 
+                                            id="thcMax" 
+                                            placeholder="price" 
+                                            x-model="filter.maxPrice" 
+                                            x-on:change="searchProduct()"
+                                            x-on:click="UpdateInputType()" />
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                
+                            <div class="column km-filters-column">  
+                                <div class="km-filters-label-thc" >
+                                    <div class="select">                        
+                                        <select id="thc" x-model="filter.minThc" x-on:change="searchProduct()">
+                                            <option value="All" name="all">All</option>
+                                            <option value="10-14" name="20">10-14%</option>     
+                                            <option value="14-18" name="15">14-18%</option>  
+                                            <option value="18-22" name="10">18-22%</option>   
+                                            <option value="22-26" name="5">22-26%</option>    
+                                            <option value="26-30" name="5">26-30%</option>   
+                                            <option value="30-34" name="5">30-34%</option>  
+                                            <option value="34-38" name="5">34-38%</option>                                      
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="column km-filters-column">  
+                                <div class="km-filters-label-cbd">
+                                    <div class="select">                        
+                                        <select id="cbd" x-model="filter.minCbd" x-on:change="searchProduct()">
+                                            <option value="All" name="all">All</option>
+                                            <option value="0-4" name="20">0-4%</option>  
+                                            <option value="4-8" name="15">4-8%</option>   
+                                            <option value="8-12" name="10">8-12%</option>   
+                                            <option value="12-16" name="5">12-16%</option>      
+                                            <option value="16-20" name="5">16-20%</option>   
+                                            <option value="20-24" name="5">20-24%</option>                                        
+                                        </select>
+                                    </div>  
+                                </div>                        
+                            </div>
+                
+                            <div class="column km-filters-column">  
+                                <div class="km-filters-label-category"> 
+                                    <div class="select">                      
+                                        <select name="Category" id= "cat" x-model="filter.category" x-on:change="searchProduct()">
+                                                <option value="All" name="all">All</option>
+                                                <template x-for="category in categories" :key="category">
+                                                    <option :value="category" x-text="category"></option>
+                                                </template>                            
+                                        </select>     
+                                    </div>
+                                </div>                          
+                            </div>       
+                            
+                            <div class="column km-filters-column">
+                                <button class="button is-black" x-on:click="resetFilter()">Reset</button>
+                            </div>
+                        </div>  
+        
+                        <!-- Search button, entyry dropdown list and thc max search -->
+                        <div class="km-search">
+                            <label class="km-search-items">Show 
+                                <div class="select">
+                                    <select name="Entries" id= "entries" x-model="pageSize" x-on:change="UpdatePages()">
+                                        <option value="5" name="5">5</option>     
+                                        <option value="10" name="10">10</option>     
+                                        <option value="25" name="25">25</option>             
+                                        <option value="50" name="50">50</option>             
+                                        <option value="100" name="100">100</option>      
+                                    </select>
+                                </div>
+                                entries
+                            </label>
+                            <div class="km-search-items km-search-button-label">
+                                <!-- <button class="button is-black km-search-button" x-on:click="SearchFilter()">Search ...</button> -->
+                                <button class="button is-black km-search-button" x-on:click="searchProduct()">Search ...</button>
+                            </div>
+                        </div>
+        
+                        <!-- Table colums -->
+                        <div class="columns km-products-info">
+                            <div class="column is-two-thirds">
+                                <div class="km-product-pic-title">     
+                                </div>
+                                <div class="km-product-price-title is-size-5">   
+                                    <strong>Product</strong>
+                                </div>
+                                <div class="km-product-concentrate-title"> 
+                                </div>
+                            </div>
+                            <div class="column is-one-thirds">
+                                <div class="km-product-category-title is-size-5">                  
+                                    <strong>Category</strong>
+                                </div>
+                                <div class="km-product-view-title">                   
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="km-table">
+                            <template x-for="product in products">
+                            <div class="columns km-products-info">
+                                <div class="column is-two-thirds">
+                                    <div class="km-product-pic">                  
+                                        <figure class="image">
+                                            <img :src="product.image_url" alt="product img" />
+                                        </figure>        
+                                    </div>
+                                    <div class="km-product-price">                
+                                        <strong>
+                                            <a :href="product.url"><p class="is-size-4" x-text="product.name" ></p></a>
+                                            <p style="text-decoration: underline;" x-show="product.price_gram != null"><span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span><span class="km-small-text">&nbsp;per 1/2 oz</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz != null"><span x-text="product.price_oz"></span><span class="km-small-text">&nbsp;per 1 oz</span></p>
+                                            <template x-if="product.thc_min">
+                                                <p class="km-no-dispaly">THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
+                                            </template>
+                                            <template x-if="!product.thc_min">
+                                                <p class="km-no-dispaly">THC: <span>Not Available</span></p>
+                                            </template>
+                                            <template x-if="product.cbd_min">
+                                                <p class="km-no-dispaly">CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
+                                            </template>
+                                            <template x-if="!product.cbd_min">
+                                                <p class="km-no-dispaly">CBD: <span>Not Available</span></p>
+                                            </template> 
+                                        </strong>
+                                    </div>
+                                    <div class="km-product-concentrate">                  
+                                        <strong>
+                                            <template x-if="product.thc_min">
+                                                <p>THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
+                                            </template>
+                                            <template x-if="!product.thc_min ">
+                                                <p>THC: <span>Not Available</span></p>
+                                            </template>
+                                            <template x-if="product.cbd_min">
+                                                <p>CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
+                                            </template>
+                                            <template x-if="!product.cbd_min">
+                                                <p>CBD: <span>Not Available</span></p>
+                                            </template>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="column is-one-thirds">
+                                    <div class="km-product-category">                  
+                                        <strong>    
+                                            <p class="is-size-10" x-text="product.category"></p>
+                                        </strong>
+                                    </div>
+                                    <div class="km-product-view">                   
+                                        <!-- <a class="button is-rounded is-dark" :href="'/wordpress/product/' + product.slug">View</a> -->
+                                        <a class="button is-rounded is-dark" :href="'/product/' + product.slug">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                            </template>
+                        </div>
+                        
+                        <template x-if="meta">
+                            <div style="float: left">
+                                <template x-for="link in meta.links">
+                                    <a :class="{'button':true, 'is-active':link.active}" :href="link.url" @click.prevent="Pagenation(link.url)" x-html="link.label"></a>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <div id="km-location" x-show="menuTab === 'map'" >
+                        <!-- <div class="columns">  -->
+                            <div id="km-address"> 
+                                <template x-if="store">
+                                    <div class="km-location-store">    
+                                        <strong><p class="is-size-6"> Store:</p> </strong>
+                                        <p x-text="data.stores[0].address1"> </p>
+                                        <p x-text="data.stores[0].address2"> </p>
+                                        <p><span x-text="data.stores[0].city"></span>&nbsp;<span x-text="data.stores[0].state"></span> </p>
+                                        <p x-text="data.stores[0].country"> </p>
+                                        <p x-text="data.stores[0].postal_code"> </p>
+                                    </div>
+                                </template>
+                                
+                                    <div class="km-location-service">  
+                                        <strong><p class="is-size-6"> Delivery Area:</p> </strong>   
+                                        <template x-if="data">
+                                            <div>
+                                                <p> <span x-text="data.service_areas[0].city"></span>&nbsp;<span x-text="data.service_areas[0].state"> </span></p>
+                                                <p x-text="data.service_areas[0].country"> </p>   
+                                            </div>
+                                        </template>                         
+                                    </div>    
+                                            
+                            </div>        
+
+                            <div id="km-map-container"> 
+                                <div id="km-map"> 
+
+                                </div>
+                                <div class="km-map-direction"> 
+                                    <input id="Coordinate" class="input is-link" type="text" placeholder="Enter your location">
+                                    <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinate()" title="use my location"></button>
+                                    <button class="button is-dark" x-on:click="GetVendorDirection()">Get Directions</button>
+                                </div>
+                                <div class="km-map-driving"> 
+                                    <div class="select" x-model="googleMap.transport">
+                                        <select>
+                                            <option value="DRIVING">Driving</option>
+                                            <option value="WALKING">Walking</option>
+                                            <option value="BICYCLING">Bicycling</option>
+                                            <option value="TRANSIT">Public Transport</option>
+                                        </select>
+                                    </div>
+                                    <div class="select" x-model="googleMap.transportUnit">
+                                        <select>
+                                            <option value="kilometers">Kilometers</option>
+                                            <option value="miles">Miles</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        <!-- </div> -->
+                    </div>
+                    <div id="km-profile" x-show="menuTab === 'profile'">
+                        <strong><p x-text="data.description"></p> </strong>
+                    </div>
+                    <div id="km-photos" x-show="menuTab === 'photos'">
+                        <strong><p> this is photos </p> </strong>
+                    </div>
+                    <div id="km-product-reviews" x-show="menuTab === 'reviews'">
+                        <!-- <form method="post" action="http://127.0.0.1/wordpress/test-page/" class="box" style="width: 100%"> -->
+                        <form method="post" action="https://kushmapper.com/wp-comments-post.php" class="box" style="width: 100%">
+                            <div class="columns is-multiline">
+                                <div class="column is-full has-background-info km-reviews-general" style="color: white;">
+                                    <div><i class="fas fa-info-circle"></i> Your email address will not be published.</div>                        
+                                </div>   
+                                <!-- text comment area -->
+                                <div class="column is-full">
+                                    <textarea class="textarea" name="comment" placeholder="10 lines of textarea" rows="10"></textarea>
+                                </div>
+                                <!-- rating buttons -->
+                                <div class="column is-full">
+                                    <div class="field">
+                                        <div class="control">
+                                        <div class="container">
+                                            <div class="star-widget">
+                                                <div class="radios">
+                                                    <input type="radio" name="rate" id="rate-5" value="5">
+                                                    <label for="rate-5" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-4" value="4">
+                                                    <label for="rate-4" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-3" value="3">
+                                                    <label for="rate-3" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-2" value="2">
+                                                    <label for="rate-2" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-1" value="1">
+                                                    <label for="rate-1" class="fas fa-star"></label>
+                                                    <header></header>
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Author name -->
+                                <div class="column is-full">
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input" name="author" type="text" placeholder="Name (required)" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- email -->
+                                <div class="column is-full">
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input" type="email" name="email" placeholder="Email (required)" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- website -->
+                                <div class="column is-full">
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input" name="url" type="url" placeholder="Website" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- google reCAPCHA -->
+                                <div class="column is-full">
+                                    <div class="field">
+                                        <div class="control">
+                                            <!-- <input class="input" type="url" placeholder="Website"> -->
+                                            <div class="g-recaptcha" x-bind:data-sitekey=site_key></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- check box -->
+                                <div class="column is-full">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="check_box">
+                                        Save my name, email, and website in this browser for the next time I comment.
+                                    </label>
+                                </div>  
+                                <input class="button is-black is-fullwidth" type="submit" name="submit" value="POST REVIEW">                            
+                                <!-- <button class="button is-black is-fullwidth">POST REVIEW</button>                      -->
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
