@@ -44,6 +44,23 @@ function vendor_products()
                         minCbd: 'All',
                     },
 
+                    hours: {
+                        mon_open: "9:00",
+                        mon_close: "8:00",
+                        tue_open: "9:00",
+                        tue_close: "8:00",
+                        wed_open: "9:00",
+                        wed_close: "8:00",
+                        thu_open: "9:00",
+                        thu_close: "8:00",
+                        fri_open: "9:00",
+                        fri_close: "8:00",
+                        sat_open: "9:00",
+                        sat_close: "8:00",
+                        sun_open: "9:00",
+                        sun_close: "8:00"
+                    },
+
                     // global used info //
                     data: false, // for logo and location tab
                     menuTab: 'product',    
@@ -72,7 +89,6 @@ function vendor_products()
                         productUrl = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";  
                         const generalInfo = axios.get(url);
                         const productInfo = axios.get(productUrl);
-                        self.detectWeekday();
                         await axios.all([generalInfo, productInfo]).then(axios.spread(function(generalInfoRes, productInfoRes) {
                                 self.data = generalInfoRes.data.data;
                                 products = generalInfoRes.data.data["products"];                                
@@ -97,6 +113,8 @@ function vendor_products()
                         }
                         if(self.data.stores.length == 1)
                             self.store = true;
+
+                        self.detectWeekday();
 
                         self.googleMap.directionsService = new google.maps.DirectionsService();
                         self.googleMap.directionsRenderer = new google.maps.DirectionsRenderer();
@@ -311,6 +329,24 @@ function vendor_products()
                    
                     detectWeekday()
                     {
+                        var self = this;                      
+                        if(self.store && self.data.stores[0].hours){
+                             self.hours.mon_open    = self.data.stores[0].hours.mon_open;
+                             self.hours.mon_close   = self.data.stores[0].hours.mon_close;
+                             self.hours.tue_open    = self.data.stores[0].hours.tue_open;
+                             self.hours.tue_close   = self.data.stores[0].tue_close;
+                             self.hours.wed_open    = self.data.stores[0].wed_open;
+                             self.hours.wed_close   = self.data.stores[0].wed_close;
+                             self.hours.thu_open    = self.data.stores[0].thu_open;
+                             self.hours.thu_close   = self.data.stores[0].thu_close;
+                             self.hours.fri_open    = self.data.stores[0].fri_open;
+                             self.hours.fri_close   = self.data.stores[0].fri_close;
+                             self.hours.sat_open    = self.data.stores[0].sat_open;
+                             self.hours.sat_close   = self.data.stores[0].sat_close;  
+                             self.hours.sun_open    = self.data.stores[0].sun_open;
+                             self.hours.sun_close   = self.data.stores[0].sun_close;
+                        }
+
                         let date = new Date();
                         let day = date.getDay();
                         // console.log("day:" + day);
@@ -362,7 +398,8 @@ function vendor_products()
                             <p>Mon</p>
                         </div>
                         <div class="column is-three-quarter">
-                            <p>9:00 am - 8:00 pm</p>
+                            <!-- <p>9:00 am - 8:00 pm</p> -->
+                            <p><span x-text="hours.mon_open"></span> am - <span x-text="hours.mon_close"></span> pm</p>
                         </div>
                     </div>
                     <div class="columns is-full is-mobile km-tuesday km-hour">
@@ -370,7 +407,8 @@ function vendor_products()
                             <p>Tue</p>
                         </div>
                         <div class="column is-three-quarter">
-                            <p>9:00 am - 8:00 pm</p>
+                            <!-- <p>9:00 am - 8:00 pm</p> -->
+                            <p><span x-text="hours.tue_open"></span> am - <span x-text="hours.tue_close"></span> pm</p>
                         </div>
                     </div>
                     <div class="columns is-full is-mobile km-wednsday km-hour">
@@ -378,7 +416,8 @@ function vendor_products()
                             <p>Wed</p>
                         </div>
                         <div class="column is-three-quarter">
-                            <p>9:00 am - 8:00 pm</p>
+                            <!-- <p>9:00 am - 8:00 pm</p> -->
+                            <p><span x-text="hours.wed_open"></span> am - <span x-text="hours.wed_close"></span> pm</p>
                         </div>
                     </div>
                     <div class="columns is-full is-mobile km-thursday km-hour">
@@ -386,7 +425,8 @@ function vendor_products()
                             <p>Thu</p>
                         </div>
                         <div class="column is-three-quarter">
-                            <p>9:00 am - 8:00 pm</p>
+                            <!-- <p>9:00 am - 8:00 pm</p> -->
+                            <p><span x-text="hours.thu_open"></span> am - <span x-text="hours.thu_close"></span> pm</p>
                         </div>
                     </div>
                     <div class="columns is-full is-mobile km-friday km-hour">
@@ -394,7 +434,8 @@ function vendor_products()
                             <p>Fri</p>
                         </div>
                         <div class="column is-three-quarter">
-                            <p>9:00 am - 8:00 pm</p>
+                            <!-- <p>9:00 am - 8:00 pm</p> -->
+                            <p><span x-text="hours.fri_open"></span> am - <span x-text="hours.fri_close"></span> pm</p>
                         </div>
                     </div>
                     <div class="columns is-full is-mobile km-saturday km-hour">
@@ -402,7 +443,8 @@ function vendor_products()
                             <p>Sat</p>
                         </div>
                         <div class="column is-three-quarter">
-                            <p>9:00 am - 8:00 pm</p>
+                            <!-- <p>9:00 am - 8:00 pm</p> -->
+                            <p><span x-text="hours.sat_open"></span> am - <span x-text="hours.sat_close"></span> pm</p>
                         </div>
                     </div>
                     <div class="columns is-full is-mobile km-sunday km-hour">
@@ -410,7 +452,8 @@ function vendor_products()
                             <p>Sun</p>
                         </div>
                         <div class="column is-three-quarter">
-                            <p>9:00 am - 8:00 pm</p>
+                            <!-- <p>9:00 am - 8:00 pm</p> -->
+                            <p><span x-text="hours.sun_open"></span> am - <span x-text="hours.sun_close"></span> pm</p>
                         </div>
                     </div>
                     <form class="box km-request-form" method="post" action="/request-response/" style="width: 100%">
@@ -444,7 +487,7 @@ function vendor_products()
                             <div class="column is-full">
                                 <textarea class="textarea" name="comment" placeholder="Request Products (required)" rows="5" required></textarea>
                             </div>                                
-                            <input class="button is-black is-fullwidth" type="submit" name="submit" value="SEND REQUEST">                            
+                            <input class="button is-black is-fullwidth" type="submit" name="submit" value="Send Request">                            
                         </div>
                     </form>
                 </div>
@@ -634,32 +677,32 @@ function vendor_products()
                                             <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span><span class="km-small-text">&nbsp;per 1/2 oz</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz != null"><span x-text="product.price_oz"></span><span class="km-small-text">&nbsp;per 1 oz</span></p>
-                                            <template x-if="product.thc_min">
+                                            <template x-if="product.thc_min && product.thc_max">
                                                 <p class="km-no-dispaly">THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
                                             </template>
-                                            <template x-if="!product.thc_min">
+                                            <template x-if="!product.thc_min || !product.thc_max">
                                                 <p class="km-no-dispaly">THC: <span>Not Available</span></p>
                                             </template>
-                                            <template x-if="product.cbd_min">
+                                            <template x-if="product.cbd_min && product.cbd_max">
                                                 <p class="km-no-dispaly">CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
                                             </template>
-                                            <template x-if="!product.cbd_min">
+                                            <template x-if="!product.cbd_min || !product.cbd_max">
                                                 <p class="km-no-dispaly">CBD: <span>Not Available</span></p>
                                             </template> 
                                         </strong>
                                     </div>
                                     <div class="km-product-concentrate">                  
                                         <strong>
-                                            <template x-if="product.thc_min">
+                                            <template x-if="product.thc_min && product.thc_max">
                                                 <p>THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
                                             </template>
-                                            <template x-if="!product.thc_min ">
+                                            <template x-if="!product.thc_min || !product.thc_max">
                                                 <p>THC: <span>Not Available</span></p>
                                             </template>
-                                            <template x-if="product.cbd_min">
+                                            <template x-if="product.cbd_min && product.cbd_max">
                                                 <p>CBD: <span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
                                             </template>
-                                            <template x-if="!product.cbd_min">
+                                            <template x-if="!product.cbd_min || !product.cbd_max">
                                                 <p>CBD: <span>Not Available</span></p>
                                             </template>
                                         </strong>
