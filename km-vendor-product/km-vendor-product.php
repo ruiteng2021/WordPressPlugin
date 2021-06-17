@@ -61,6 +61,7 @@ function vendor_products()
                         sun_close: "8:00"
                     },
 
+                    day: false,
                     // global used info //
                     data: false, // for logo and location tab
                     menuTab: 'product',    
@@ -346,33 +347,48 @@ function vendor_products()
                              self.hours.sun_open    = self.data.stores[0].sun_open;
                              self.hours.sun_close   = self.data.stores[0].sun_close;
                         }
+                       
+                        function setColorTimer() {                           
+                            let date = new Date();
+                            day = date.getDay();
+                            // self.day = date.getDay();
+                            console.log("day:" + day);
+                            // reset color to original
+                            jQuery(".km-sunday").attr("style", "color:#4a4a4a !important");
+                            jQuery(".km-monday").attr("style", "color:#4a4a4a !important");
+                            jQuery(".km-tuesday").attr("style", "color:#4a4a4a !important");
+                            jQuery(".km-wednsday").attr("style", "color:#4a4a4a !important");
+                            jQuery(".km-thursday").attr("style", "color:#4a4a4a !important");
+                            jQuery(".km-friday").attr("style", "color:#4a4a4a !important");
+                            jQuery(".km-saturday").attr("style", "color:#4a4a4a !important");
 
-                        let date = new Date();
-                        let day = date.getDay();
-                        // console.log("day:" + day);
-                        switch(day) {
-                            case 0:
-                                jQuery(".km-sunday").attr("style", "color:#44c553 !important");
-                                break;
-                            case 1:
-                                jQuery(".km-monday").attr("style", "color: #44c553 !important");
-                                break;
-                            case 2:
-                                jQuery(".km-tuesday").attr("style", "color:#44c553 !important");
-                                break;
-                            case 3:
-                                jQuery(".km-wednsday").attr("style", "color:#44c553 !important");
-                                break;
-                            case 4:
-                                jQuery(".km-thursday").attr("style", "color:#44c553 !important");
-                                break;
-                            case 5:
-                                jQuery(".km-friday").attr("style", "color:#44c553 !important");
-                                break;
-                            case 6:
-                                jQuery(".km-saturday").attr("style", "color:#44c553 !important");
-                                break;
-                        }
+                            switch(day) {
+                                case 0:
+                                    jQuery(".km-sunday").attr("style", "color:#44c553 !important");
+                                    break;
+                                case 1:
+                                    jQuery(".km-monday").attr("style", "color: #44c553 !important");
+                                    break;
+                                case 2:
+                                    jQuery(".km-tuesday").attr("style", "color:#44c553 !important");
+                                    break;
+                                case 3:
+                                    jQuery(".km-wednsday").attr("style", "color:#44c553 !important");
+                                    break;
+                                case 4:
+                                    jQuery(".km-thursday").attr("style", "color:#44c553 !important");
+                                    break;
+                                case 5:
+                                    jQuery(".km-friday").attr("style", "color:#44c553 !important");
+                                    break;
+                                case 6:
+                                    jQuery(".km-saturday").attr("style", "color:#44c553 !important");
+                                    break;
+                            }
+                        }  
+                        setColorTimer();
+                        // update color every hour
+                        setInterval(setColorTimer, 3600000);                      
                     },
                 };
             }
