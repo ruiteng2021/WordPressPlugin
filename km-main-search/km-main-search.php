@@ -35,7 +35,7 @@ function main_search()
                         dataType: 'json',
                         delay: 250,
                         data: function(params) {
-                            console.log(params);
+                            // console.log(params);
                             return {
                                 q: params.term, // search term
                                 page: params.page
@@ -43,7 +43,50 @@ function main_search()
                         },
                         processResults: function (data, params) {
 
-                            let displayData = [];                                     
+                            let displayData = [];                              
+                            
+                            // displayData = [
+                            //     { 
+                            //         "text": "Group 1", 
+                            //         "children" : [
+                            //             {
+                            //                 "id": 1,
+                            //                 "text": "Option 1.1"
+                            //             },
+                            //             {
+                            //                 "id": 2,
+                            //                 "text": "Option 1.2"
+                            //             }
+                            //         ]
+                            //     },
+                            //     { 
+                            //         "text": "Group 2", 
+                            //         "children" : [
+                            //             {
+                            //                 "id": 21,
+                            //                 "text": "Option 2.1"
+                            //             },
+                            //             {
+                            //                 "id": 22,
+                            //                 "text": "Option 2.2"
+                            //             }
+                            //         ]
+                            //     },
+                            //     { 
+                            //         "text": "Group 3", 
+                            //         "children" : [
+                            //             {
+                            //                 "id": 7,
+                            //                 "text": "Option 3.1"
+                            //             },
+                            //             {
+                            //                 "id": 8,
+                            //                 "text": "Option 3.2"
+                            //             }
+                            //         ]
+                            //     }
+                            // ];
+
                             if (data.data.locations)
                                 displayData = getDisplayData( displayData, data.data.locations);    
 
@@ -56,10 +99,10 @@ function main_search()
 
                             params.page = params.page || 1;
                             return {
-                                results: displayData
+                                results: displayData,
                                 // pagination: {
                                 //     // more: (params.page * 30) < data.total_count
-                                //     more: (params.page * 20) < data.meta.total
+                                //     more: 1
                                 // }
                             };
                             
@@ -74,24 +117,39 @@ function main_search()
                 });
 
                 function formatRepo (repo) {
+                    // console.log("YYY repo YYY");
+                    // console.log(repo);
                     return repo.name || repo.text;
                 }
 
                 function formatRepoSelection (repo) {
+                    // console.log("XXX repo XXX");
                     // console.log(repo);
                     if(repo.url)
                     {
-                        let url = repo.url.replace("https://v2.kushmapper.com","");
+                        url = repo.url; 
+                        // let url = repo.url.replace("https://v2.kushmapper.com","");
                         // url = "/wordpress" + url;
-                        window.location.replace(url);
+                        window.location.assign(url);
                     }                        
                     return repo.name || repo.text;
                 }
 
                 function getDisplayData(displayData, rawData)
                 {
-                    for (let item of rawData)
+                    let parent = {
+                        text:"",
+                        children : []
+                    };
+
+                    if(rawData)
                     {
+                        parent.text = rawData[0].type;
+                        parent.text = parent.text.charAt(0).toUpperCase() + parent.text.slice(1).toLowerCase();
+                    }
+                    
+                    for (let item of rawData)
+                    {                     
                         let tempData = {
                             id:"",
                             name:"",
@@ -103,8 +161,10 @@ function main_search()
                         else
                             tempData.name = item.searchable.name;
                         tempData.id = item.searchable.id;
-                        displayData.push(tempData);                               
+                        parent.children.push(tempData);                               
                     }
+
+                    displayData.push(parent);
                     return displayData;
                 }
             });
