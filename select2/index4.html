@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>Using Select2</title>
+
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+
+</head>
+  <body>
+
+    <select style="width: 100%;" class="js-data-example-ajax"></select>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+    <script>
+
+        $(".js-data-example-ajax").select2({
+            
+            ajax: {
+                // url: "https://api.github.com/search/repositories",
+                url: "https://api.kushmapper.com/v1/vendors",
+                // url: "https://api.kushmapper.com/v1/locations",
+                contentType: 'application/json',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    console.log("XXXXX");
+                    console.log(params);
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    console.log("YYYYY");
+                    console.log(data);
+                    console.log(params);
+                    params.page = params.page || 1;
+                    return {
+                        // results: data.items,
+                        results: data.data,
+                        pagination: {
+                            // more: (params.page * 30) < data.total_count
+                            more: (params.page * 20) < data.meta.total
+                        }
+                    };
+                    
+                },
+                cache: true
+            },
+            placeholder: 'Search for a repository',
+            // minimumInputLength: 1,
+            escapeMarkup: function(markup) { return markup;},
+            templateResult: formatRepoSelection, 
+            templateSelection: formatRepoSelection
+        });
+
+        function formatRepoSelection (repo) {
+            console.log("ZZZZZ");
+            console.log(repo);
+            // return repo.full_name || repo.text;
+            return repo.name;
+        }
+
+    </script>
+  </body>
+</html>
