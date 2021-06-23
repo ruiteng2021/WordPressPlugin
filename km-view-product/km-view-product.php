@@ -55,7 +55,8 @@ function view_product()
             <template x-if="product">
                 <div class="column is-half">    
                     <div class="content">
-                        <strong><h1 x-show="product.price_gram != null"><span x-text="product.price_gram"></span><span>$&nbsp;per 1 g</span></h1></strong>
+                        <strong><h1 x-show="product.name != null"><span x-text="product.name"></span></h1></strong>
+                        <strong><h2 x-show="product.price_gram != null"><span x-text="product.price_gram"></span><span>$&nbsp;per 1 g</span></h2></strong>
                         <h4 x-show="product.category != null"><span x-text="product.category"></span></h4>
                         <p x-show="product.description != null"><span x-text="product.description"></span></p>   
                         <div class="content is-medium km-product-detail-link-1">  
@@ -75,8 +76,19 @@ function view_product()
                         <p x-show="product.price_oz_fourth != null"><span>Per 1/4 oz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_oz_fourth"></span></p>
                         <p x-show="product.price_oz_half != null"><span>Per 1/2 oz  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_oz_half"></span></p>
                         <p x-show="product.price_oz != null"><span>Per 1 oz         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_oz"></span></p>
-                        <p x-show="product.thc != null"><span>THC                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.thc"></span></p>
-                        <p x-show="product.cbd != null"><span>CBD                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.cbd"></span></p>
+                        
+                        <template x-if="product.thc_min && product.thc_max">
+                            <p>THC: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
+                        </template>
+                        <template x-if="!product.thc_min || !product.thc_max">
+                            <p>THC: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Not Available</span></p>
+                        </template>
+                        <template x-if="product.cbd_min && product.cbd_max">
+                            <p>CBD: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
+                        </template>
+                        <template x-if="!product.cbd_min || !product.cbd_max">
+                            <p>CBD: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Not Available</span></p>
+                        </template>                      
                     </div>
                 </div>
             </template>

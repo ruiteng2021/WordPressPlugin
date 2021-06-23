@@ -42,59 +42,15 @@ function main_search()
                             };
                         },
                         processResults: function (data, params) {
-
-                            let displayData = [];                              
                             
-                            // displayData = [
-                            //     { 
-                            //         "text": "Group 1", 
-                            //         "children" : [
-                            //             {
-                            //                 "id": 1,
-                            //                 "text": "Option 1.1"
-                            //             },
-                            //             {
-                            //                 "id": 2,
-                            //                 "text": "Option 1.2"
-                            //             }
-                            //         ]
-                            //     },
-                            //     { 
-                            //         "text": "Group 2", 
-                            //         "children" : [
-                            //             {
-                            //                 "id": 21,
-                            //                 "text": "Option 2.1"
-                            //             },
-                            //             {
-                            //                 "id": 22,
-                            //                 "text": "Option 2.2"
-                            //             }
-                            //         ]
-                            //     },
-                            //     { 
-                            //         "text": "Group 3", 
-                            //         "children" : [
-                            //             {
-                            //                 "id": 7,
-                            //                 "text": "Option 3.1"
-                            //             },
-                            //             {
-                            //                 "id": 8,
-                            //                 "text": "Option 3.2"
-                            //             }
-                            //         ]
-                            //     }
-                            // ];
-
-                            if (data.data.locations)
-                                displayData = getDisplayData( displayData, data.data.locations);    
-
+                            let displayData = [];                              
+                            if (data.data.vendors)
+                                displayData = getDisplayData( displayData, data.data.vendors); 
                             if (data.data.products)
                                 displayData = getDisplayData( displayData, data.data.products);  
+                            if (data.data.locations)
+                                displayData = getDisplayData( displayData, data.data.locations);                         
 
-                            if (data.data.vendors)
-                                displayData = getDisplayData( displayData, data.data.vendors);  
                             console.log(displayData);
 
                             params.page = params.page || 1;
@@ -111,6 +67,7 @@ function main_search()
                     },
                     placeholder: 'Search for location, vendor, product',
                     minimumInputLength: 1,
+                    theme: "classic",
                     escapeMarkup: function(markup) { return markup;},
                     templateResult: formatRepo, 
                     templateSelection: formatRepoSelection
@@ -135,8 +92,8 @@ function main_search()
                     return repo.name || repo.text;
                 }
 
-                function getDisplayData(displayData, rawData)
-                {
+                function getDisplayData(displayData, rawData) {
+
                     let parent = {
                         text:"",
                         children : []
