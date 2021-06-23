@@ -332,20 +332,20 @@ function vendor_products()
                     {
                         var self = this;                      
                         if(self.store && self.data.stores[0].hours){
-                             self.hours.mon_open    = self.data.stores[0].hours.mon_open;
-                             self.hours.mon_close   = self.data.stores[0].hours.mon_close;
-                             self.hours.tue_open    = self.data.stores[0].hours.tue_open;
-                             self.hours.tue_close   = self.data.stores[0].tue_close;
-                             self.hours.wed_open    = self.data.stores[0].wed_open;
-                             self.hours.wed_close   = self.data.stores[0].wed_close;
-                             self.hours.thu_open    = self.data.stores[0].thu_open;
-                             self.hours.thu_close   = self.data.stores[0].thu_close;
-                             self.hours.fri_open    = self.data.stores[0].fri_open;
-                             self.hours.fri_close   = self.data.stores[0].fri_close;
-                             self.hours.sat_open    = self.data.stores[0].sat_open;
-                             self.hours.sat_close   = self.data.stores[0].sat_close;  
-                             self.hours.sun_open    = self.data.stores[0].sun_open;
-                             self.hours.sun_close   = self.data.stores[0].sun_close;
+                             self.hours.mon_open    = self.data.stores[0].hours.days.mon.open;
+                             self.hours.mon_close   = self.data.stores[0].hours.days.mon.close;
+                             self.hours.tue_open    = self.data.stores[0].hours.days.tue.open;
+                             self.hours.tue_close   = self.data.stores[0].hours.days.tue.close;
+                             self.hours.wed_open    = self.data.stores[0].hours.days.wed.open;
+                             self.hours.wed_close   = self.data.stores[0].hours.days.wed.close;
+                             self.hours.thu_open    = self.data.stores[0].hours.days.thu.open;
+                             self.hours.thu_close   = self.data.stores[0].hours.days.thu.close;
+                             self.hours.fri_open    = self.data.stores[0].hours.days.fri.open;
+                             self.hours.fri_close   = self.data.stores[0].hours.days.fri.close;
+                             self.hours.sat_open    = self.data.stores[0].hours.days.sat.open;
+                             self.hours.sat_close   = self.data.stores[0].hours.days.sat.close;  
+                             self.hours.sun_open    = self.data.stores[0].hours.days.sun.open;
+                             self.hours.sun_close   = self.data.stores[0].hours.days.sun.close;
                         }
                        
                         function setColorTimer() {                           
