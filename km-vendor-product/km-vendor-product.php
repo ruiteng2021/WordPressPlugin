@@ -687,12 +687,12 @@ function vendor_products()
                                     </div>
                                     <div class="km-product-price">                
                                         <strong>
-                                            <a :href="product.url"><p class="is-size-4" x-text="product.name" ></p></a>
-                                            <p style="text-decoration: underline;" x-show="product.price_gram != null"><span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
-                                            <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null"><span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
-                                            <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null"><span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
-                                            <p style="text-decoration: underline;" x-show="product.price_oz_half != null"><span x-text="product.price_oz_half"></span><span class="km-small-text">&nbsp;per 1/2 oz</span></p>
-                                            <p style="text-decoration: underline;" x-show="product.price_oz != null"><span x-text="product.price_oz"></span><span class="km-small-text">&nbsp;per 1 oz</span></p>
+                                            <a :href="product.url"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a>
+                                            <p style="text-decoration: underline;" x-show="product.price_gram != null">$<span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null">$<span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null">$<span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz_half != null">$<span x-text="product.price_oz_half"></span><span class="km-small-text">&nbsp;per 1/2 oz</span></p>
+                                            <p style="text-decoration: underline;" x-show="product.price_oz != null">$<span x-text="product.price_oz"></span><span class="km-small-text">&nbsp;per 1 oz</span></p>
                                             <template x-if="product.thc_min && product.thc_max">
                                                 <p class="km-no-dispaly">THC: <span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
                                             </template>
@@ -803,8 +803,8 @@ function vendor_products()
                             
                         <!-- </div> -->
                     </div>
-                    <div id="km-profile" x-show="menuTab === 'profile'">
-                        <strong><p x-text="data.description"></p> </strong>
+                    <div id="km-profile" style="width: 70%;" x-show="menuTab === 'profile'">
+                        <strong><p style="font-weight: 400; padding-left: 30px;" x-text="data.description"></p> </strong>
                     </div>
                     <div id="km-photos" x-show="menuTab === 'photos'">
                         <strong><p> this is photos </p> </strong>

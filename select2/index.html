@@ -11,46 +11,24 @@
 </head>
   <body>
 
-    <select class="km-location-select">
-      <option value="city">Select a City</option>
-      <option value="London">London</option>
-      <option value="Edmonton">Edmonton</option>
-      <option value="Toronto">Toronto</option>
-      <option value="Victoria">Victoria</option>  
-    </select>
-
-
-    <div class="jumbotron">
-      <div class="container bg-danger">
-        <!-- <div class="col-md-6">
-          <label>Single Select</label>
-          <select class="single" class="js-states form-control" onchange="storeHistory(this)">
-            <option>Java</option>
-            <option>Javascript</option>
-            <option>PHP</option>
-            <option>Visual Basic</option>
-          </select>
-
-        </div>
-        <div class="col-md-6">
-          <label>Multiple Select2</label>
-          <select id="multiple" class="js-states form-control" multiple>
-            <option>Java</option>
-            <option>Javascript</option>
-            <option>PHP</option>
-            <option>Visual Basic</option>
-          </select>
-        </div> -->
-
-
-        <!-- <select class="templatingSelect2">
-          <option value=""></option>
-          <option value="usd">XXX</option>
-          <option value="euro">Euro</option>
-          <option value="gbp">Pound</option>
-        </select> -->
+    <div class="modal is-active">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <!-- Any other Bulma elements you want -->
+        <select class="km-location-select">
+          <option value="city">Select a City</option>
+          <option value="London">London</option>
+          <option value="Edmonton">Edmonton</option>
+          <option value="Toronto">Toronto</option>
+          <option value="Victoria">Victoria</option>  
+        </select>
       </div>
+      <button class="modal-close is-large" aria-label="close"></button>
     </div>
+ 
+
+
+
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Select2 -->
@@ -152,7 +130,7 @@
       // $('.km-location-select').select2('data', preload_data );
 
       $(".km-location-select").select2({
-        width: '30%',
+        width: '100%',
 
         data: preload_data,
 

@@ -53,7 +53,7 @@ function view_product()
                 </div>
             </template>
             <template x-if="product">
-                <div class="column is-half">    
+                <div class="column is-half" style="padding-right: 20px">    
                     <div class="content">
                         <strong><h1 x-show="product.name != null"><span x-text="product.name"></span></h1></strong>
                         <strong><h2 x-show="product.price_gram != null"><span x-text="product.price_gram"></span><span>$&nbsp;per 1 g</span></h2></strong>
@@ -71,11 +71,105 @@ function view_product()
                 <div class="column is-one-quarter">    
                     <div class="content">
                         <strong><h1> Price </h1></strong>
-                        <p x-show="product.price_gram != null"><span>Per 1 gram     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_gram"></span></p>
-                        <p x-show="product.price_oz_eighth != null"><span>Per 1/8 oz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_oz_eighth"></span></p>
-                        <p x-show="product.price_oz_fourth != null"><span>Per 1/4 oz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_oz_fourth"></span></p>
-                        <p x-show="product.price_oz_half != null"><span>Per 1/2 oz  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_oz_half"></span></p>
-                        <p x-show="product.price_oz != null"><span>Per 1 oz         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span x-text="product.price_oz"></span></p>
+                        <template x-if="product.price_gram">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p><span>Per 1 gram</span></p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p>$<span x-text="product.price_gram"></span></p>
+                                </div>
+                            </div>
+                        </template>
+                        <template x-if="product.price_oz_eighth">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p><span>Per 1/8 oz</span></p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p>$<span x-text="product.price_oz_eighth"></span></p>
+                                </div>
+                            </div>
+                        </template>
+                        <template x-if="product.price_oz_fourth">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p><span>Per 1/4 oz</span></p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p>$<span x-text="product.price_oz_fourth"></span></p>
+                                </div>
+                            </div>
+                        </template>
+                        <template x-if="product.price_oz_half">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p><span>Per 1/2 oz</span></p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p>$<span x-text="product.price_oz_half"></span></p>
+                                </div>
+                            </div>
+                        </template>
+                        <template x-if="product.price_oz">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p><span>Per 1 oz</span></p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p>$<span x-text="product.price_oz"></span></p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template x-if="product.thc_min && product.thc_max">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p>THC:</p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p><span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template x-if="!product.thc_min || !product.thc_max">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p>THC:</p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p><span>Not Available</span></p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template x-if="product.cbd_min && product.cbd_max">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p>CBD:</p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p><span x-text="product.cbd_min"></span>%-<span x-text="product.cbd_max"></span>%</p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template x-if="!product.cbd_min || !product.cbd_max">
+                            <div class="columns is-mobile">
+                                <div class="column is-half km-view-single-price">
+                                    <p>CBD:</p>
+                                </div>
+                                <div class="column is-half km-view-single-price">
+                                    <p><span>Not Available</span></p>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- <p x-show="product.price_gram != null"><span>Per 1 gram     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>$<span x-text="product.price_gram"></span></p>
+                        <p x-show="product.price_oz_eighth != null"><span>Per 1/8 oz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>$<span x-text="product.price_oz_eighth"></span></p>
+                        <p x-show="product.price_oz_fourth != null"><span>Per 1/4 oz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>$<span x-text="product.price_oz_fourth"></span></p>
+                        <p x-show="product.price_oz_half != null"><span>Per 1/2 oz  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>$<span x-text="product.price_oz_half"></span></p>
+                        <p x-show="product.price_oz != null"><span>Per 1 oz         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>$<span x-text="product.price_oz"></span></p>
                         
                         <template x-if="product.thc_min && product.thc_max">
                             <p>THC: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span x-text="product.thc_min"></span>%-<span x-text="product.thc_max"></span>%</p>
@@ -88,7 +182,9 @@ function view_product()
                         </template>
                         <template x-if="!product.cbd_min || !product.cbd_max">
                             <p>CBD: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Not Available</span></p>
-                        </template>                      
+                        </template>    -->
+                        
+                        
                     </div>
                 </div>
             </template>

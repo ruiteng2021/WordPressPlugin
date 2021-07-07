@@ -229,11 +229,13 @@
 .km-product-price, 
 .km-product-price-title {
     width: 45%;
+    word-break: break-all;
 }
 
 .km-product-price strong,
 .km-product-price-title strong{
     padding-left: 20px;
+    padding-right: 20px;
 }
 
 .km-product-price a:link, a:visited{
@@ -243,6 +245,10 @@
 .km-product-price a:hover{
     color: #197826;
     text-decoration: underline;
+}
+
+.km-product-price-name{
+    padding-bottom: 10px;
 }
 
 .km-product-concentrate, 
@@ -269,6 +275,8 @@
     display: flex; 
     align-items: center;
     float: left;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .km-product-pic-title, 
@@ -529,13 +537,13 @@
     .km-product-pic {
         width: 35%;
         padding-bottom: 10px;
-        min-height: 280px;
+        min-height: 320px;
     }
 
     .km-product-price {
         width: 65%;
         padding-bottom: 10px;
-        min-height: 280px;
+        min-height: 320px;
     }
 
     .km-product-pic figure{
