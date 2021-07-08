@@ -406,7 +406,8 @@ function vendor_products()
                             <p x-text="data.name"> </p>
                             <p x-text="data.phone"> </p>
                             <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
-                            <button style="width: 100%; margin-bottom: 20px" class="button is-black">Claim Listing</button>
+                            <a x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-dark" :href="'https://account.kushmapper.com/claim/listing/' + data.service_areas[0].vendor_id">Claim Listing</a>
+                            <!-- <button x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-black">Claim Listing</button> -->
                         </div>
                     </template>
                     <div class="columns is-full is-mobile km-monday km-hour">
