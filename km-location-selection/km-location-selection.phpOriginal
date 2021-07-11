@@ -38,7 +38,7 @@ function location_selection()
     $startUrl =  'https://api.kushmapper.com/v1/locations';
 
 
-    // $html = '';
+    $html = '';
 
     // $html .= '<div class="modal km-modal-display is-active">';
     // $html .= '<div class="modal-background"></div>';
@@ -73,8 +73,8 @@ function location_selection()
     // ob_start();
 
     ?>
-        <script src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script> -->
         <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A"type="text/javascript"></script> -->
         <script>
             jQuery(document).ready(function() {
@@ -106,21 +106,7 @@ function location_selection()
                 //         jQuery(".km-modal-display").addClass("is-active");
                 //     }   
                 // });
-                // storeAddresses = [];
-                // storeAddresses = getCityData(startUrl);
-                // // form data
-                // let preloadData = preparePreloadData(storeAddresses);
-                // console.log(preloadData);
-                // jQuery("km-location-select").html('').select2({preloadData});
-                // jQuery('.km-location-select').select2({
-                //     theme: "classic",
-                //     data: preloadData,
-                //     escapeMarkup: function(markup) {
-                //         return markup;
-                //     },
-                //     templateResult: formatState,
-                // }).trigger('change');
-                // jQuery('.select2').css({ "width": "100%" });
+
 
                 getCityData(startUrl).then(adresses => {
                     // form data
@@ -173,6 +159,8 @@ function location_selection()
                         id = "#" + data._resultId;
                         jQuery(id).css("display", "none");  
                         removeHistory(data.text);
+                        idRemove = ".km-location-select " + "option[value='" + data.id + "']";
+                        jQuery(idRemove).remove();
                     });
 
                     // $option.text(data.text);
@@ -200,7 +188,6 @@ function location_selection()
                     .then(function(response) {
                         cityData = response.data.data;
                         // console.log(cityData);
-                        // adresses = [];
                         for (let data of cityData) 
                         {            
                             let cityInfo = {
@@ -223,6 +210,8 @@ function location_selection()
                             cityPos.lat = parseFloat(data.lat);
                             cityPos.lng = parseFloat(data.lng);
                             // console.log(cityPos);
+                            currentPos.lat = parseFloat(currentPos.lat);
+                            currentPos.lng = parseFloat(currentPos.lng);
                             // console.log(currentPos);
                             distance = haversine_distance (currentPos, cityPos);
                             // console.log(distance);
@@ -232,7 +221,7 @@ function location_selection()
                             adresses.sort((a,b)=> (a.distance > b.distance ? 1 : -1));
                         }                          
                         storeAddresses = adresses;
-                        console.log(storeAddresses);
+                        // console.log(storeAddresses);
                         return adresses;
                     })
                     .catch(function(error) {
@@ -276,20 +265,20 @@ function location_selection()
 
             function getCurrentLocationByIp(){
                 currentPosition = {};
-                url = "http://ip-api.com/json";
-                // url = "https://api.ipdata.co?api-key=02d8d5bc5cda112d76192486d95426dc5ccb3e6e394cc105bf5ad0dd";
+                // url = "http://ip-api.com/json";
+                url = "https://api.ipdata.co?api-key=02d8d5bc5cda112d76192486d95426dc5ccb3e6e394cc105bf5ad0dd";
                 axios.get(url)
                 .then(function(response) {     
-                    console.log(response);
-                    currentPosition.lat = response.data.lat;
-                    currentPosition.lng = response.data.lon;
-                    // currentPosition.lat = response.data.latitude;
-                    // currentPosition.lng = response.data.longitude;
+                    // console.log(response);
+                    // currentPosition.lat = response.data.lat;
+                    // currentPosition.lng = response.data.lon;
+                    currentPosition.lat = response.data.latitude;
+                    currentPosition.lng = response.data.longitude;
                 })
                 .catch(function(error) {
                     console.log(error);
                 })    
-                // console.log(currentPosition);
+                console.log(currentPosition);
                 return currentPosition;
             }
 
@@ -382,33 +371,38 @@ function location_selection()
                 return html;
             }
 
-            function preparePreloadData(addresses)
-            {
+            function preparePreloadData(addresses){
+
+                // console.log(storeAddresses);
+                // console.log(addresses);
+
                 result = [ {id: "", text: ""}];               
                 cities = JSON.parse(localStorage.getItem("cities"));  
-                if(cities == null){
-                    return;
-                }
-                for (let city of cities) 
-                {   
-                    let preLoad = { 
-                        id: '', 
-                        text: '', 
-                        history: false
-                    };
-
-                    for (let address of storeAddresses) 
+                // if(cities == null){
+                //     return;
+                // }
+                if(cities){
+                    for (let city of cities) 
                     {   
-                        if (city == address.city)
-                        {
-                            preLoad.id = address.city_slug;
-                            preLoad.text = address.city;
-                            preLoad.history = true;    
-                            result.push(preLoad);   
-                            break;
-                        }
-                    }     
-                }       
+                        let preLoad = { 
+                            id: '', 
+                            text: '', 
+                            history: false
+                        };
+
+                        for (let address of storeAddresses) 
+                        {   
+                            if (city == address.city)
+                            {
+                                preLoad.id = address.city_slug;
+                                preLoad.text = address.city;
+                                preLoad.history = true;    
+                                result.push(preLoad);   
+                                break;
+                            }
+                        }     
+                    }      
+                }
 
                 for (let address of storeAddresses) 
                 {   
@@ -431,8 +425,11 @@ function location_selection()
         </script>
         
     <?php
+
     // $html = ob_get_clean();
+    
     return $html;
+    
 
 }//end location_selection()
 
