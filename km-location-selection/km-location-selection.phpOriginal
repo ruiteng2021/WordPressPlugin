@@ -313,7 +313,7 @@ function location_selection()
 
                 let cities;
                 let city = citySlug.options[citySlug.selectedIndex].text;
-                if(city == "Select a City")
+                if(city == "Select a City" || city == "")
                     return;
 
                 cities = JSON.parse(localStorage.getItem("cities"));

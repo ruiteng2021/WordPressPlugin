@@ -76,8 +76,9 @@ const getCityData = async (url) =>
     adresses = [];
     currentPos = {};
     currentPos = getCurrentLocationByIp();  
-    // const res = await axios.get(url);
-    // // return res;
+    currentPos.lat = parseFloat(currentPos.lat);
+    currentPos.lng = parseFloat(currentPos.lng);
+
     let res = await axios.get(url)
         .then(function(response) {
             cityData = response.data.data;
@@ -103,10 +104,8 @@ const getCityData = async (url) =>
                 cityPos = {};                                     
                 cityPos.lat = parseFloat(data.lat);
                 cityPos.lng = parseFloat(data.lng);
-                // console.log(cityPos);
-                currentPos.lat = parseFloat(currentPos.lat);
-                currentPos.lng = parseFloat(currentPos.lng);
-                // console.log(currentPos);
+                console.log(cityPos);
+                console.log(currentPos);
                 distance = haversine_distance (currentPos, cityPos);
                 // console.log(distance);
                 cityInfo.distance = distance;
@@ -179,14 +178,11 @@ function getCurrentLocationByIp(){
 
 function sendLocation(citySlug)
 {
-    // console.log("XXXXX  sendLocation XXXXX");
-    // console.log(citySlug.selectedIndex);
-
+    // console.log("sendLocation");
     if(citySlug.selectedIndex == -1)
         return;            
 
-    // console.log(storeAddresses);
-    // console.log(citySlug.options[citySlug.selectedIndex].value);
+    // storeHistory(citySlug);
 
     citySlug = citySlug.options[citySlug.selectedIndex].value;
     for (let address of storeAddresses) 
@@ -208,7 +204,7 @@ function storeHistory(citySlug)
 
     let cities;
     let city = citySlug.options[citySlug.selectedIndex].text;
-    if(city == "Select a City")
+    if(city == "Select a City" || city == "")
         return;
 
     cities = JSON.parse(localStorage.getItem("cities"));
@@ -227,8 +223,8 @@ function storeHistory(citySlug)
 
 function removeHistory(item)
 {
-    console.log(item);       
     cities = JSON.parse(localStorage.getItem("cities"));  
+    console.log(cities);       
     cities = cities.filter(f => f !== item);
     console.log(cities);   
     localStorage.setItem("cities", JSON.stringify(cities));

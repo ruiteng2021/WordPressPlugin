@@ -14,6 +14,7 @@ add_action( 'wp_enqueue_scripts', 'add_km_location_selection_scripts' );
 add_shortcode('location-selection', 'location_selection');
 function location_selection()
 { 
+    $html = '';
     $html .= '<div class="columns is-full">';
     $html .= '<div class="column">';
     $html .= '<select class="km-location-select" data-placeholder="Select a City" onchange="sendLocation(this); storeHistory(this)">';
