@@ -38,7 +38,7 @@ function location_selection()
     $startUrl =  'https://api.kushmapper.com/v1/locations';
 
 
-    $html = '';
+    // $html = '';
 
     // $html .= '<div class="modal km-modal-display is-active">';
     // $html .= '<div class="modal-background"></div>';
@@ -73,8 +73,8 @@ function location_selection()
     // ob_start();
 
     ?>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script> -->
         <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A"type="text/javascript"></script> -->
         <script>
             jQuery(document).ready(function() {
@@ -313,7 +313,7 @@ function location_selection()
 
                 let cities;
                 let city = citySlug.options[citySlug.selectedIndex].text;
-                if(city == "Select a City" || city == "")
+                if(city == "Select a City")
                     return;
 
                 cities = JSON.parse(localStorage.getItem("cities"));
@@ -425,18 +425,15 @@ function location_selection()
         </script>
         
     <?php
-
     // $html = ob_get_clean();
-    
     return $html;
-    
 
 }//end location_selection()
 
-// function location_selection_styles()
-// {
-//     wp_enqueue_style('locationSelect2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
-//     wp_enqueue_script( 'locationSelect2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array(), true );
-// }//end location_selection_styles()
+function location_selection_styles()
+{
+    wp_enqueue_style('locationSelect2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
+    wp_enqueue_script( 'locationSelect2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array(), true );
+}//end location_selection_styles()
 
-// add_action('wp_enqueue_scripts', 'location_selection_styles');
+add_action('wp_enqueue_scripts', 'location_selection_styles');

@@ -75,51 +75,59 @@ const getCityData = async (url) =>
     data = false;
     adresses = [];
     currentPos = {};
-    currentPos = getCurrentLocationByIp();  
-    currentPos.lat = parseFloat(currentPos.lat);
-    currentPos.lng = parseFloat(currentPos.lng);
+    // currentPos = getCurrentLocationByIp();  
 
-    let res = await axios.get(url)
-        .then(function(response) {
-            cityData = response.data.data;
-            // console.log(cityData);
-            for (let data of cityData) 
-            {            
-                let cityInfo = {
-                    city: "",
-                    city_slug: "",
-                    state: "",
-                    country: "",
-                    lat: 0.0,
-                    lng: 0.0,
-                    distance: 0.0,
-                }; 
+    currentLocationUrl = "https://api.ipdata.co?api-key=02d8d5bc5cda112d76192486d95426dc5ccb3e6e394cc105bf5ad0dd";
 
-                cityInfo.city = data.city;
-                cityInfo.city_slug = data.city_slug;
-                cityInfo.state = data.state;
-                cityInfo.country = data.country;
-                cityInfo.lat = parseFloat(data.lat);
-                cityInfo.lng = parseFloat(data.lng);
-                cityPos = {};                                     
-                cityPos.lat = parseFloat(data.lat);
-                cityPos.lng = parseFloat(data.lng);
-                console.log(cityPos);
-                console.log(currentPos);
-                distance = haversine_distance (currentPos, cityPos);
-                // console.log(distance);
-                cityInfo.distance = distance;
-                adresses.push(cityInfo); 
-                // sort city distance to acsending order
-                adresses.sort((a,b)=> (a.distance > b.distance ? 1 : -1));
-            }                          
-            storeAddresses = adresses;
-            // console.log(storeAddresses);
-            return adresses;
-        })
-        .catch(function(error) {
-            console.log(error);
-        })   
+    const currentLocationInfo = axios.get(currentLocationUrl);
+    const cityDataInfo = axios.get(url);
+
+    let res = await axios.all([currentLocationInfo, cityDataInfo]).then(axios.spread(function(currentPosRes, cityDataRes) 
+    {
+        cityData = cityDataRes.data.data;
+        currentPos.lat = parseFloat(currentPosRes.data.latitude);
+        currentPos.lng = parseFloat(currentPosRes.data.longitude);
+
+        // let res = await axios.get(url).then(function(response) {
+        // cityData = response.data.data;
+        // console.log(cityData);
+        for (let data of cityData) 
+        {            
+            let cityInfo = {
+                city: "",
+                city_slug: "",
+                state: "",
+                country: "",
+                lat: 0.0,
+                lng: 0.0,
+                distance: 0.0,
+            }; 
+
+            cityInfo.city = data.city;
+            cityInfo.city_slug = data.city_slug;
+            cityInfo.state = data.state;
+            cityInfo.country = data.country;
+            cityInfo.lat = parseFloat(data.lat);
+            cityInfo.lng = parseFloat(data.lng);
+            cityPos = {};                                     
+            cityPos.lat = parseFloat(data.lat);
+            cityPos.lng = parseFloat(data.lng);
+            // console.log(cityPos);
+            // console.log(currentPos);
+            distance = haversine_distance (currentPos, cityPos);
+            // console.log(distance);
+            cityInfo.distance = distance;
+            adresses.push(cityInfo); 
+            // sort city distance to acsending order
+            adresses.sort((a,b)=> (a.distance > b.distance ? 1 : -1));
+        }                          
+        storeAddresses = adresses;
+        // console.log(storeAddresses);
+        return adresses;
+    }))
+    .catch(function(error) {
+        console.log(error);
+    })   
 
     return res;
 }
@@ -166,8 +174,8 @@ function getCurrentLocationByIp(){
         // console.log(response);
         // currentPosition.lat = response.data.lat;
         // currentPosition.lng = response.data.lon;
-        currentPosition.lat = response.data.latitude;
-        currentPosition.lng = response.data.longitude;
+        currentPosition.lat = parseFloat(response.data.latitude);
+        currentPosition.lng = parseFloat(response.data.longitude);
     })
     .catch(function(error) {
         console.log(error);
@@ -178,11 +186,8 @@ function getCurrentLocationByIp(){
 
 function sendLocation(citySlug)
 {
-    // console.log("sendLocation");
     if(citySlug.selectedIndex == -1)
         return;            
-
-    // storeHistory(citySlug);
 
     citySlug = citySlug.options[citySlug.selectedIndex].value;
     for (let address of storeAddresses) 
@@ -191,7 +196,7 @@ function sendLocation(citySlug)
         {
             // location = '/wordpress/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
             location = '/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
-            console.log(location);
+            // console.log(location);
             return  location;
         }
     }               
@@ -262,16 +267,10 @@ function getCityHistory()
     return html;
 }
 
-function preparePreloadData(addresses){
-
-    // console.log(storeAddresses);
-    // console.log(addresses);
-
+function preparePreloadData(addresses)
+{
     result = [ {id: "", text: ""}];               
     cities = JSON.parse(localStorage.getItem("cities"));  
-    // if(cities == null){
-    //     return;
-    // }
     if(cities){
         for (let city of cities) 
         {   
