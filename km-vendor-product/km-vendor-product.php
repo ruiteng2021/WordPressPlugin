@@ -71,6 +71,7 @@ function vendor_products()
                     meta: false,
                     urlSearchGlobal: false,
                     store: false,
+                    serviceArea: false,
                     // global used info end //                                   
 
                     // Google map begin//
@@ -106,13 +107,17 @@ function vendor_products()
                                 console.log(error);
                             }) 
 
-                        if (Object.keys(self.data.service_areas).length == 0)
-                        {
-                            // create dummy date to avoid display error
-                            self.data.service_areas = [{city: "", state: '', country: ''}];
-                            console.log(self.data.service_areas);
-                        }
-                        if(self.data.stores.length == 1)
+                        // if (Object.keys(self.data.service_areas).length == 0)
+                        // {
+                        //     // create dummy date to avoid display error
+                        //     self.data.service_areas = [{city: "", state: '', country: ''}];
+                        //     console.log(self.data.service_areas);
+                        // }
+
+                        if(Object.keys(self.data.service_areas).length != 0)
+                            self.serviceArea = true;
+
+                        if(self.data.stores.length != 0)
                             self.store = true;
 
                         self.detectWeekday();
@@ -289,6 +294,27 @@ function vendor_products()
                         }
                     },
 
+                    GetCurrentCoordinateByIp()
+                    {
+                        var self = this;
+                        position = {};
+                        position = getCurrentLocationByIp();
+                        const pos = {
+                            lat: position.lat,
+                            lng: position.lng,
+                        };
+                        self.googleMap.map.setCenter(pos);
+
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            // title:"Hello World!"
+                        });
+
+                        // To add the marker to the map, call setMap();
+                        marker.setMap(self.googleMap.map);
+
+                    },
+
                     HandleLocationError(browserHasGeolocation, infoWindow, pos) 
                     {
                         var self = this;
@@ -390,11 +416,30 @@ function vendor_products()
                         // update color every hour
                         setInterval(setColorTimer, 3600000);                      
                     },
+
+                    getCurrentLocationByIp(){
+                        currentPosition = {};
+                        // url = "http://ip-api.com/json";
+                        url = "https://api.ipdata.co?api-key=02d8d5bc5cda112d76192486d95426dc5ccb3e6e394cc105bf5ad0dd";
+                        axios.get(url)
+                        .then(function(response) {     
+                            console.log(response);
+                            currentPosition.lat = response.data.latitude;
+                            currentPosition.lng = response.data.longitude;
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        })    
+                        console.log(currentPosition);
+                        return currentPosition;
+                    },
+
                 };
             }
         </script>
 
-        <div class="km-vendor-product" x-data="kmData()" x-init="getData()" @map-ready.window="getData()">
+        <!-- <div class="km-vendor-product" x-data="kmData()" x-init="getData()" @map-ready.window="getData()"> -->
+        <div class="km-vendor-product" x-data="kmData()" x-init="getData()">
             <div class="columns is-full">            
                 <!-- Left column for logo -->
                 <div class="km-logo column is-one-quarter">    
@@ -406,7 +451,7 @@ function vendor_products()
                             <p x-text="data.name"> </p>
                             <p x-text="data.phone"> </p>
                             <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
-                            <a x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-dark" :href="'https://account.kushmapper.com/claim/listing/' + data.service_areas[0].vendor_id">Claim Listing</a>
+                            <a x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-dark" :href="'https://account.kushmapper.com/claim/listing/' + data.id">Claim Listing</a>
                             <!-- <button x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-black">Claim Listing</button> -->
                         </div>
                     </template>
@@ -537,14 +582,14 @@ function vendor_products()
                                 <span>PROFILE</span>
                             </a>
                             </li> 
-                            <li :class="{'is-active' : menuTab === 'photos'}">
+                            <!-- <li :class="{'is-active' : menuTab === 'photos'}">
                             <a href="#km-photos"
                                 @click.prevent="menuTab = 'photos'"
                             >
                                 <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
                                 <span>PHOTOS</span>
                             </a>
-                            </li> 
+                            </li>  -->
                             <li :class="{'is-active' : menuTab === 'reviews'}">
                             <a href="#km-product-reviews"
                                 @click.prevent="menuTab = 'reviews'"
@@ -750,27 +795,61 @@ function vendor_products()
                     </div>
                     <div id="km-location" x-show="menuTab === 'map'" >
                         <!-- <div class="columns">  -->
-                            <div id="km-address"> 
-                                <template x-if="store">
-                                    <div class="km-location-store">    
-                                        <strong><p class="is-size-6"> Store:</p> </strong>
-                                        <p x-text="data.stores[0].address1"> </p>
-                                        <p x-text="data.stores[0].address2"> </p>
-                                        <p><span x-text="data.stores[0].city"></span>&nbsp;<span x-text="data.stores[0].state"></span> </p>
-                                        <p x-text="data.stores[0].country"> </p>
-                                        <p x-text="data.stores[0].postal_code"> </p>
-                                    </div>
-                                </template>
-                                
-                                    <div class="km-location-service">  
-                                        <strong><p class="is-size-6"> Delivery Area:</p> </strong>   
-                                        <template x-if="data">
-                                            <div>
-                                                <p> <span x-text="data.service_areas[0].city"></span>&nbsp;<span x-text="data.service_areas[0].state"> </span></p>
-                                                <p x-text="data.service_areas[0].country"> </p>   
+                            <div id="km-address">             
+                                <div class="km-location-store">    
+                                    <strong><p class="is-size-6"> Stores:</p> </strong>
+                                    <template x-if="store">                                        
+                                        <div class="card km-location-card">
+                                            <div class="card-content">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <figure class="image is-48x48">
+                                                            <img :src="data.logo_url" alt="product img" />                                                        
+                                                        </figure>
+                                                    </div>
+                                                    <div class="media-content km-media-content">
+                                                        <p x-text="data.name" class="title is-4"></p>
+                                                    </div>
+                                                </div>
+                                                <template x-for="item in data.stores">
+                                                    <div class="content km-store-content">
+                                                        <p> <span x-text="item.address1"> </span></p>
+                                                        <p x-text="item.address2"> </p>
+                                                        <p><span x-text="item.city"></span>&nbsp;<span x-text="item.state"></span> </p>
+                                                        <p> <span x-text="item.country"> </span></p>
+                                                        <p> <span x-text="item.postal_code">  </span></p>
+                                                    </div>
+                                                </template>
                                             </div>
-                                        </template>                         
-                                    </div>    
+                                        </div>                                   
+                                    </template>
+                                </div>                            
+                            
+                                <div class="km-location-service">  
+                                    <strong><p class="is-size-6"> Delivery Area:</p> </strong>   
+                                    <template x-if="serviceArea">
+                                        <div class="card km-location-card">
+                                            <div class="card-content">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <figure class="image is-48x48">
+                                                            <img :src="data.logo_url" alt="product img" />                                                        
+                                                        </figure>
+                                                    </div>
+                                                    <div class="media-content km-media-content">
+                                                        <p x-text="data.name" class="title is-4"></p>
+                                                    </div>
+                                                </div>
+                                                <template x-for="item in data.service_areas">
+                                                    <div class="content km-store-content">
+                                                        <p> <span x-text="item.city"></span>&nbsp;<span x-text="item.state"> </span></p>
+                                                        <p x-text="item.country"> </p> 
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div> 
+                                    </template>                     
+                                </div>    
                                             
                             </div>        
 
@@ -780,7 +859,7 @@ function vendor_products()
                                 </div>
                                 <div class="km-map-direction"> 
                                     <input id="Coordinate" class="input is-link" type="text" placeholder="Enter your location">
-                                    <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinate()" title="use my location"></button>
+                                    <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinateByIp()" title="use my location"></button>
                                     <button class="button is-dark" x-on:click="GetVendorDirection()">Get Directions</button>
                                 </div>
                                 <div class="km-map-driving"> 
@@ -807,9 +886,9 @@ function vendor_products()
                     <div id="km-profile" style="width: 70%;" x-show="menuTab === 'profile'">
                         <strong><p style="font-weight: 400; padding-left: 30px;" x-text="data.description"></p> </strong>
                     </div>
-                    <div id="km-photos" x-show="menuTab === 'photos'">
+                    <!-- <div id="km-photos" x-show="menuTab === 'photos'">
                         <strong><p> this is photos </p> </strong>
-                    </div>
+                    </div> -->
                     <div id="km-product-reviews" x-show="menuTab === 'reviews'">
                         <!-- <form method="post" action="http://127.0.0.1/wordpress/test-page/" class="box" style="width: 100%"> -->
                         <form method="post" action="https://kushmapper.com/wp-comments-post.php" class="box" style="width: 100%">
