@@ -42,8 +42,50 @@ function main_search()
                             };
                         },
                         processResults: function (data, params) {
-                            
+
                             let displayData = [];                              
+                            
+                            // displayData = [
+                            //     { 
+                            //         "text": "Group 1", 
+                            //         "children" : [
+                            //             {
+                            //                 "id": 1,
+                            //                 "text": "Option 1.1"
+                            //             },
+                            //             {
+                            //                 "id": 2,
+                            //                 "text": "Option 1.2"
+                            //             }
+                            //         ]
+                            //     },
+                            //     { 
+                            //         "text": "Group 2", 
+                            //         "children" : [
+                            //             {
+                            //                 "id": 21,
+                            //                 "text": "Option 2.1"
+                            //             },
+                            //             {
+                            //                 "id": 22,
+                            //                 "text": "Option 2.2"
+                            //             }
+                            //         ]
+                            //     },
+                            //     { 
+                            //         "text": "Group 3", 
+                            //         "children" : [
+                            //             {
+                            //                 "id": 7,
+                            //                 "text": "Option 3.1"
+                            //             },
+                            //             {
+                            //                 "id": 8,
+                            //                 "text": "Option 3.2"
+                            //             }
+                            //         ]
+                            //     }
+                            // ];
                             if (data.data.vendors)
                                 displayData = getDisplayData( displayData, data.data.vendors); 
                             if (data.data.products)
@@ -67,7 +109,7 @@ function main_search()
                     },
                     placeholder: 'Search for location, vendor, product',
                     minimumInputLength: 1,
-                    theme: "classic",
+					theme: "classic",
                     escapeMarkup: function(markup) { return markup;},
                     templateResult: formatRepo, 
                     templateSelection: formatRepoSelection
@@ -92,8 +134,8 @@ function main_search()
                     return repo.name || repo.text;
                 }
 
-                function getDisplayData(displayData, rawData) {
-
+                function getDisplayData(displayData, rawData)
+                {
                     let parent = {
                         text:"",
                         children : []
@@ -112,12 +154,14 @@ function main_search()
                             name:"",
                             url: ""                                
                         };
+                        tempData.id = item.id;
+                        tempData.name = item.title;
                         tempData.url = item.url;
-                        if(item.type == "locations")
-                            tempData.name = item.searchable.city;
-                        else
-                            tempData.name = item.searchable.name;
-                        tempData.id = item.searchable.id;
+                        // if(item.type == "locations")
+                        //     tempData.name = item.searchable.city;
+                        // else
+                        //     tempData.name = item.searchable.name;
+                        // tempData.id = item.searchable.id;
                         parent.children.push(tempData);                               
                     }
 
