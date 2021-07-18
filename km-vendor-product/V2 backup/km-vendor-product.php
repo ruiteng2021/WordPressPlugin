@@ -22,27 +22,10 @@ function vendor_products()
     ob_start();
 
     ?>
-        <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A"type="text/javascript"></script> -->
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A&callback=initMap"type="text/javascript"></script>
+        <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAEc6aw19DrUE7sN0CoE-VhM20ighnm7Y"type="text/javascript"></script> -->
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB44vENDVAXY11oPRg4tSuHH2EEP9xhI1A"type="text/javascript"></script>
         <script async defer src="https://www.google.com/recaptcha/api.js"type="text/javascript"></script>
-        <script>             
-        
-            let map, infoWindow, directionsService, directionsRenderer;
-            function initMap() {
-                directionsService = new google.maps.DirectionsService();
-                directionsRenderer = new google.maps.DirectionsRenderer();
-                let mapOptions = {
-                    center: new google.maps.LatLng(42.976348, -81.2514795),
-                    zoom: 9,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                }
-                map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
-                directionsRenderer.setMap(map);     
-                infoWindow = new google.maps.InfoWindow();     
-                let mapReadyEvent = new CustomEvent('map-ready');
-                window.dispatchEvent(mapReadyEvent);   
-            }
-
+        <script>          
             function kmData() {
                 return {
                     startUrl: '<?php echo $startUrl; ?>',
@@ -138,61 +121,17 @@ function vendor_products()
                             self.store = true;
 
                         self.detectWeekday();
-                        self.setGooglemapMarkers();
-                        // // self.map = map;
-                        // // self.infoWindow = infoWindow;
-                        // // self.googleMap.directionsService = directionsService;
-                        // // self.googleMap.directionsRenderer = directionsRenderer;
 
-                        // var marker = new google.maps.Marker({
-                        //     position: pos,
-                        //     // title:"Hello World!"
-                        // });
-                        // marker.setMap(map);
-                                   
-                    },
-
-
-                    setGooglemapMarkers() 
-                    {
-                        var self = this;
-                        let locations = [];
-
-                        if (self.store)
-                        {
-                            for (let store of self.data.stores)
-                            {
-                                let location = [];
-                                location.push(store.name);
-                                location.push(store.lat);
-                                location.push(store.lng);
-                                locations.push(location);
-                            }
+                        self.googleMap.directionsService = new google.maps.DirectionsService();
+                        self.googleMap.directionsRenderer = new google.maps.DirectionsRenderer();
+                        let mapOptions = {
+                            center: new google.maps.LatLng(42.976348, -81.2514795),
+                            zoom: 10,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
                         }
-
-                        if (self.serviceArea)
-                        {
-                            for (let serviceArea of self.data.service_areas)
-                            {
-                                let location = [];
-                                location.push(serviceArea.city);
-                                location.push(serviceArea.lat);
-                                location.push(serviceArea.lng);
-                                locations.push(location);
-                            }
-                        }
-
-                        if (self.store || self.serviceArea)
-                        {
-                            console.log(locations);
-                            map.setCenter(new google.maps.LatLng(locations[0][1], locations[0][2]));
-                            for (i = 0; i < locations.length; i++) {  
-                                marker = new google.maps.Marker({
-                                    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-                                    map: map
-                                });
-                            }       
-                        }
+                        self.googleMap.map = new google.maps.Map(document.getElementById("km-map"), mapOptions);
+                        self.googleMap.directionsRenderer.setMap(self.googleMap.map);     
+                        self.googleMap.infoWindow = new google.maps.InfoWindow();                       
                     },
 
                     async updateApiData(url)
@@ -313,7 +252,7 @@ function vendor_products()
                         jQuery(".km-max-thc-input").attr('min', '0');                    
                     },
 
-                    getCurrentLocation()
+                    GetCurrentCoordinate()
                     {
                         var self = this;
                         // console.log("XXXXX in map GetCurrentCoordinate XXXXX");
@@ -324,8 +263,7 @@ function vendor_products()
                                         lat: position.coords.latitude,
                                         lng: position.coords.longitude,
                                     };
-                                    // self.googleMap.infoWindow.setPosition(pos);
-                                    infoWindow.setPosition(pos);
+                                    self.googleMap.infoWindow.setPosition(pos);
                                     // self.infoWindow.setContent("Location found.");
                                     // self.infoWindow.open(self.map);
                                     console.log(pos);
@@ -334,8 +272,7 @@ function vendor_products()
                                     // pos.lng = -81.21131;
                                     coordinate = pos.lat + ", " + pos.lng;
                                     document.getElementById("Coordinate").value = coordinate; 
-                                    // self.googleMap.map.setCenter(pos);
-                                    map.setCenter(pos);
+                                    self.googleMap.map.setCenter(pos);
 
                                     var marker = new google.maps.Marker({
                                         position: pos,
@@ -343,21 +280,39 @@ function vendor_products()
                                     });
 
                                     // To add the marker to the map, call setMap();
-                                    // marker.setMap(self.googleMap.map);
-                                    marker.setMap(map);
+                                    marker.setMap(self.googleMap.map);
                                 },
                                 () => {
-                                    // this.HandleLocationError(true, self.googleMap.infoWindow, self.googleMap.map.getCenter());
-                                    this.HandleLocationError(true, infoWindow, map.getCenter());
+                                    this.HandleLocationError(true, self.googleMap.infoWindow, self.googleMap.map.getCenter());
                                 }
                             );
                         } 
                         else 
                         {
                             // Browser doesn't support Geolocation
-                            // this.HandleLocationError(false, self.googleMap.infoWindow, self.googleMap.map.getCenter());
-                            this.HandleLocationError(false, infoWindow, map.getCenter());
+                            this.HandleLocationError(false, self.googleMap.infoWindow, self.googleMap.map.getCenter());
                         }
+                    },
+
+                    GetCurrentCoordinateByIp()
+                    {
+                        var self = this;
+                        position = {};
+                        position = getCurrentLocationByIp();
+                        const pos = {
+                            lat: position.lat,
+                            lng: position.lng,
+                        };
+                        self.googleMap.map.setCenter(pos);
+
+                        var marker = new google.maps.Marker({
+                            position: pos,
+                            // title:"Hello World!"
+                        });
+
+                        // To add the marker to the map, call setMap();
+                        marker.setMap(self.googleMap.map);
+
                     },
 
                     HandleLocationError(browserHasGeolocation, infoWindow, pos) 
@@ -462,36 +417,20 @@ function vendor_products()
                         setInterval(setColorTimer, 3600000);                      
                     },
 
-                    async getCurrentLocationByIp(){
-                        var self = this;    
+                    getCurrentLocationByIp(){
                         currentPosition = {};
                         // url = "http://ip-api.com/json";
                         url = "https://api.ipdata.co?api-key=02d8d5bc5cda112d76192486d95426dc5ccb3e6e394cc105bf5ad0dd";
-                        await axios.get(url)
+                        axios.get(url)
                         .then(function(response) {     
                             console.log(response);
-                            currentPosition.lat = parseFloat(response.data.latitude);
-                            currentPosition.lng = parseFloat(response.data.longitude);
-
-                            var pos = new google.maps.LatLng(currentPosition.lat, currentPosition.lng);
-                            self.googleMap.map.setCenter(pos);
-
-                            var marker = new google.maps.Marker({
-                                position: pos,
-                                // title:"Hello World!"
-                            });
-
-                            // To add the marker to the map, call setMap();
-                            marker.setMap(self.googleMap.map);
-
-                            coordinate = currentPosition.lat + ", " + currentPosition.lng;
-                            document.getElementById("Coordinate").value = coordinate; 
-
+                            currentPosition.lat = response.data.latitude;
+                            currentPosition.lng = response.data.longitude;
                         })
                         .catch(function(error) {
                             console.log(error);
                         })    
-                        // console.log(currentPosition);
+                        console.log(currentPosition);
                         return currentPosition;
                     },
 
@@ -499,8 +438,8 @@ function vendor_products()
             }
         </script>
 
-        <div class="km-vendor-product" x-data="kmData()" x-init="getData()" @map-ready.window="getData()">
-        <!-- <div class="km-vendor-product" x-data="kmData()" x-init="getData()"> -->
+        <!-- <div class="km-vendor-product" x-data="kmData()" x-init="getData()" @map-ready.window="getData()"> -->
+        <div class="km-vendor-product" x-data="kmData()" x-init="getData()">
             <div class="columns is-full">            
                 <!-- Left column for logo -->
                 <div class="km-logo column is-one-quarter">    
@@ -920,7 +859,7 @@ function vendor_products()
                                 </div>
                                 <div class="km-map-direction"> 
                                     <input id="Coordinate" class="input is-link" type="text" placeholder="Enter your location">
-                                    <button class="button is-primary fas fa-location-arrow" x-on:click="getCurrentLocation()" title="use my location"></button>
+                                    <button class="button is-primary fas fa-location-arrow" x-on:click="GetCurrentCoordinateByIp()" title="use my location"></button>
                                     <button class="button is-dark" x-on:click="GetVendorDirection()">Get Directions</button>
                                 </div>
                                 <div class="km-map-driving"> 
