@@ -61,23 +61,23 @@ function vendor_products()
                         minCbd: 'All',
                     },
 
-                    hours: {
-                        mon_open: "9:00",
-                        mon_close: "8:00",
-                        tue_open: "9:00",
-                        tue_close: "8:00",
-                        wed_open: "9:00",
-                        wed_close: "8:00",
-                        thu_open: "9:00",
-                        thu_close: "8:00",
-                        fri_open: "9:00",
-                        fri_close: "8:00",
-                        sat_open: "9:00",
-                        sat_close: "8:00",
-                        sun_open: "9:00",
-                        sun_close: "8:00"
-                    },
-
+                    // hours: {
+                    //     mon_open: "9:00",
+                    //     mon_close: "8:00",
+                    //     tue_open: "9:00",
+                    //     tue_close: "8:00",
+                    //     wed_open: "9:00",
+                    //     wed_close: "8:00",
+                    //     thu_open: "9:00",
+                    //     thu_close: "8:00",
+                    //     fri_open: "9:00",
+                    //     fri_close: "8:00",
+                    //     sat_open: "9:00",
+                    //     sat_close: "8:00",
+                    //     sun_open: "9:00",
+                    //     sun_close: "8:00"
+                    // },
+                    hours: false,
                     day: false,
                     // global used info //
                     data: false, // for logo and location tab
@@ -137,7 +137,7 @@ function vendor_products()
                         if(self.data.stores.length != 0)
                             self.store = true;
 
-                        self.detectWeekday();
+                        // self.detectWeekday();
                         self.setGooglemapMarkers();
                         // // self.map = map;
                         // // self.infoWindow = infoWindow;
@@ -511,74 +511,76 @@ function vendor_products()
                             </figure>   
                             <p x-text="data.name"> </p>
                             <p x-text="data.phone"> </p>
-                            <a class="vendorWebsite" href=data.website><p class="vendorMail" x-text="data.website"> </p></a>
+                            <a x-show ="data.website" class="vendorWebsite" :href="data.website"><p class="vendorMail" x-text="data.website"> </p></a>
                             <a x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-dark" :href="'https://account.kushmapper.com/claim/listing/' + data.id">Claim Listing</a>
                             <!-- <button x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-black">Claim Listing</button> -->
                         </div>
                     </template>
-                    <div class="columns is-full is-mobile km-monday km-hour">
-                        <div class="column is-one-quarter">
-                            <p>Mon</p>
+                    <template x-if="hours">                
+                        <div class="columns is-full is-mobile km-monday km-hour">
+                            <div class="column is-one-quarter">
+                                <p>Mon</p>
+                            </div>
+                            <div class="column is-three-quarter">
+                                <!-- <p>9:00 am - 8:00 pm</p> -->
+                                <p><span x-text="hours.mon_open"></span> am - <span x-text="hours.mon_close"></span> pm</p>
+                            </div>
                         </div>
-                        <div class="column is-three-quarter">
-                            <!-- <p>9:00 am - 8:00 pm</p> -->
-                            <p><span x-text="hours.mon_open"></span> am - <span x-text="hours.mon_close"></span> pm</p>
+                        <div class="columns is-full is-mobile km-tuesday km-hour">
+                            <div class="column is-one-quarter">
+                                <p>Tue</p>
+                            </div>
+                            <div class="column is-three-quarter">
+                                <!-- <p>9:00 am - 8:00 pm</p> -->
+                                <p><span x-text="hours.tue_open"></span> am - <span x-text="hours.tue_close"></span> pm</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="columns is-full is-mobile km-tuesday km-hour">
-                        <div class="column is-one-quarter">
-                            <p>Tue</p>
+                        <div class="columns is-full is-mobile km-wednsday km-hour">
+                            <div class="column is-one-quarter">
+                                <p>Wed</p>
+                            </div>
+                            <div class="column is-three-quarter">
+                                <!-- <p>9:00 am - 8:00 pm</p> -->
+                                <p><span x-text="hours.wed_open"></span> am - <span x-text="hours.wed_close"></span> pm</p>
+                            </div>
                         </div>
-                        <div class="column is-three-quarter">
-                            <!-- <p>9:00 am - 8:00 pm</p> -->
-                            <p><span x-text="hours.tue_open"></span> am - <span x-text="hours.tue_close"></span> pm</p>
+                        <div class="columns is-full is-mobile km-thursday km-hour">
+                            <div class="column is-one-quarter">
+                                <p>Thu</p>
+                            </div>
+                            <div class="column is-three-quarter">
+                                <!-- <p>9:00 am - 8:00 pm</p> -->
+                                <p><span x-text="hours.thu_open"></span> am - <span x-text="hours.thu_close"></span> pm</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="columns is-full is-mobile km-wednsday km-hour">
-                        <div class="column is-one-quarter">
-                            <p>Wed</p>
+                        <div class="columns is-full is-mobile km-friday km-hour">
+                            <div class="column is-one-quarter">
+                                <p>Fri</p>
+                            </div>
+                            <div class="column is-three-quarter">
+                                <!-- <p>9:00 am - 8:00 pm</p> -->
+                                <p><span x-text="hours.fri_open"></span> am - <span x-text="hours.fri_close"></span> pm</p>
+                            </div>
                         </div>
-                        <div class="column is-three-quarter">
-                            <!-- <p>9:00 am - 8:00 pm</p> -->
-                            <p><span x-text="hours.wed_open"></span> am - <span x-text="hours.wed_close"></span> pm</p>
+                        <div class="columns is-full is-mobile km-saturday km-hour">
+                            <div class="column is-one-quarter">
+                                <p>Sat</p>
+                            </div>
+                            <div class="column is-three-quarter">
+                                <!-- <p>9:00 am - 8:00 pm</p> -->
+                                <p><span x-text="hours.sat_open"></span> am - <span x-text="hours.sat_close"></span> pm</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="columns is-full is-mobile km-thursday km-hour">
-                        <div class="column is-one-quarter">
-                            <p>Thu</p>
+                        <div class="columns is-full is-mobile km-sunday km-hour">
+                            <div class="column is-one-quarter">
+                                <p>Sun</p>
+                            </div>
+                            <div class="column is-three-quarter">
+                                <!-- <p>9:00 am - 8:00 pm</p> -->
+                                <p><span x-text="hours.sun_open"></span> am - <span x-text="hours.sun_close"></span> pm</p>
+                            </div>
                         </div>
-                        <div class="column is-three-quarter">
-                            <!-- <p>9:00 am - 8:00 pm</p> -->
-                            <p><span x-text="hours.thu_open"></span> am - <span x-text="hours.thu_close"></span> pm</p>
-                        </div>
-                    </div>
-                    <div class="columns is-full is-mobile km-friday km-hour">
-                        <div class="column is-one-quarter">
-                            <p>Fri</p>
-                        </div>
-                        <div class="column is-three-quarter">
-                            <!-- <p>9:00 am - 8:00 pm</p> -->
-                            <p><span x-text="hours.fri_open"></span> am - <span x-text="hours.fri_close"></span> pm</p>
-                        </div>
-                    </div>
-                    <div class="columns is-full is-mobile km-saturday km-hour">
-                        <div class="column is-one-quarter">
-                            <p>Sat</p>
-                        </div>
-                        <div class="column is-three-quarter">
-                            <!-- <p>9:00 am - 8:00 pm</p> -->
-                            <p><span x-text="hours.sat_open"></span> am - <span x-text="hours.sat_close"></span> pm</p>
-                        </div>
-                    </div>
-                    <div class="columns is-full is-mobile km-sunday km-hour">
-                        <div class="column is-one-quarter">
-                            <p>Sun</p>
-                        </div>
-                        <div class="column is-three-quarter">
-                            <!-- <p>9:00 am - 8:00 pm</p> -->
-                            <p><span x-text="hours.sun_open"></span> am - <span x-text="hours.sun_close"></span> pm</p>
-                        </div>
-                    </div>
+                    </template>
                     <form class="box km-request-form" method="post" action="/request-response/" style="width: 100%">
                         <!-- <form class="box km-request-form" method="post" action="/wordpress/request-response/" style="width: 100%"> -->
                         <div class="columns is-multiline"> 
@@ -650,7 +652,7 @@ function vendor_products()
                                 <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
                                 <span>PHOTOS</span>
                             </a>
-                            </li>  -->
+                            </li>  
                             <li :class="{'is-active' : menuTab === 'reviews'}">
                             <a href="#km-product-reviews"
                                 @click.prevent="menuTab = 'reviews'"
@@ -658,7 +660,7 @@ function vendor_products()
                                 <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
                                 <span>REVIEWS</span>
                             </a>
-                            </li>
+                            </li>-->
                         </ul>
                     </div>
                     <!-- Product infomation  -->
@@ -789,12 +791,13 @@ function vendor_products()
                                 <div class="column is-two-thirds">
                                     <div class="km-product-pic">                  
                                         <figure class="image">
-                                            <img :src="product.image_url" alt="product img" />
+                                            <a :href="'/product/' + product.slug"><img :src="product.image_url" alt="product img" /></a>
                                         </figure>        
                                     </div>
                                     <div class="km-product-price">                
                                         <strong>
-                                            <a :href="product.url"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a>
+                                            <!-- <a :href="product.url"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a> -->
+                                            <a :href="'/product/' + product.slug"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a>
                                             <p style="text-decoration: underline;" x-show="product.price_gram != null">$<span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null">$<span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null">$<span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
