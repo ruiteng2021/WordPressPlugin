@@ -195,7 +195,7 @@ function sendLocation(citySlug)
         if (citySlug == address.city_slug)
         {
             // location = '/wordpress/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
-            location = '/location/' + address.country.toLowerCase() + '/' + address.state.toLowerCase()  + '/' + address.city_slug;
+            location = '/location/' + address.country + '/' + address.state  + '/' + address.city_slug;
             // console.log(location);
             return  location;
         }
