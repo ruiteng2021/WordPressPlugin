@@ -1,0 +1,658 @@
+/* Logo section */
+.km-logo{
+    margin-right: 20px;
+    min-height: 800px;
+}
+
+.km-logo button {
+    margin-top: 15px;
+    float: right;
+}
+
+.km-all-products{
+    border-left: 3px solid rgb(80, 78, 78);
+    padding-left: 40px;
+}
+
+.vendorlogo {
+    margin-bottom: 20px !important;
+}
+
+.vendorlogo img {
+    width: 100%;
+    height: auto;
+}
+
+.vendorWebsite{
+    color: inherit;
+}
+
+.vendorMail {
+    max-width: 250px;
+    white-space:normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.km-monday{
+    margin-top: 20px;
+}
+
+.km-hour {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: normal;
+    margin-bottom: 0 !important;
+    /* min-width: 260px; */
+}
+
+.km-hour .column {
+    padding-right: 0;
+}
+
+.km-hour .is-one-quarter{
+    padding-left: 35px;
+    min-width: 100px;
+}
+
+.km-hour:hover {
+    background-color:#eee;
+}
+
+.km-request-form {
+    margin-top: 20px;
+}
+
+.km-request-form .column,
+.km-request-form h3
+{
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.km-request-form .button
+{
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.km-all-products .tabs {
+    font-weight: bold;
+    display: inline-block;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.km-all-products .tabs.is-toggle li.is-active a {
+    background-color: black;
+}
+
+.km-all-products .tabs.is-toggle a {
+    border: 0;
+}
+
+.km-all-products .menu {
+    display: flex;
+    flex-wrap: wrap;
+}
+.km-all-products .menu li {
+    flex-grow: 0 !important;
+}
+
+/* Filter dropsown lists shared with Adam */
+.km-filters{
+    margin-top: 20px;
+}
+
+.km-max-thc{
+    border: 1px solid rgb(219, 219, 219);
+    border-radius: 5px;
+    min-width: 210px;
+}
+
+.km-max-thc legend {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.km-max-thc .select {
+    float: left;
+    width: calc(50% - 10px) !important;
+    margin-left: 10px;
+}
+
+.km-max-thc .select select {
+    width: 100%;
+}
+
+.km-max-thc-input {
+    height: 40px !important;
+    width: calc(100% - 20px);
+    margin-bottom: 5px;
+}
+
+.km-max-thc-currency {
+    width: calc(50% - 10px);
+    margin-left: 10px;
+    float: left;
+}
+.km-max-thc-currency::before{
+    content: "$";
+}
+
+.km-filters-column .select{
+    width: 100%;
+}
+
+.km-filters-column .select select{
+    width: 100%;
+}
+
+.km-filters-label-thc, 
+.km-filters-label-cbd,
+.km-filters-label-category{
+    width: 100%;
+}
+
+.km-filters-label-thc::before{
+    content: "THC";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.km-filters-label-cbd::before{
+    content: "CBD";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.km-filters-label-category::before{
+    content: "Category";
+    display: flex;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.km-filters .km-filters-column{
+    min-width: 180px;
+}
+
+.km-filters .km-filters-column:first-child{
+    min-width: 220px;
+    padding-top: 0;
+}
+
+.km-filters .km-filters-column:last-child{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-end;
+}
+
+.km-filters-column button {
+    width: 100%;
+    background-color: #363636 !important;
+}
+/* Filter dropsown lists end */
+
+/* Search button, entyry dropdown list */
+.km-search{
+    font-weight: 500;
+    border-bottom: 2px solid #eee;
+    width: 100%;
+    float: left;
+    padding: 20px;
+    padding-left: 0px;
+    display: flex;
+    align-items: center;
+}
+
+.km-search-items{
+    display: flex;
+    align-items: center;
+    min-width: 220px;
+    float: left;
+    width: 20%;
+}
+
+.km-search-items .select{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+/* Search button, entyry dropdown list end*/
+
+/* table to column settings */
+.km-product-pic, 
+.km-product-pic-title {
+    width: 30%;
+}
+
+.km-product-price, 
+.km-product-price-title {
+    width: 45%;
+    word-break: break-all;
+}
+
+.km-product-price strong,
+.km-product-price-title strong{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.km-product-price a:link, a:visited{
+    color: black;
+}
+
+.km-product-price a:hover{
+    color: #197826;
+    text-decoration: underline;
+}
+
+.km-product-price-name{
+    padding-bottom: 10px;
+}
+
+.km-product-concentrate, 
+.km-product-concentrate-title {
+    width: 25%;
+}
+
+.km-product-category, 
+.km-product-category-title {
+    width: 60%;
+}
+
+.km-product-view, 
+.km-product-view-title {
+    width: 40%;
+}
+
+.km-product-pic, 
+.km-product-price, 
+.km-product-concentrate, 
+.km-product-category,
+.km-product-view {
+    min-height: 200px;
+    display: flex; 
+    align-items: center;
+    float: left;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.km-product-pic-title, 
+.km-product-price-title, 
+.km-product-concentrate-title, 
+.km-product-category-title,
+.km-product-view-title {
+    float: left;
+    font-size:medium;
+    font-weight: bold;
+    min-height: 20px;
+    margin-top: 20px;
+}
+
+.km-product-pic .image{
+    width: 170px;
+}
+
+.km-small-text{
+    font-size: small;
+    font-weight: 400;
+    /* text-decoration: underline; */
+}
+
+.km-products-info .column{
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.km-no-dispaly {
+    display: none;
+}
+
+.km-table .columns:nth-of-type(odd) div {
+    background-color:aliceblue;
+}
+
+.km-table{
+    margin-bottom: 40px;
+}
+
+/* location Tab */
+#km-address{
+    float:left;
+    width: 100%;
+    margin-bottom: 20px;
+    min-width: 700px;
+}
+
+.km-location-store, .km-location-service {
+    width: calc(50% - 30px);
+    margin-right: 30px;
+    float: left;
+}
+
+.km-location-store p, .km-location-service p {
+    margin-bottom: 20px !important;
+}
+
+.km-media-content p {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.km-location-card{
+    height: 220px;
+    overflow-y: auto;
+}
+
+.km-store-content p{
+    margin-bottom: 0 !important;;
+}
+
+#km-map-container, .km-map-direction, .km-map-driving{
+    float:left;
+    width: 100%;
+}
+
+#km-map {
+    width: 100%;
+    height:500px;
+    margin-bottom: 10px;;
+}
+
+.km-map-direction {
+    margin-bottom: 10px;
+}
+
+.km-map-direction .input {
+    width: calc(70% - 12px);
+    height: 40px;
+}
+
+.km-map-direction .is-primary {
+    width: 10%;
+}
+
+.km-map-direction .is-dark {
+    width: 20%;
+}
+
+.km-map-driving .select{
+    width: 50%;
+    float: left;
+}
+
+.km-map-driving .select select {
+    width: 100%;
+}
+
+/* force to show google map pegman */
+.gm-svpc div img {
+    position: relative !important;
+}
+
+/* REVIEW Tab setting */
+.km-reviews-general {
+    padding-right: 0;
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+#km-product-reviews .button {
+    margin-left: 12px;
+    margin-right: 12px;
+    width: calc(100% - 24px);
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.container{
+    width: 100%;
+    /* background: #111; */
+    padding: 10px;
+    border: 1px solid #b5b5b5;
+    border-radius: 4px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.container .star-widget input{
+    display: none;
+}
+
+.star-widget label{
+    font-size: 15px;
+    /* color:#444; */
+    color: rgb(200, 200, 200);
+    padding: 10px;
+    float: right;
+    transition: all 0.2s ease;
+}
+
+.star-widget input:not(:checked) ~ label:hover,
+.star-widget input:not(:checked) ~ label:hover ~label{
+    /* color: #fd4; */
+    color: rgb(25, 120, 38);
+}
+
+.star-widget input:checked ~label{
+    color: rgb(25, 120, 38);
+    /* color: rgb(25, 120, 38); */
+    text-shadow: 0 0 20px rgb(45, 122, 173);
+}
+
+.star-widget header{
+    /* width: 100%; */
+    font-size: 15px;
+    /* color: #fe7; */
+    color: black;
+    font-weight: 500;
+    /* margin: 5px; */
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+#rate-1:checked ~ header:before{
+    content: "Terrible \01F620";
+}
+#rate-2:checked ~ header:before{
+    content: "Poor \01F61E";
+}
+#rate-3:checked ~ header:before{
+    content: "Average \01F60F";
+}
+.star-widget input#rate-4:checked ~ header:before{
+    content: "Very Good \01F60A";
+}
+.star-widget input#rate-5:checked ~ header:before{
+    content: "Excellent \01F60D";
+}
+
+
+@media only screen and (max-width: 800px)
+{
+    /* .km-banner-image {
+        height: 350px;
+    } */
+
+    .km-banner-favorates {
+        height: 50px;
+    }
+
+    .km-banner-favorates .buttons .button {
+        font-size: medium;
+        height: 50px;
+    }
+
+    .km-banner-text {
+        padding-bottom: 0;
+    }
+
+    .km-banner-text h1 {
+        font-size: 25px;
+    }
+
+    .km-banner-address{
+        font-size: 15px;  
+        padding-bottom: 0;  
+    }
+
+    .km-banner-mail-order {
+        font-size: 15px;    
+        padding-bottom: 0;
+    }
+
+    .km-banner-featured-verify {
+        margin-top: 50px;
+    } 
+    
+    .km-banner-icons .buttons { 
+        float: left;
+    }
+
+    .km-logo {
+        min-height: auto;
+        margin-bottom: 10px;
+        margin-right: 0 !important;
+    }
+
+    .km-all-products{
+        border: 0;
+        padding-left: 10px;
+    }
+
+    .km-product-price-title{
+        width: 100%;
+        font-size: x-large;
+        margin-top: 50px;
+    }
+
+    .km-product-pic-title, 
+    .km-product-concentrate-title,
+    .km-product-pic-title, 
+    .km-product-category-title,
+    .km-product-view-title{
+        display: none;
+    }
+
+    .km-product-category,
+    .km-product-view{
+        font-size: large;
+        max-height: 50px;
+        min-height: fit-content;
+        margin-bottom: 20px;
+    }
+
+    .km-product-view .button {
+        width: 100%;
+    }
+
+    .km-product-category{
+        padding-top: 10px;
+    }
+
+    .km-product-pic {
+        width: 35%;
+        padding-bottom: 10px;
+        min-height: 320px;
+    }
+
+    .km-product-price {
+        width: 65%;
+        padding-bottom: 10px;
+        min-height: 320px;
+    }
+
+    .km-product-pic figure{
+        height: fit-content !important;
+        width: fit-content !important;
+        max-width: 200px;
+        margin: 0 auto !important;
+    }
+
+    .km-product-concentrate {
+        display: none;
+    }
+
+    .km-no-dispaly {
+        display: block;
+    }
+
+    /* .km-search {
+        display:block;
+    } */
+
+    .km-search-items{
+        min-width: 150px;
+    }
+
+    .km-search-button-label{
+        padding-left: 40px;
+    }
+  
+    .km-all-products .tabs {
+        margin-bottom: 0 !important;
+        padding-bottom: 0;
+    }
+
+    #km-map {
+        width: 100%;
+        height:300px;
+    }
+
+    #km-address{
+        min-width: 300px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* .km-location-store, .km-location-service {
+        width: 50%;
+        float: left;
+    } */
+
+    .km-location-store, .km-location-service {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    .km-location-service {
+        margin-top: 40px;
+    }
+
+    .km-map-direction .input {
+        width: calc(50% - 12px);
+        height: 40px;
+    }
+    
+    .km-map-direction .is-primary {
+        width: 15%;
+    }
+    
+    .km-map-direction .is-dark {
+        width: 35%;
+    }
+
+    /* resize of googel reCapcha */
+    .g-recaptcha{
+        transform:scale(0.8);
+        -webkit-transform:scale(0.8);
+        transform-origin:0 0;
+        -webkit-transform-origin:0 0;
+    }
+    .rc-anchor-logo-portrait{
+        margin: 10px 0 0 5px !important;
+    }
+
+    .g-recaptcha > div > div > iframe > html > body > div.rc-anchor-light  {
+        border: 0 !important;
+        background: #aa2828 !important;
+    }
+}
