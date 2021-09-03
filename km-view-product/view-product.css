@@ -6,6 +6,21 @@
     padding-bottom: 0;
 }
 
+.km-view-product-back-city {
+    float: left; 
+    width: 100%;
+    margin-bottom: 25px;
+    font-size: x-large;
+    font-weight: 600;
+    color: #197826;
+}
+
+.km-view-product-back-city span{
+    padding-right: 5px;
+    color: #197826;
+    text-decoration: underline;
+}
+
 @media only screen and (max-width: 800px)
 {
     .km-product-detail-link-1{

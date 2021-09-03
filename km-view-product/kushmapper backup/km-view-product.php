@@ -61,7 +61,7 @@ function view_product()
                         <p x-show="product.description != null"><span x-text="product.description"></span></p>   
                         <div class="content is-medium km-product-detail-link-1">  
                             <!-- <p>Vendors: <a :href="'/wordpress/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p> -->
-                            <p>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p>
+                            <h4>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></h4>
                             <a class="button is-rounded is-dark" :href=product.url target="_blank">VIEW WEBSITE</a>
                         <div>                    
                     </div>
@@ -70,7 +70,7 @@ function view_product()
             <template x-if="product">
                 <div class="column is-one-quarter">    
                     <div class="content">
-                        <strong><h1> Price </h1></strong>
+                        <strong><p style="margin-bottom: 10px"> Price </p></strong>
                         <template x-if="product.price_gram">
                             <div class="columns is-mobile">
                                 <div class="column is-half km-view-single-price">
@@ -190,7 +190,7 @@ function view_product()
             </template>
             <div class="content is-medium km-product-detail-link-2"> 
                 <!-- <p>Vendors: <a :href="'/wordpress/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p> -->
-                <p>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p>
+                <h4>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></h4>
                 <a class="button is-rounded is-dark" :href=product.url>VIEW WEBSITE</a>
             <div>  
         </div>

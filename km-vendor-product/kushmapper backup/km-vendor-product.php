@@ -511,7 +511,7 @@ function vendor_products()
                             </figure>   
                             <p x-text="data.name"> </p>
                             <p x-text="data.phone"> </p>
-                            <a x-show ="data.website" class="vendorWebsite" :href="data.website"><p class="vendorMail" x-text="data.website"> </p></a>
+                            <a x-show ="data.website" class="vendorWebsite" :href="data.website" target="_blank"><p class="vendorMail" x-text="data.website"> </p></a>
                             <a x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-dark" :href="'https://account.kushmapper.com/claim/listing/' + data.id">Claim Listing</a>
                             <!-- <button x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-black">Claim Listing</button> -->
                         </div>
@@ -797,7 +797,7 @@ function vendor_products()
                                     <div class="km-product-price">                
                                         <strong>
                                             <!-- <a :href="product.url"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a> -->
-                                            <a :href="'/product/' + product.slug"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a>
+                                            <a :href="'/product/' + product.slug"><p class="is-size-4 km-product-price-name" x-text="product.name"></p></a>
                                             <p style="text-decoration: underline;" x-show="product.price_gram != null">$<span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null">$<span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null">$<span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>

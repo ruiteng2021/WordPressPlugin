@@ -89,6 +89,7 @@ function vendor_products()
                     urlSearchGlobal: false,
                     store: false,
                     serviceArea: false,
+                    cityRegionInfo: [],
                     // global used info end //                                   
 
                     // Google map begin//
@@ -132,11 +133,51 @@ function vendor_products()
                         // }
 
                         if(Object.keys(self.data.service_areas).length != 0)
+                        {
                             self.serviceArea = true;
+                            for (let data of self.data.service_areas) 
+                            {            
+                                let cityInfo = {
+                                    city: "",      
+                                    city_slug: "",                    
+                                    state: "",
+                                    state_slug: "",
+                                    country: "",                                   
+                                }; 
+                                cityInfo.city = data.city;
+                                cityInfo.city_slug = data.city_slug.toLowerCase();
+                                cityInfo.state = self.provinceConvertion(data.state);
+                                cityInfo.state_slug = data.state.toLowerCase();
+                                cityInfo.country = data.country.toLowerCase();
+                                self.cityRegionInfo.push(cityInfo);
+                            }                            
+                        }                           
 
                         if(self.data.stores.length != 0)
+                        {
                             self.store = true;
-
+                            for (let data of self.data.stores) 
+                            {            
+                                let cityInfo = {
+                                    city: "",      
+                                    city_slug: "",                             
+                                    state: "",
+                                    state_slug: "",
+                                    country: "",                                   
+                                }; 
+                                cityInfo.city = data.city;
+                                cityInfo.city_slug = data.city_slug.toLowerCase();
+                                cityInfo.state = self.provinceConvertion(data.state);
+                                cityInfo.state_slug = data.state.toLowerCase();
+                                cityInfo.country = data.country.toLowerCase();
+                                self.cityRegionInfo.push(cityInfo);
+                            }
+                        }                           
+                        // remove duplicated cities
+                        ids = self.cityRegionInfo.map(o => o.city);
+                        self.cityRegionInfo = self.cityRegionInfo.filter(({city}, index) => !ids.includes(city, index + 1));
+                        // console.log(self.cityRegionInfo);
+                        
                         // self.detectWeekday();
                         self.setGooglemapMarkers();
                         // // self.map = map;
@@ -152,6 +193,54 @@ function vendor_products()
                                    
                     },
 
+                    provinceConvertion(state)
+                    {
+                        switch (state) {
+                            case "NL":
+                                state = "N.L.";
+                                break;
+                            case "PE":
+                                state = "P.E.I.";
+                                break;
+                            case "NS":
+                                staten = "N.S.";
+                                break;
+                            case "NB":
+                                state = "N.B.";
+                                break;
+                            case "QC":
+                                state = "Quebec";
+                                break;
+                            case "ON":
+                                state = "Ontario";
+                                break;
+                            case "MB":
+                                state = "Manitoba";
+                                break;
+                            case "SK":
+                                state = "Saskatchewan";
+                                break;
+                            case "AB":
+                                state = "Alberta";
+                                break;
+                            case "BC":
+                                state = "B.C.";
+                                break;
+                            case "YT":
+                                state = "Yukon";
+                                break;
+                            case "NT":
+                                state = "N.W.T.";
+                                break;
+                            case "NU":
+                                state = "Nunavut";
+                                break;
+                            default:
+                                state = "Something";
+                                break;
+                        } 
+                        return state;
+                    },
 
                     setGooglemapMarkers() 
                     {
@@ -511,7 +600,7 @@ function vendor_products()
                             </figure>   
                             <p x-text="data.name"> </p>
                             <p x-text="data.phone"> </p>
-                            <a x-show ="data.website" class="vendorWebsite" :href="data.website"><p class="vendorMail" x-text="data.website"> </p></a>
+                            <a x-show ="data.website" class="vendorWebsite" :href="data.website" target="_blank"><p class="vendorMail" x-text="data.website"> </p></a>
                             <a x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-dark" :href="'https://account.kushmapper.com/claim/listing/' + data.id">Claim Listing</a>
                             <!-- <button x-show ="data.is_claimable==true" style="width: 100%; margin-bottom: 20px" class="button is-black">Claim Listing</button> -->
                         </div>
@@ -797,7 +886,7 @@ function vendor_products()
                                     <div class="km-product-price">                
                                         <strong>
                                             <!-- <a :href="product.url"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a> -->
-                                            <a :href="'/product/' + product.slug"><p class="is-size-4 km-product-price-name" x-text="product.name" ></p></a>
+                                            <a :href="'/product/' + product.slug"><p class="is-size-4 km-product-price-name" x-text="product.name"></p></a>
                                             <p style="text-decoration: underline;" x-show="product.price_gram != null">$<span x-text="product.price_gram"></span><span class="km-small-text">&nbsp;per 1 g</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz_eighth != null">$<span x-text="product.price_oz_eighth"></span> <span class="km-small-text">per 1/8 oz</span></p>
                                             <p style="text-decoration: underline;" x-show="product.price_oz_fourth != null">$<span x-text="product.price_oz_fourth"></span><span class="km-small-text">&nbsp;per 1/4 oz</span></p>
@@ -854,6 +943,16 @@ function vendor_products()
                                 <template x-for="link in meta.links">
                                     <a :class="{'button':true, 'is-active':link.active}" :href="link.url" @click.prevent="Pagenation(link.url)" x-html="link.label"></a>
                                 </template>
+                            </div>
+                        </template>
+
+                        <template x-if="serviceArea || store">
+                            <div class="km-product-back-city">
+                                <p>Return to  
+                                    <template x-for="info in cityRegionInfo">
+                                        <a :href="'/location/' + info.country + '/' + info.state_slug + '/' + info.city_slug"><br class="km-break"><span x-text="info.city + ' ' + info.state"></span></a> 
+                                    </template>
+                                </p>
                             </div>
                         </template>
                     </div>

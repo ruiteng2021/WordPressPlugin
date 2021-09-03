@@ -23,6 +23,7 @@ function view_product()
                     startUrl:   '<?php echo $startUrl; ?>',
                     product: false,
                     name: {},
+                    cityRegionInfo: [],
                     async getData(url = this.startUrl) 
                     {
                         var self = this;
@@ -36,9 +37,104 @@ function view_product()
                             })
                             .catch(function(error) {
                                 console.log(error);
-                            })                  
+                            })   
+                        
+                        // if(Object.keys(self.product.vendor.service_areas).length != 0)
+                        if(self.product.vendor.service_areas.length != 0)
+                        {
+                            // self.serviceArea = true;
+                            for (let data of self.product.vendor.service_areas) 
+                            {            
+                                let cityInfo = {
+                                    city: "",      
+                                    city_slug: "",                    
+                                    state: "",
+                                    state_slug: "",
+                                    country: "",                                   
+                                }; 
+                                cityInfo.city = data.city;
+                                cityInfo.city_slug = data.city_slug.toLowerCase();
+                                cityInfo.state = self.provinceConvertion(data.state);
+                                cityInfo.state_slug = data.state.toLowerCase();
+                                cityInfo.country = data.country.toLowerCase();
+                                self.cityRegionInfo.push(cityInfo);
+                            }                            
+                        }                           
+
+                        if(self.product.vendor.stores.length != 0)
+                        {
+                            // self.store = true;
+                            for (let data of self.product.vendor.stores) 
+                            {            
+                                let cityInfo = {
+                                    city: "",      
+                                    city_slug: "",                    
+                                    state: "",
+                                    state_slug: "",
+                                    country: "",                                   
+                                }; 
+                                cityInfo.city = data.city;
+                                cityInfo.city_slug = data.city_slug.toLowerCase();
+                                cityInfo.state = self.provinceConvertion(data.state);
+                                cityInfo.state_slug = data.state.toLowerCase();
+                                cityInfo.country = data.country.toLowerCase();
+                                self.cityRegionInfo.push(cityInfo);
+                            }
+                        }                           
+                        // remove duplicated cities
+                        ids = self.cityRegionInfo.map(o => o.city);
+                        self.cityRegionInfo = self.cityRegionInfo.filter(({city}, index) => !ids.includes(city, index + 1));
+                        // console.log(self.cityRegionInfo);
                     },
 
+                    provinceConvertion(state)
+                    {
+                        switch (state) {
+                            case "NL":
+                                state = "N.L.";
+                                break;
+                            case "PE":
+                                state = "P.E.I.";
+                                break;
+                            case "NS":
+                                staten = "N.S.";
+                                break;
+                            case "NB":
+                                state = "N.B.";
+                                break;
+                            case "QC":
+                                state = "Quebec";
+                                break;
+                            case "ON":
+                                state = "Ontario";
+                                break;
+                            case "MB":
+                                state = "Manitoba";
+                                break;
+                            case "SK":
+                                state = "Saskatchewan";
+                                break;
+                            case "AB":
+                                state = "Alberta";
+                                break;
+                            case "BC":
+                                state = "B.C.";
+                                break;
+                            case "YT":
+                                state = "Yukon";
+                                break;
+                            case "NT":
+                                state = "N.W.T.";
+                                break;
+                            case "NU":
+                                state = "Nunavut";
+                                break;
+                            default:
+                                state = "Something";
+                                break;
+                        } 
+                        return state;
+                    },
                 };
             }
 
@@ -62,6 +158,15 @@ function view_product()
                         <div class="content is-medium km-product-detail-link-1">  
                             <!-- <p>Vendors: <a :href="'/wordpress/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p> -->
                             <h4>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></h4>
+                            <template x-if="cityRegionInfo.length">
+                                <div class="km-view-product-back-city">
+                                    <p>Return to 
+                                        <template x-for="info in cityRegionInfo">
+                                            <a :href="'/location/' + info.country + '/' + info.state_slug + '/' + info.city_slug"><br class="km-break"><span x-text="info.city + ' ' + info.state"></span></a>
+                                        </template>
+                                    </p>
+                                </div>
+                            </template>
                             <a class="button is-rounded is-dark" :href=product.url target="_blank">VIEW WEBSITE</a>
                         <div>                    
                     </div>
@@ -191,6 +296,15 @@ function view_product()
             <div class="content is-medium km-product-detail-link-2"> 
                 <!-- <p>Vendors: <a :href="'/wordpress/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></p> -->
                 <h4>Vendors: <a :href="'/vendor/' + name.slug"><span style="text-decoration: underline; color: #197826;" x-text=name.name></span></a></h4>
+                <template x-if="cityRegionInfo.length">
+                    <div class="km-view-product-back-city">
+                        <p>Return to   
+                            <template x-for="info in cityRegionInfo">
+                                <a :href="'/location/' + info.country + '/' + info.state_slug + '/' + info.city_slug"><br class="km-break"><span x-text="info.city + ' ' + info.state"></span></a>
+                            </template>
+                        </p>
+                    </div>
+                </template>
                 <a class="button is-rounded is-dark" :href=product.url>VIEW WEBSITE</a>
             <div>  
         </div>

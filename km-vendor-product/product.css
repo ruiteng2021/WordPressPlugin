@@ -322,6 +322,20 @@
     margin-bottom: 40px;
 }
 
+.km-product-back-city {
+    float: left; 
+    width: 100%;
+    padding: 10px 10px 10px 0;
+    font-size: x-large;
+    color: #197826;
+}
+
+.km-product-back-city span{
+    padding-right: 10px;
+    color: #197826;
+    text-decoration: underline;
+}
+
 /* location Tab */
 #km-address{
     float:left;
@@ -475,6 +489,16 @@
     content: "Excellent \01F60D";
 }
 
+.km-break{
+    display: none;
+}
+
+@media only screen and (max-width: 500px)
+{
+    .km-break{
+        display: block;
+    }
+}
 
 @media only screen and (max-width: 800px)
 {
