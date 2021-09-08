@@ -1,7 +1,8 @@
 /* Logo section */
 .km-logo{
-    margin-right: 20px;
+    padding-right: 20px;
     min-height: 800px;
+    border-right: 3px solid rgb(80, 78, 78);
 }
 
 .km-logo button {
@@ -10,7 +11,7 @@
 }
 
 .km-all-products{
-    border-left: 3px solid rgb(80, 78, 78);
+    /* border-left: 3px solid rgb(80, 78, 78); */
     padding-left: 40px;
 }
 
@@ -322,12 +323,19 @@
     margin-bottom: 40px;
 }
 
-.km-product-back-city {
-    float: left; 
-    width: 100%;
-    padding: 10px 10px 10px 0;
+.km-product-city-link {
+    width: 50%;
+    position: absolute;
+    bottom: 0px;
+    right: 0;
     font-size: x-large;
     color: #197826;
+    padding: 10px 10px 10px 10px;
+    text-align: right;
+}
+
+.km-product-back-city {
+    width: 100%;
 }
 
 .km-product-back-city span{
@@ -493,10 +501,18 @@
     display: none;
 }
 
+.km-break-yes{
+    display: block;
+}
+
 @media only screen and (max-width: 500px)
 {
     .km-break{
         display: block;
+    }
+    
+    .km-break-yes{
+        display: none;
     }
 }
 
@@ -678,5 +694,17 @@
     .g-recaptcha > div > div > iframe > html > body > div.rc-anchor-light  {
         border: 0 !important;
         background: #aa2828 !important;
+    }
+
+    .km-product-city-link {
+        position: relative;
+        width: 100%;
+        text-align: left;
+        font-size: medium;
+    }
+
+    .km-product-back-city p {
+        float: left;
+        padding-top: 10px;
     }
 }

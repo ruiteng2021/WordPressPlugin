@@ -7,7 +7,7 @@
 }
 
 .km-view-product-back-city {
-    float: left; 
+    float: right; 
     width: 100%;
     margin-bottom: 25px;
     font-size: x-large;
@@ -15,8 +15,11 @@
     color: #197826;
 }
 
+.km-view-product-back-city p{
+    float: right;
+}
 .km-view-product-back-city span{
-    padding-right: 5px;
+    padding-right: 10px;
     color: #197826;
     text-decoration: underline;
 }
@@ -32,5 +35,10 @@
         margin-bottom: 20px;
         margin-left: 10px;
         padding-top: 20px;
+    }
+
+    .km-view-product-back-city p{
+        float: left; 
+        font-size: medium;
     }
 }
