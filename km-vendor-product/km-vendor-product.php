@@ -14,6 +14,7 @@ function vendor_products()
 
     $slug = get_query_var('slug');
     $startUrl = "https://api.kushmapper.com/v1/vendors/slug/". $slug . "?include=products";
+    $reviewUrl = "https://api.kushmapper.com/v1/vendors/slug/". $slug . "?include=reviews";
     $site_key = "6LfKjiQaAAAAAEB4l9m5d6bbzbuxRJX4i2WFPOFA"; // slyfox
     $secret_key = "6LfKjiQaAAAAAMeizHO-a6JaAxAI-LUAJgFfHgj7"; //SlyFox
     // $site_key = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"; // google development key
@@ -46,6 +47,7 @@ function vendor_products()
             function kmData() {
                 return {
                     startUrl: '<?php echo $startUrl; ?>',
+                    reviewUrl: '<?php echo $reviewUrl; ?>',
 
                     // google reCaptcha begin//
                     site_key: '<?php echo $site_key; ?>',
@@ -90,6 +92,7 @@ function vendor_products()
                     store: false,
                     serviceArea: false,
                     cityRegionInfo: [],
+                    reviews: [],
                     // global used info end //                                   
 
                     // Google map begin//
@@ -109,8 +112,10 @@ function vendor_products()
                         productUrl = url.replace("?include=", "/") + "?page_size=" + self.pageSize +"&page=1";  
                         const generalInfo = axios.get(url);
                         const productInfo = axios.get(productUrl);
-                        await axios.all([generalInfo, productInfo]).then(axios.spread(function(generalInfoRes, productInfoRes) {
+                        const reviewUrlInfo = axios.get(this.reviewUrl);
+                        await axios.all([generalInfo, productInfo, reviewUrlInfo]).then(axios.spread(function(generalInfoRes, productInfoRes, reviewInfoRes) {
                                 self.data = generalInfoRes.data.data;
+                                self.reviews = reviewInfoRes.data.data["reviews"];
                                 products = generalInfoRes.data.data["products"];                                
                                 // remove duplicate categories
                                 for ( let i in products) {
@@ -124,13 +129,6 @@ function vendor_products()
                             .catch(function(error) {
                                 console.log(error);
                             }) 
-
-                        // if (Object.keys(self.data.service_areas).length == 0)
-                        // {
-                        //     // create dummy date to avoid display error
-                        //     self.data.service_areas = [{city: "", state: '', country: ''}];
-                        //     console.log(self.data.service_areas);
-                        // }
 
                         if(Object.keys(self.data.service_areas).length != 0)
                         {
@@ -179,36 +177,7 @@ function vendor_products()
                         // console.log(self.cityRegionInfo);
                         
                         // self.detectWeekday();
-                        self.AlignViewAllItems(self.products.length);
-                        self.setGooglemapMarkers();
-                        // // self.map = map;
-                        // // self.infoWindow = infoWindow;
-                        // // self.googleMap.directionsService = directionsService;
-                        // // self.googleMap.directionsRenderer = directionsRenderer;
-
-                        // var marker = new google.maps.Marker({
-                        //     position: pos,
-                        //     // title:"Hello World!"
-                        // });
-                        // marker.setMap(map);
-                                   
-                    },
-
-                    AlignViewAllItems(count)
-                    {
-                        console.log("count: "+ count);
-                        if (count >= 4) {
-                            jQuery(".km-product-city-link").css({
-                                position: 'relative',
-                                width: '100%',
-                            });
-                        }
-                        else{
-                            jQuery(".km-product-city-link").css({
-                                position: 'absolute',
-                                width: '50%',
-                            });
-                        }
+                        self.setGooglemapMarkers();                                  
                     },
 
                     provinceConvertion(state)
@@ -722,6 +691,17 @@ function vendor_products()
                             <input class="button is-black is-fullwidth" type="submit" name="submit" value="Send Request">                            
                         </div>
                     </form>
+                    <div class="columns km-product-city-link">
+                        <template x-if="serviceArea || store">
+                            <div class="km-product-back-city">
+                                <p>View all 
+                                    <template x-for="info in cityRegionInfo">
+                                        <a :href="'/location/' + info.country + '/' + info.state_slug + '/' + info.city_slug"><br class="km-break"><span x-text="'weed delivery ' + info.city + ' ' + info.state"></span><br class="km-break-yes"></a> 
+                                    </template>
+                                </p>
+                            </div>
+                        </template>
+                    </div>  
                 </div>
                 <!-- Right column for product -->
                 <div class="column">                       
@@ -761,7 +741,7 @@ function vendor_products()
                                         <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
                                         <span>PHOTOS</span>
                                     </a>
-                                    </li>  
+                                    </li>-->
                                     <li :class="{'is-active' : menuTab === 'reviews'}">
                                     <a href="#km-product-reviews"
                                         @click.prevent="menuTab = 'reviews'"
@@ -769,7 +749,7 @@ function vendor_products()
                                         <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
                                         <span>REVIEWS</span>
                                     </a>
-                                    </li>-->
+                                    </li>
                                 </ul>
                             </div>
                             <!-- Product infomation  -->
@@ -1073,100 +1053,51 @@ function vendor_products()
                                 <strong><p> this is photos </p> </strong>
                             </div> -->
                             <div id="km-product-reviews" x-show="menuTab === 'reviews'">
-                                <!-- <form method="post" action="http://127.0.0.1/wordpress/test-page/" class="box" style="width: 100%"> -->
-                                <form method="post" action="https://kushmapper.com/wp-comments-post.php" class="box" style="width: 100%">
-                                    <div class="columns is-multiline">
-                                        <div class="column is-full has-background-info km-reviews-general" style="color: white;">
-                                            <div><i class="fas fa-info-circle"></i> Your email address will not be published.</div>                        
-                                        </div>   
-                                        <!-- text comment area -->
-                                        <div class="column is-full">
-                                            <textarea class="textarea" name="comment" placeholder="10 lines of textarea" rows="10"></textarea>
-                                        </div>
-                                        <!-- rating buttons -->
-                                        <div class="column is-full">
-                                            <div class="field">
-                                                <div class="control">
-                                                <div class="container">
-                                                    <div class="star-widget">
-                                                        <div class="radios">
-                                                            <input type="radio" name="rate" id="rate-5" value="5">
-                                                            <label for="rate-5" class="fas fa-star"></label>
-                                                            <input type="radio" name="rate" id="rate-4" value="4">
-                                                            <label for="rate-4" class="fas fa-star"></label>
-                                                            <input type="radio" name="rate" id="rate-3" value="3">
-                                                            <label for="rate-3" class="fas fa-star"></label>
-                                                            <input type="radio" name="rate" id="rate-2" value="2">
-                                                            <label for="rate-2" class="fas fa-star"></label>
-                                                            <input type="radio" name="rate" id="rate-1" value="1">
-                                                            <label for="rate-1" class="fas fa-star"></label>
-                                                            <header></header>
+                                <template x-if="reviews.length">
+                                    <template x-for="review in reviews">
+                                        <div class="tile is-ancestor">
+                                            <div class="tile km-vendor-tile is-parent">
+                                                <div class="tile is-child box">
+                                                    <article class="media">
+                                                        <figure class="media-left">
+                                                            <p class="image is-64x64">
+                                                                <img :src="review.user.profile_photo_url" alt="profile_img" />                            
+                                                            </p>
+                                                        </figure>
+                                                        <div class="media-content">
+                                                            <div class="content">
+                                                                <p>
+                                                                    <strong><span x-text=review.user.name></span></strong> 
+                                                                    <small>
+                                                                        <span 
+                                                                            x-data="{date: new Date(review.updated_at)}"
+                                                                            x-text="date.toLocaleString()">
+                                                                        </span>
+                                                                    </small>
+                                                                    <br>
+                                                                    <span x-text=review.body></span>
+                                                                </p>
+                                                            </div>
+                                                            <nav class="level is-mobile">
+                                                                <div class="level-left">
+                                                                    <template x-for="_ in new Array(review.rating)">
+                                                                        <span class="icon is-small"><i class="fas fa-star"></i></span>
+                                                                    </template>
+                                                                    <template x-for="_ in new Array(5-review.rating)">
+                                                                        <span class="icon is-small"><i class="far fa-star"></i></span>
+                                                                    </template>                                                        
+                                                                </div>
+                                                            </nav>
                                                         </div>
-                                                        
-                                                    </div>
-                                                    
+                                                    </article>
                                                 </div>
-                                                </div>
-                                            </div>
+                                            </div>       
                                         </div>
-                                        <!-- Author name -->
-                                        <div class="column is-full">
-                                            <div class="field">
-                                                <div class="control">
-                                                    <input class="input" name="author" type="text" placeholder="Name (required)" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- email -->
-                                        <div class="column is-full">
-                                            <div class="field">
-                                                <div class="control">
-                                                    <input class="input" type="email" name="email" placeholder="Email (required)" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- website -->
-                                        <div class="column is-full">
-                                            <div class="field">
-                                                <div class="control">
-                                                    <input class="input" name="url" type="url" placeholder="Website" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- google reCAPCHA -->
-                                        <div class="column is-full">
-                                            <div class="field">
-                                                <div class="control">
-                                                    <!-- <input class="input" type="url" placeholder="Website"> -->
-                                                    <div class="g-recaptcha" x-bind:data-sitekey=site_key></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- check box -->
-                                        <div class="column is-full">
-                                            <label class="checkbox">
-                                                <input type="checkbox" name="check_box">
-                                                Save my name, email, and website in this browser for the next time I comment.
-                                            </label>
-                                        </div>  
-                                        <input class="button is-black is-fullwidth" type="submit" name="submit" value="POST REVIEW">                            
-                                        <!-- <button class="button is-black is-fullwidth">POST REVIEW</button>                      -->
-                                    </div>
-                                </form>
+                                    </template>
+                                </template>
                             </div>
                         </div>              
                     </div>
-                    <div class="columns km-product-city-link">
-                        <template x-if="serviceArea || store">
-                            <div class="km-product-back-city">
-                                <p>View all 
-                                    <template x-for="info in cityRegionInfo">
-                                        <a :href="'/location/' + info.country + '/' + info.state_slug + '/' + info.city_slug"><br class="km-break"><span x-text="'weed delivery ' + info.city + ' ' + info.state"></span><br class="km-break-yes"></a> 
-                                    </template>
-                                </p>
-                            </div>
-                        </template>
-                    </div>  
                 </div>               
             </div>
         </div>
