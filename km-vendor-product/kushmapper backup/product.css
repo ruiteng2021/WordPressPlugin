@@ -328,7 +328,7 @@
     position: absolute;
     bottom: 0px;
     right: 0;
-    font-size: x-large;
+    font-size: large;
     color: #197826;
     padding: 10px 10px 10px 10px;
     text-align: right;
@@ -336,6 +336,11 @@
 
 .km-product-back-city {
     width: 100%;
+}
+
+.km-product-back-city p{
+    float: right;
+    text-align: left;
 }
 
 .km-product-back-city span{
@@ -697,8 +702,8 @@
     }
 
     .km-product-city-link {
-        position: relative;
-        width: 100%;
+        position: relative !important;
+        width: 100% !important;
         text-align: left;
         font-size: medium;
     }

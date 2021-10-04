@@ -179,6 +179,7 @@ function vendor_products()
                         // console.log(self.cityRegionInfo);
                         
                         // self.detectWeekday();
+                        self.AlignViewAllItems(self.products.length);
                         self.setGooglemapMarkers();
                         // // self.map = map;
                         // // self.infoWindow = infoWindow;
@@ -191,6 +192,23 @@ function vendor_products()
                         // });
                         // marker.setMap(map);
                                    
+                    },
+
+                    AlignViewAllItems(count)
+                    {
+                        console.log("count: "+ count);
+                        if (count >= 4) {
+                            jQuery(".km-product-city-link").css({
+                                position: 'relative',
+                                width: '100%',
+                            });
+                        }
+                        else{
+                            jQuery(".km-product-city-link").css({
+                                position: 'absolute',
+                                width: '50%',
+                            });
+                        }
                     },
 
                     provinceConvertion(state)
