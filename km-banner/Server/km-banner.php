@@ -61,8 +61,8 @@ function vendor_banner()
                         }
                         else
                         {
-                            // imageUrl = "/wordpress/Vendor BG Banner-01.jpg";
-                            imageUrl = "/Vendor BG Banner-01.jpg";
+                            // imageUrl = "/wordpress/banner.jpg";
+                            imageUrl = "/banner.jpg";
                             jQuery(".km-banner-image").css("background-image", "url('" + imageUrl + "')");
                         }
                        
@@ -91,23 +91,20 @@ function vendor_banner()
             <div class="km-banner-container">
                 <div class="columns">
                     <div class="column km-banner-favorates">
-                        <!-- <div class="buttons">
+                        <div class="buttons">
                             <a>
-                                <button class="button km-banner-favorates-heart" x-on:click="toggleHeart()"  title="Add to Favorates"> -->
+                                <button class="button km-banner-favorates-heart" x-on:click="toggleHeart()"  title="Add to Favorates">
                                     <span class="icon">
-                                        <i class="far fa-heart"></i>
+                                        <i class="fa fa-heart"></i>
                                     </span>
-                                <!-- </button>
+                                </button>
                             </a>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
                 <div class="columns">
-                    <div class="column km-banner-vendor-image"> 
-                        <figure>
-                            <img :src="vendor.logo_url" alt="product img" style="width: 100%">
-                        </figure>
-                        <!-- <h1 x-text="vendor.name"></h1> -->
+                    <div class="column km-banner-text">
+                        <h1 x-text="vendor.name"></h1>
                     </div>
                 </div>
                 <div class="columns">
@@ -156,34 +153,34 @@ function vendor_banner()
                     </div>
                     <div class="column km-banner-icons">
                         <div class="buttons">
-                            <a :href="vendor.website" target="_blank">
-                                <!-- <button class="km-banner-icon km-banner-link-color button is-rounded"> -->
+                            <a :href="vendor.website">
+                                <button class="km-banner-icon km-banner-link-color button is-rounded">
                                     <span class="icon">
                                         <i class="fas fa-link"></i>
                                     </span>
-                                <!-- </button> -->
+                                </button>
                             </a>
                             <a :href="'mailto:'+ vendor.email">
-                                <!-- <button class="km-banner-icon km-banner-mail-color button is-rounded"> -->
+                                <button class="km-banner-icon km-banner-mail-color button is-rounded">
                                     <span class="icon">
                                         <i class="fas fa-envelope"></i>
                                     </span>
-                                <!-- </button> -->
+                                </button>
                             </a>
                             <a :href="'Tel:' + vendor.phone">
-                                <!-- <button class="km-banner-icon km-banner-phone-color button is-rounded"> -->
+                                <button class="km-banner-icon km-banner-phone-color button is-rounded">
                                     <span class="icon">
                                         <i class="fas fa-phone"></i>
                                     </span>
-                                <!-- </button> -->
+                                </button>
                             </a>
                             <template x-if="store">
                                 <a :href="'https://maps.google.com/?q='+ vendor.stores[0].address1 + ',' + vendor.stores[0].city + ' ' + vendor.stores[0].state">
-                                    <!-- <button class="km-banner-icon km-banner-direction-color button is-rounded"> -->
+                                    <button class="km-banner-icon km-banner-direction-color button is-rounded">
                                         <span class="icon">
                                             <i class="fas fa-directions"></i>
                                         </span>
-                                    <!-- </button> -->
+                                    </button>
                                 </a>
                             </template>
                         </div>

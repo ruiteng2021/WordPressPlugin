@@ -324,17 +324,28 @@
 }
 
 .km-product-city-link {
+    width: 50%;
+    position: absolute;
+    bottom: 0px;
+    right: 0;
+    font-size: large;
+    color: #197826;
+    padding: 10px 10px 10px 10px;
+    text-align: right;
+}
+
+.km-product-back-city {
     width: 100%;
-    font-size: 16px;
-    color:black;
-    padding: 12px;
+}
+
+.km-product-back-city p{
+    float: right;
     text-align: left;
 }
 
 .km-product-back-city span{
     padding-right: 10px;
-    font-size: 16px;
-    color:black;
+    color: #197826;
     text-decoration: underline;
 }
 
@@ -688,5 +699,17 @@
     .g-recaptcha > div > div > iframe > html > body > div.rc-anchor-light  {
         border: 0 !important;
         background: #aa2828 !important;
+    }
+
+    .km-product-city-link {
+        position: relative !important;
+        width: 100% !important;
+        text-align: left;
+        font-size: medium;
+    }
+
+    .km-product-back-city p {
+        float: left;
+        padding-top: 10px;
     }
 }

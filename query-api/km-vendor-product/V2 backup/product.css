@@ -1,8 +1,7 @@
 /* Logo section */
 .km-logo{
-    padding-right: 20px;
+    margin-right: 20px;
     min-height: 800px;
-    border-right: 3px solid rgb(80, 78, 78);
 }
 
 .km-logo button {
@@ -11,7 +10,7 @@
 }
 
 .km-all-products{
-    /* border-left: 3px solid rgb(80, 78, 78); */
+    border-left: 3px solid rgb(80, 78, 78);
     padding-left: 40px;
 }
 
@@ -323,21 +322,6 @@
     margin-bottom: 40px;
 }
 
-.km-product-city-link {
-    width: 100%;
-    font-size: 16px;
-    color:black;
-    padding: 12px;
-    text-align: left;
-}
-
-.km-product-back-city span{
-    padding-right: 10px;
-    font-size: 16px;
-    color:black;
-    text-decoration: underline;
-}
-
 /* location Tab */
 #km-address{
     float:left;
@@ -491,24 +475,6 @@
     content: "Excellent \01F60D";
 }
 
-.km-break{
-    display: none;
-}
-
-.km-break-yes{
-    display: block;
-}
-
-@media only screen and (max-width: 500px)
-{
-    .km-break{
-        display: block;
-    }
-    
-    .km-break-yes{
-        display: none;
-    }
-}
 
 @media only screen and (max-width: 800px)
 {

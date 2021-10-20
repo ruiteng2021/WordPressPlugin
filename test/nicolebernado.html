@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+    <title>Document</title>
+</head>
+<body> 
+    <div class="woocommerce-additional-fields">
+	    <div id="wooot_order_tip_form" style=" /* display: none; */">
+            <div class="order_tip_title"></div>       
+            <button id="woo_order_tip_10" class="woo_order_tip " data-tip="10" data-tip-type="1" data-tip-custom="0" data-tip-cash="0">10%</button>        
+            <button id="woo_order_tip_15" class="woo_order_tip " data-tip="15" data-tip-type="1" data-tip-custom="0" data-tip-cash="0">15%</button>        
+            <button id="woo_order_tip_20" class="woo_order_tip " data-tip="20" data-tip-type="1" data-tip-custom="0" data-tip-cash="0">20%</button>      
+            <button id="woo_order_tip_custom" class="woo_order_tip " data-tip="custom" data-tip-type="2" data-tip-custom="1" data-tip-cash="0">Custom Tip</button>
+            <p class="form-row woo_order_tip_custom_text_field">
+                <input style="display:none;" type="text" class="input-text woo_order_tip_custom_text" data-tip-type="1" data-currency="$" placeholder="Enter tip percentage">
+            </p>        
+            <button class="woo_order_tip_apply" name="woo_order_tip_apply" style="display:none;">Add tip to order<span></span></button>
+            <button class="woo_order_tip_remove" style="display:none;">Remove tip</button>
+        </div>		
+		<div class="woocommerce-additional-fields__field-wrapper">
+			<p class="form-row notes" id="order_comments_field" data-priority=""><label for="order_comments" class="">Order notes&nbsp;<span class="optional">(optional)</span></label><span class="woocommerce-input-wrapper"><textarea name="order_comments" class="input-text " id="order_comments" placeholder="Notes about your order, e.g. special notes for delivery." rows="2" cols="5"></textarea></span></p>					
+        </div>	
+	</div>
+
+    <div id="container"></div>
+    <div>
+        <button id="submit">Create Checkbox</button>
+    </div>
+
+</body>
+</html>

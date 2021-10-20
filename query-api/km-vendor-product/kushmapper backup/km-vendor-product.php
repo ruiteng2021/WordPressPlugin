@@ -179,7 +179,7 @@ function vendor_products()
                         // console.log(self.cityRegionInfo);
                         
                         // self.detectWeekday();
-                        // self.AlignViewAllItems(self.products.length);
+                        self.AlignViewAllItems(self.products.length);
                         self.setGooglemapMarkers();
                         // // self.map = map;
                         // // self.infoWindow = infoWindow;
@@ -194,22 +194,22 @@ function vendor_products()
                                    
                     },
 
-                    // AlignViewAllItems(count)
-                    // {
-                    //     console.log("count: "+ count);
-                    //     if (count >= 4) {
-                    //         jQuery(".km-product-city-link").css({
-                    //             position: 'relative',
-                    //             width: '100%',
-                    //         });
-                    //     }
-                    //     else{
-                    //         jQuery(".km-product-city-link").css({
-                    //             position: 'absolute',
-                    //             width: '50%',
-                    //         });
-                    //     }
-                    // },
+                    AlignViewAllItems(count)
+                    {
+                        console.log("count: "+ count);
+                        if (count >= 4) {
+                            jQuery(".km-product-city-link").css({
+                                position: 'relative',
+                                width: '100%',
+                            });
+                        }
+                        else{
+                            jQuery(".km-product-city-link").css({
+                                position: 'absolute',
+                                width: '50%',
+                            });
+                        }
+                    },
 
                     provinceConvertion(state)
                     {
@@ -722,17 +722,6 @@ function vendor_products()
                             <input class="button is-black is-fullwidth" type="submit" name="submit" value="Send Request">                            
                         </div>
                     </form>
-                    <div class="columns km-product-city-link">
-                        <template x-if="serviceArea || store">
-                            <div class="km-product-back-city">
-                                <p>View all 
-                                    <template x-for="info in cityRegionInfo">
-                                        <a :href="'/location/' + info.country + '/' + info.state_slug + '/' + info.city_slug"><br class="km-break"><span x-text="'weed delivery ' + info.city + ' ' + info.state"></span><br class="km-break-yes"></a> 
-                                    </template>
-                                </p>
-                            </div>
-                        </template>
-                    </div>  
                 </div>
                 <!-- Right column for product -->
                 <div class="column">                       
@@ -772,7 +761,7 @@ function vendor_products()
                                         <span class="icon"><i class="fas fa-image fa-fw" aria-hidden="true"></i></span>
                                         <span>PHOTOS</span>
                                     </a>
-                                    </li> 
+                                    </li>  
                                     <li :class="{'is-active' : menuTab === 'reviews'}">
                                     <a href="#km-product-reviews"
                                         @click.prevent="menuTab = 'reviews'"
@@ -780,7 +769,7 @@ function vendor_products()
                                         <span class="icon"><i class="fas fa-comments fa-fw" aria-hidden="true"></i></span>
                                         <span>REVIEWS</span>
                                     </a>
-                                    </li>--> 
+                                    </li>-->
                                 </ul>
                             </div>
                             <!-- Product infomation  -->
@@ -1167,6 +1156,17 @@ function vendor_products()
                             </div>
                         </div>              
                     </div>
+                    <div class="columns km-product-city-link">
+                        <template x-if="serviceArea || store">
+                            <div class="km-product-back-city">
+                                <p>View all 
+                                    <template x-for="info in cityRegionInfo">
+                                        <a :href="'/location/' + info.country + '/' + info.state_slug + '/' + info.city_slug"><br class="km-break"><span x-text="'weed delivery ' + info.city + ' ' + info.state"></span><br class="km-break-yes"></a> 
+                                    </template>
+                                </p>
+                            </div>
+                        </template>
+                    </div>  
                 </div>               
             </div>
         </div>

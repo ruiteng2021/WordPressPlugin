@@ -1,0 +1,12 @@
+.km-vendor-tile {
+    float: left;
+    width: 33%;
+    display: block !important;
+}
+.tile:not(.is-child) {
+    display: block;
+}
+
+.km-vendor-tile .icon{
+    color: rgb(25, 120, 38);
+}

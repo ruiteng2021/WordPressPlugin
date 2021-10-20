@@ -1,7 +1,7 @@
 /* Banner section */
 .km-banner-image {
     /* background-image: linear-gradient(rgba(92, 88, 88, 0.5), rgba(0, 0, 0, 0.5)), url("banner2.jpg"); */
-    height: 450px;
+    height: 400px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -21,94 +21,51 @@
     margin: 0 auto;
 }
 
-.km-banner-favorates {
-    padding: 0 !important;
-    height: 10px;
+.km-banner-favorates .buttons {
+    float: right;
 }
 
-.km-banner-favorates .icon {
-    float: right;
-    color: #197826;
-    font-size: x-large;
-    margin-top: 30px;
-}
-
-/* .km-banner-favorates .buttons {
-    float: right;
-} */
-
-/* .km-banner-favorates .buttons .button{
+.km-banner-favorates .buttons .button{
     background-color:rgba(255, 255, 255, 0.0);
     color: white;
     font-size: x-large;
     border: 0;
     padding: 0;
-} */
-
-.km-banner-vendor-image {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    padding: 0 !important;
 }
 
-.km-banner-vendor-image figure {
-    width: 350px;
-}
-
-/* .km-banner-text h1 {
+.km-banner-text h1 {
     text-align: center;
     color: white;
     font-family: "Lato", Sans-serif;
     font-size: 62px;
     font-weight: 600;
     text-transform: uppercase;
-} */
+}
 
 .km-banner-address{
     text-align: center;
-    color: black;
+    color: white;
     font-family: "Lato", Sans-serif;
-    font-size: 15px;      
-    padding-top: 0 !important;
-}
-
-.km-banner-address .icon {
-    color: #197826;
-    font-size: x-large;
+    font-size: 20px;    
 }
 
 .km-banner-mail-order {
-    display: none !important;
     text-align: center;
-    color: black;
+    color: white;
     font-family: "Lato", Sans-serif;
     font-size: 20px;    
     text-transform: uppercase;
 }
 
-/* .km-banner-icons .buttons { 
+.km-banner-icons .buttons { 
     float: right;
-} */
-
-.km-banner-icons { 
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
 }
 
-.km-banner-icons .icon {
-    color: #197826;
-    font-size: xx-large;
-    margin-right: 30px;
-}
-
-/* .km-banner-link-color {
+.km-banner-link-color {
     background-color: #818a91 !important;
     border: 0 !important;
     color: white !important;
-} 
+}
 
 .km-banner-mail-color {
     background-color: #197826 !important;
@@ -136,16 +93,12 @@
     transition: all 500ms ease;
 }
 
- .km-banner-icon {
+.km-banner-icon {
     border-radius: 50% !important;
     padding-left: 16px !important; 
     padding-right: 16px !important; 
     margin-left: 5px;
-} */
-
-.km-banner-featured-verify {
-    display: none !important;
-} 
+}
 
 .km-banner-featured {
     margin-left: 5px;
@@ -175,40 +128,39 @@
         height: 350px;
     } */
 
-    /* .km-banner-favorates {
+    .km-banner-favorates {
         height: 50px;
     }
 
     .km-banner-favorates .buttons .button {
         font-size: medium;
         height: 50px;
-    } */
+    }
 
-    /* .km-banner-text {
+    .km-banner-text {
         padding-bottom: 0;
     }
 
     .km-banner-text h1 {
         font-size: 25px;
-    } */
+    }
 
     .km-banner-address{
         font-size: 15px;  
         padding-bottom: 0;  
-        /* color: black; */
     }
 
-    /* .km-banner-mail-order {
+    .km-banner-mail-order {
         font-size: 15px;    
         padding-bottom: 0;
-    } */
+    }
 
     .km-banner-featured-verify {
         margin-top: 50px;
     } 
     
-    /* .km-banner-icons .buttons { 
+    .km-banner-icons .buttons { 
         float: left;
-    } */
+    }
 
 }
