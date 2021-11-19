@@ -419,12 +419,29 @@
     margin-right: 12px;
 }
 
-#km-product-reviews .button {
+/* #km-product-reviews .button {
     margin-left: 12px;
     margin-right: 12px;
     width: calc(100% - 24px);
     margin-top: 10px;
     margin-bottom: 20px;
+} */
+
+.km-vendor-tile {
+    float: left;
+    width: 50%;
+}
+
+.km-vendor-tile .media-left {
+    padding-right: 10px;
+}
+
+.tile:not(.is-child) {
+    display: block;
+}
+
+.km-vendor-tile .icon{
+    color: rgb(25, 120, 38);
 }
 
 .container{
@@ -688,5 +705,9 @@
     .g-recaptcha > div > div > iframe > html > body > div.rc-anchor-light  {
         border: 0 !important;
         background: #aa2828 !important;
+    }
+
+    .km-vendor-tile {
+        width: 100%;
     }
 }
